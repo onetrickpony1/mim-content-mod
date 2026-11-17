@@ -46,8 +46,8 @@ The world is already generated and uses only vanilla blocks, and a mod can't add
 
 | # | Mob | Maltese | Also covers | Where / when | Notes, drops | Tier |
 |---|---|---|---|---|---|---|
-| 1 | Hedgehog | Qanfud (also Xummiemu) | — | Fields, garrigue, gardens; night | Curls into a ball when hit; eats snails and insects | A |
-| 2 | Weasel | Ballottra | — | Rubble walls, fields, valleys | Malta's only wild land predator; hunts mice and rats | B |
+| 1 | Hedgehog | Qanfud (also Xummiemu) | - | Fields, garrigue, gardens; night | Curls into a ball when hit; eats snails and insects | A |
+| 2 | Weasel | Ballottra | - | Rubble walls, fields, valleys | Malta's only wild land predator; hunts mice and rats | B |
 | 3 | Rat | Far [?] | black rat, brown rat | Towns, harbours, coast; Filfla / islets (they wiped out the Selmunett lizards) | Pest; eats seabird eggs | C |
 | 4 | Mouse | Ġurdien [?] | house mouse, wood mouse, both shrews (Etruscan, Sicilian) | Fields, walls, houses | Tiny; owl and weasel prey | C |
 
@@ -55,7 +55,7 @@ The world is already generated and uses only vanilla blocks, and a mod can't add
 
 | # | Mob | Maltese | Also covers | Where / when | Notes | Tier |
 |---|---|---|---|---|---|---|
-| 5 | Monk seal | Bumarin | — | Very rare: Gozo sea caves (Għar il-Bumarini, Ta' Bumbarin) | Seen again 2024–26, once in a sea cave; protected, look only | A |
+| 5 | Monk seal | Bumarin | - | Very rare: Gozo sea caves (Għar il-Bumarini, Ta' Bumbarin) | Seen again 2024–26, once in a sea cave; protected, look only | A |
 | 6 | Whale | baleni [?] | fin, sperm, Cuvier's beaked, long-finned pilot whale | Deep sea only, far offshore | Rare; one big body | B |
 
 ## 3. Ice Age animals (Għar Dalam; new)
@@ -68,8 +68,8 @@ These have been extinct for thousands of years. They could appear as **fossils**
 | 8 | Dwarf hippo | both Maltese hippos | Oldest layer of Għar Dalam | A |
 | 9 | Giant dormouse | *Leithia*, *Maltamys* | Cat-sized dormouse | B |
 | 10 | Giant swan | *Cygnus falconeri* | Taller than a person, probably could not fly | B |
-| 11 | Dwarf deer | the 3 dwarf deer + red deer | — | C |
-| 12 | Giant tortoise | *Solitudo* | — | C |
+| 11 | Dwarf deer | the 3 dwarf deer + red deer | - | C |
+| 12 | Giant tortoise | *Solitudo* | - | C |
 
 Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes, wolves and bears, so they would be fossils only.
 
@@ -90,24 +90,24 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 23 | Dove | Gamiema (turtle dove) | collared dove, rock dove / town pigeon | Fields (turtle dove spring); towns (collared all year) | Cooing | B |
 | 24 | Gull | Gawwija Prima (yellow-legged gull) | black-headed, Mediterranean gull | Coast; colony on Filfla; harbours | Loud; steals fish | A |
 | 25 | **Shearwater** | **Ċiefa** (Scopoli's) | Garnija (Yelkouan) | Cliffs (Ta' Ċenċ, Rdum tal-Madonna, Comino); **night only**, Feb–Oct | Nests in cliff holes; the "crying baby" calls at night | A |
-| 26 | **Storm-petrel** | **Kanġu ta' Filfla** | — | Filfla (and cliff caves); night; at sea by day | Sparrow-sized seabird, named after Malta (*melitensis*) | A |
+| 26 | **Storm-petrel** | **Kanġu ta' Filfla** | - | Filfla (and cliff caves); night; at sea by day | Sparrow-sized seabird, named after Malta (*melitensis*) | A |
 | 27 | Heron | Russett Griż | purple and night heron, egrets, bittern | Wetlands (Għadira, Simar, Salina), shore; migration | Stands still in water | B |
-| 28 | Flamingo | Fjamingu | — | Salina, Għadira; rare visitor | Pink, in the salt pans | C |
+| 28 | Flamingo | Fjamingu | - | Salina, Għadira; rare visitor | Pink, in the salt pans | C |
 | 29 | Falcon | Spanjulett (kestrel) | peregrine (Bies), hobby, Eleonora's, red-footed falcon | Cliffs and fields; kestrel hovers | Hunts mice and lizards | B |
 | 30 | Bird of prey | Bagħdan Aħmar (marsh harrier) | honey buzzard, kite, osprey, sparrowhawk | **Migration event** Sept, Buskett roost; spring | Malta's famous raptor passage | B |
 | 31 | Owl | Kokka (scops owl) | short-eared owl, barn owl (lost, being brought back) | Buskett, valleys; night | "tew" call | B |
-| 32 | Hoopoe | Daqquqa tat-Toppu | — | Fields, garrigue; spring migration | Crest, striped wings | B |
-| 33 | Bee-eater | Qerd in-Naħal | — | Spring and autumn flocks | Eats bees: a problem for beekeepers | B |
-| 34 | Quail | Summiena | — | Fields; spring, autumn | On the ground; flushes up | C |
-| 35 | Chukar (partridge) | Ċukar | — | **Comino only** (up to 50) | Introduced | C |
-| 36 | Moorhen | Gallozz Iswed | coot, little grebe | Ponds, Chadwick Lakes, wetlands | — | C |
+| 32 | Hoopoe | Daqquqa tat-Toppu | - | Fields, garrigue; spring migration | Crest, striped wings | B |
+| 33 | Bee-eater | Qerd in-Naħal | - | Spring and autumn flocks | Eats bees: a problem for beekeepers | B |
+| 34 | Quail | Summiena | - | Fields; spring, autumn | On the ground; flushes up | C |
+| 35 | Chukar (partridge) | Ċukar | - | **Comino only** (up to 50) | Introduced | C |
+| 36 | Moorhen | Gallozz Iswed | coot, little grebe | Ponds, Chadwick Lakes, wetlands | - | C |
 | 37 | Duck | Sarsella Ħamra (garganey) | pintail | Wetlands; migration | Malta has no breeding ducks | C |
 | 38 | Wader | Fras-servjent (black-winged stilt) | little ringed plover, sandpipers, stints, woodcock | Salt pans, wetlands | Long pink legs | C |
-| 39 | Cormorant | Margun | — | Coast, harbours; winter | Dries its wings on rocks | C |
-| 40 | Kingfisher | Għasfur ta' San Martin | — | Coast, harbours, ponds; autumn and winter | Blue flash over water | C |
-| 41 | Nightjar | Buqrajq | — | Garrigue; dusk, migration | Churring call | C |
-| 42 | Golden oriole | Tajra Safra | — | Trees; spring migration | Bright yellow | C |
-| 43 | Shrike | Kaċċamendula | — | Bushes; spring migration | Hangs prey on thorns | C |
+| 39 | Cormorant | Margun | - | Coast, harbours; winter | Dries its wings on rocks | C |
+| 40 | Kingfisher | Għasfur ta' San Martin | - | Coast, harbours, ponds; autumn and winter | Blue flash over water | C |
+| 41 | Nightjar | Buqrajq | - | Garrigue; dusk, migration | Churring call | C |
+| 42 | Golden oriole | Tajra Safra | - | Trees; spring migration | Bright yellow | C |
+| 43 | Shrike | Kaċċamendula | - | Bushes; spring migration | Hangs prey on thorns | C |
 
 ## 5. Reptiles, amphibians and fresh water (new)
 
@@ -115,11 +115,11 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 |---|---|---|---|---|---|---|
 | 44 | **Maltese wall lizard** | **Gremxula** | all island races (Filfla, Fungus Rock, Selmunett, Cominotto) | Everywhere: walls, rocks, garrigue; day | **Endemic**; optional darker skins on Filfla and Fungus Rock | A |
 | 45 | Gecko | Wiżgħa | both geckos | House walls, rubble walls; night, near lights | Barks; climbs walls | A |
-| 46 | Skink | Xaħmet l-Art | — | Sandy soil, fields, dunes | Shiny, short legs, "swims" into sand | B |
-| 47 | Chameleon | kamaleonte [?] | — | Trees and bushes, north Malta (Mellieħa, Għadira) | Introduced; changes colour | B |
+| 46 | Skink | Xaħmet l-Art | - | Sandy soil, fields, dunes | Shiny, short legs, "swims" into sand | B |
+| 47 | Chameleon | kamaleonte [?] | - | Trees and bushes, north Malta (Mellieħa, Għadira) | Introduced; changes colour | B |
 | 48 | Snake | Serp Iswed (whip snake) | leopard snake (Lifgħa), Algerian whip snake, cat snake (it-Teleskopu), coin-marked snake | Garrigue, walls, fields | Harmless; protected | B |
-| 49 | Terrapin | — | pond slider, false map turtle | Chadwick Lakes, ponds | Introduced pet, released | C |
-| 50 | **Freshwater crab** | **Qabru** | — | Only the spring-fed valleys: Wied il-Baħrija, Wied il-Lunzjata (Gozo), Chadwick | **Endemic, national invertebrate**, protected; see section 10 | A |
+| 49 | Terrapin | - | pond slider, false map turtle | Chadwick Lakes, ponds | Introduced pet, released | C |
+| 50 | **Freshwater crab** | **Qabru** | - | Only the spring-fed valleys: Wied il-Baħrija, Wied il-Lunzjata (Gozo), Chadwick | **Endemic, national invertebrate**, protected; see section 10 | A |
 | 51 | Killifish | Bużaqq | mosquitofish | Salina salt pans; Għadira, Simar | Tiny, endangered | C |
 
 ## 6. Sea life (new)
@@ -130,61 +130,61 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 |---|---|---|---|---|---|---|
 | 52 | **Dolphinfish** | **Lampuka** | pompano dolphinfish | Offshore, under floating rafts; **15 Aug – Dec** | Gold-green; the autumn catch; torta tal-lampuki | A |
 | 53 | Tuna | Tonn | albacore, bonito, little tunny, skipjack | Open sea; tuna farms off Malta | Big, fast shoals | A |
-| 54 | Swordfish | Pixxispad | spearfish | Open sea | — | B |
+| 54 | Swordfish | Pixxispad | spearfish | Open sea | - | B |
 | 55 | Sardine | Sardina | anchovy (Inċova), sardinella, bogue (Vopa), whitebait | Shoals everywhere | Bait; anchovies for ftira | A |
-| 56 | Mackerel | Kavall | horse mackerel, Atlantic mackerel | Shoals | — | C |
-| 57 | Barracuda | Lizz | — | Shoals near the coast, summer | Silver, toothy | C |
+| 56 | Mackerel | Kavall | horse mackerel, Atlantic mackerel | Shoals | - | C |
+| 57 | Barracuda | Lizz | - | Shoals near the coast, summer | Silver, toothy | C |
 | 58 | Grouper | Ċerna | all groupers, combers, sea bass | Rocky reefs and caves (Dwejra, Blue Grotto) | Big, curious, protected size limits | A |
 | 59 | Sea bream | Awrata | sargu, pagru, denċi, xirgien, xilpa and all breams | Rocks, sand, seagrass | The common table fish | A |
-| 60 | Damselfish | Ċawl | — | Shallow rocks, everywhere | Black adults, electric-blue young | B |
-| 61 | Parrotfish | Marzpan | — | Shallow rocks | Red / grey, "spreading north" | C |
+| 60 | Damselfish | Ċawl | - | Shallow rocks, everywhere | Black adults, electric-blue young | B |
+| 61 | Parrotfish | Marzpan | - | Shallow rocks | Red / grey, "spreading north" | C |
 | 62 | Wrasse | Tird | brown wrasse, pearly razorfish | Shallow rocks, seagrass | Many colours | B |
 | 63 | Moray eel | Murina | conger (Gringu), European eel (Sallura) | Holes in rock, caves; night | Bites | A |
 | 64 | Scorpionfish | Skorfna | all scorpionfish | Rocks, caves | **Venomous spines**: hurts when touched | B |
-| 65 | Mullet | Trilja (red mullet) | grey mullet (Mulett) | Sand, harbours | — | C |
+| 65 | Mullet | Trilja (red mullet) | grey mullet (Mulett) | Sand, harbours | - | C |
 | 66 | Weever | Sawt | greater and lesser weever | Buried in sand at beaches | **Stings bathers' feet**: hidden hazard on sand | B |
-| 67 | John Dory | Pixxi San Pietru | — | Mid-depth | Black "St Peter's thumbprint" spot | C |
+| 67 | John Dory | Pixxi San Pietru | - | Mid-depth | Black "St Peter's thumbprint" spot | C |
 | 68 | Anglerfish | Petriċa | stargazer | Deep mud | Lure on its head | C |
 | 69 | Flatfish | Lingwata (sole) | turbot, flounder | Sand bottom | Lies flat, hides | C |
-| 70 | Triggerfish | Ħmar | — | Rocks | — | C |
+| 70 | Triggerfish | Ħmar | - | Rocks | - | C |
 | 71 | Gurnard | Gallinella | flying gurnard (Bies) | Sand; "walks" on its fins | Blue "wings" | C |
 | 72 | Seahorse | Żiemel tal-Baħar | both seahorses | Posidonia seagrass | Protected: look only | A |
 | 73 | Shark | Ħuta kaħla (blue shark) | all ~35 sharks incl. catsharks, mako, great white (Kelb Abjad) | Open sea; rare near shore | Catshark egg cases could wash up | B |
 | 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B |
-| 75 | Lionfish | — | — | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
+| 75 | Lionfish | - | - | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
 
 ### Other sea creatures
 
 | # | Mob or block | Maltese | Also covers | Where | Notes | Tier |
 |---|---|---|---|---|---|---|
 | 76 | Octopus (mob) | Qarnita | all octopuses | Rocks, holes, caves | Hides in holes; squirts ink; stuffat tal-qarnit | A |
-| 77 | Lobster (mob) | Awwista | slipper lobster (Ċkala), European lobster, red swamp crayfish | Sea caves, deep rock | — | B |
+| 77 | Lobster (mob) | Awwista | slipper lobster (Ċkala), European lobster, red swamp crayfish | Sea caves, deep rock | - | B |
 | 78 | Crab (mob) | Granċ | spider crab, hermit crab, rock crabs, Percnon | Rocky shores, tide pools | See section 10: same kind as the qabru | A |
 | 79 | Shrimp (mob or catch only) | Gambli | red, rose, golden shrimp | Deep sea | Could be a fishing catch only | C |
-| 80 | Jellyfish (mob) | — (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; purple glow at night | A |
+| 80 | Jellyfish (mob) | - (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; purple glow at night | A |
 | 81 | Sea urchin (block) | Rizza | purple and black urchin | Rocks in shallow water | Hurts to step on; roe for food | A |
-| 82 | Starfish (block) | Stilla tal-Baħar | — | Rocks, seagrass | Decoration | C |
-| 83 | Sea anemone (block) | Artikla | — | Rocks | Decoration | C |
-| 84 | Pen shell (block) | Nakkra | — | Seagrass; mostly empty shells since the 2016 die-off | Protected | C |
-| 85 | Fireworm (mob) | Busuf | — | Rocks | Stings when touched | C |
-| 86 | Seashell (item) | — | limpets (imħar [?]), top shells, whelk | Beaches, rocky shores | Collectable; limpets on rocks | C |
+| 82 | Starfish (block) | Stilla tal-Baħar | - | Rocks, seagrass | Decoration | C |
+| 83 | Sea anemone (block) | Artikla | - | Rocks | Decoration | C |
+| 84 | Pen shell (block) | Nakkra | - | Seagrass; mostly empty shells since the 2016 die-off | Protected | C |
+| 85 | Fireworm (mob) | Busuf | - | Rocks | Stings when touched | C |
+| 86 | Seashell (item) | - | limpets (imħar [?]), top shells, whelk | Beaches, rocky shores | Collectable; limpets on rocks | C |
 
 ## 7. Bugs, spiders and snails (new)
 
 | # | Mob | Maltese | Also covers | Where / when | Notes | Tier |
 |---|---|---|---|---|---|---|
 | 87 | **Swallowtail butterfly** | Farfett tal-fejġel / busbież | all 30 butterflies | Fields, garrigue; spring to autumn | **Maltese subspecies**; caterpillars on fennel; Painted Lady swarms could be an event | A |
-| 88 | Hawk-moth | — | all moths (hummingbird, death's-head, oleander hawk-moth…) | Flowers; day (hummingbird), night (others) | Hovers at flowers | B |
-| 89 | Dragonfly | Vjoletta (violet dropwing) | all 18 dragonflies and damselflies | Ponds, valleys, Chadwick Lakes | — | B |
+| 88 | Hawk-moth | - | all moths (hummingbird, death's-head, oleander hawk-moth…) | Flowers; day (hummingbird), night (others) | Hovers at flowers | B |
+| 89 | Dragonfly | Vjoletta (violet dropwing) | all 18 dragonflies and damselflies | Ponds, valleys, Chadwick Lakes | - | B |
 | 90 | Hornet | Żunżan Bagħal [?] | paper wasps | Everywhere; Apr–Nov | **Oriental hornet**: raids beehives | A |
 | 91 | Mantis | Debba tax-Xitan ("devil's mare") | all 3 mantises | Garrigue, fields; summer–autumn | Hunts other bugs | A |
-| 92 | Cicada | Weżieq ta' bi nhar | — | Pines and carobs; hot summer days | Mostly a **sound**: Malta's summer noise | A |
+| 92 | Cicada | Weżieq ta' bi nhar | - | Pines and carobs; hot summer days | Mostly a **sound**: Malta's summer noise | A |
 | 93 | Grasshopper | ġradu † | locusts, crickets | Fields, garrigue | Jumps; crickets at night | C |
-| 94 | Ladybird | Nannakola | all beetles (field beetle, darkling beetles, dung beetle) | Fields, gardens | — | C |
-| 95 | Cockroach | Wirdien | — | Towns, drains; summer nights | Town pest | C |
+| 94 | Ladybird | Nannakola | all beetles (field beetle, darkling beetles, dung beetle) | Fields, gardens | - | C |
+| 95 | Cockroach | Wirdien | - | Towns, drains; summer nights | Town pest | C |
 | 96 | Mosquito | nemusa † | tiger mosquito | Wetlands, towns; summer nights | Bites (small damage) | C |
 | 97 | Scorpion | Skorpjun | yellow scorpion | Under stones, rubble walls | Small, practically harmless; stings lightly | A |
-| 98 | Centipede | — | — | Under stones | Not in the research: check | C |
+| 98 | Centipede | - | - | Under stones | Not in the research: check | C |
 | 99 | Snail | Għakruxa | all land snails and slugs (Bebbuxa tal-Bejt, door snails) | Walls and fields **after rain** | Edible: bebbux; rare island-only empty shells as collectables | A |
 
 ## 8. Plants
@@ -193,31 +193,31 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 
 | # | Plant | Maltese | Also covers | Where | Use | Tier |
 |---|---|---|---|---|---|---|
-| P1 | **Maltese rock-centaury** | **Widnet il-Baħar** | — | Sea cliffs only | **National plant**; protected, look only | A |
-| P2 | Thyme | Sagħtar | — | Garrigue | Bees make thyme honey; herb | A |
+| P1 | **Maltese rock-centaury** | **Widnet il-Baħar** | - | Sea cliffs only | **National plant**; protected, look only | A |
+| P2 | Thyme | Sagħtar | - | Garrigue | Bees make thyme honey; herb | A |
 | P3 | Maltese spurge | Tengħud tax-Xagħri | tree spurge | Garrigue, cliffs | Yellow in spring, red in summer | B |
-| P4 | Fennel | Busbież | — | Field edges, roadsides | Herb (bebbux, sausage); swallowtail food | A |
-| P5 | Caper bush | Kappar | — | Walls, bastions, cliffs | Capers for many dishes | A |
-| P6 | Prickly pear | Bajtar tax-Xewk | — | Field edges, walls | Fruit; must be peeled or it hurts | A |
-| P7 | Asphodel | Berwieq | — | Garrigue | Tall white flower | B |
-| P8 | Sea squill | Għansar | — | Garrigue, coast | Huge bulb; flowers in autumn | C |
-| P9 | Orchid | — | Maltese pyramidal, Maltese spider orchid and all orchids | Garrigue | Endemic; protected, look only | B |
-| P10 | Bermuda buttercup | Ħaxixa Ingliża | — | Fields, everywhere in winter | Yellow winter carpets; invasive | B |
-| P11 | Crown daisy | Lellux | — | Field edges, spring | Yellow-white daisy | C |
-| P12 | Borage | Fidloqqom | — | Fields | Blue star flower; edible | C |
-| P13 | Milk thistle | Xewk tal-Madonna | — | Field edges | Spiny | C |
+| P4 | Fennel | Busbież | - | Field edges, roadsides | Herb (bebbux, sausage); swallowtail food | A |
+| P5 | Caper bush | Kappar | - | Walls, bastions, cliffs | Capers for many dishes | A |
+| P6 | Prickly pear | Bajtar tax-Xewk | - | Field edges, walls | Fruit; must be peeled or it hurts | A |
+| P7 | Asphodel | Berwieq | - | Garrigue | Tall white flower | B |
+| P8 | Sea squill | Għansar | - | Garrigue, coast | Huge bulb; flowers in autumn | C |
+| P9 | Orchid | - | Maltese pyramidal, Maltese spider orchid and all orchids | Garrigue | Endemic; protected, look only | B |
+| P10 | Bermuda buttercup | Ħaxixa Ingliża | - | Fields, everywhere in winter | Yellow winter carpets; invasive | B |
+| P11 | Crown daisy | Lellux | - | Field edges, spring | Yellow-white daisy | C |
+| P12 | Borage | Fidloqqom | - | Fields | Blue star flower; edible | C |
+| P13 | Milk thistle | Xewk tal-Madonna | - | Field edges | Spiny | C |
 | P14 | Sea lavender | Limonju tal-Baħar | all Maltese sea-lavenders | Coastal rocks | Endemics | B |
 | P15 | Samphire | Busbies il-Baħar | golden samphire (Xorbett) | Coastal rocks | Edible (pickled) | C |
 | P16 | Sea daffodil | narċis il-baħar [BK] | sea holly, sea rocket | Sand dunes (Ramla, Għadira) | White summer lily | C |
 | P17 | Rush | Simar | glasswort (Almeridja) | Wetlands, salt marsh | Gave Is-Simar its name | C |
-| P18 | Maltese salt-tree | Xebb | — | Coastal cliffs, Citadel bastions | Endemic shrub | B |
+| P18 | Maltese salt-tree | Xebb | - | Coastal cliffs, Citadel bastions | Endemic shrub | B |
 | P19 | Lentisk | Deru | myrtle, buckthorn | Maquis | Shrub | C |
-| P20 | Rosemary | Klin | — | Garrigue, gardens | Herb | B |
-| P21 | Wild asparagus | Spraġ | — | Garrigue | Foraged food in spring | C |
+| P20 | Rosemary | Klin | - | Garrigue, gardens | Herb | B |
+| P21 | Wild asparagus | Spraġ | - | Garrigue | Foraged food in spring | C |
 | P22 | Wild leek | kurrat † | Maltese leek | Fields, garrigue | Endemic; food | C |
 | P23 | Sulla | silla [BK] | clover | Fields (whole red fields in spring) | Animal feed; bees | A |
-| P24 | Agave | — | — | Coast, field edges | Huge rosette; flower spike | C |
-| P25 | **"Maltese fungus"** | Għerq Sinjur [BK] | — | **Fungus Rock only** | Healing item; the Knights guarded it (3 years in the galleys for theft) | A |
+| P24 | Agave | - | - | Coast, field edges | Huge rosette; flower spike | C |
+| P25 | **"Maltese fungus"** | Għerq Sinjur [BK] | - | **Fungus Rock only** | Healing item; the Knights guarded it (3 years in the galleys for theft) | A |
 
 ### 8b. Trees (saplings grow Maltese-shaped trees from vanilla logs and leaves; only fruit is new)
 
@@ -267,23 +267,23 @@ Already in vanilla and used as they are: **wheat, potato, carrot, beetroot, pump
 
 | Vanilla | Maltese species it stands for | Optional Maltese look |
 |---|---|---|
-| Bat | all 6–11 Maltese bats | — |
-| Dolphin | bottlenose, striped, common, Risso's | — |
-| Rabbit | wild rabbit (Fenek Selvaġġ) | — |
-| Wolf / dog | — | **Pharaoh Hound (Kelb tal-Fenek)** as a dog breed |
-| Goat | — | **Maltese goat** (long ears) |
-| Sheep | — | **Maltese sheep** (white body, black head) |
-| Cow | — | **Maltese ox** |
-| Chicken | — | **Maltese Black chicken** |
+| Bat | all 6–11 Maltese bats | - |
+| Dolphin | bottlenose, striped, common, Risso's | - |
+| Rabbit | wild rabbit (Fenek Selvaġġ) | - |
+| Wolf / dog | - | **Pharaoh Hound (Kelb tal-Fenek)** as a dog breed |
+| Goat | - | **Maltese goat** (long ears) |
+| Sheep | - | **Maltese sheep** (white body, black head) |
+| Cow | - | **Maltese ox** |
+| Chicken | - | **Maltese Black chicken** |
 | Frog | painted frog (Żrinġ) | painted frog skin |
 | Sea turtle | loggerhead (nests at Għajn Tuffieħa, Golden Bay, Ramla) | loggerhead skin |
 | Squid | squid (Klamar), cuttlefish (Siċċ) | the mod can add a squid-meat drop for klamari mimlija |
-| Cod | hake (Merluzz) | — |
-| Pufferfish | silver-cheeked toadfish, oceanic puffer (invasive) | — |
-| Bee | Maltese honey bee (national insect), carpenter bee | — |
-| Spider, cave spider | trapdoor spiders, recluse | — |
-| Coral, sponge, seagrass, kelp | red coral, sponges, Posidonia | — |
-| Poppy, sugar cane, cactus, mushrooms | poppy (Pepprin), giant reed (Qasba), — , fungi | — |
+| Cod | hake (Merluzz) | - |
+| Pufferfish | silver-cheeked toadfish, oceanic puffer (invasive) | - |
+| Bee | Maltese honey bee (national insect), carpenter bee | - |
+| Spider, cave spider | trapdoor spiders, recluse | - |
+| Coral, sponge, seagrass, kelp | red coral, sponges, Posidonia | - |
+| Poppy, sugar cane, cactus, mushrooms | poppy (Pepprin), giant reed (Qasba),, , fungi | - |
 
 **Side note (not part of the mod):** the world's own biome spawns currently include some animals Malta doesn't have: foxes, armadillos, llamas, parrots, pandas, ocelots, polar bears (`gameplaychanges.md`, j018). That's a world question, not a mod one, and it's your call whether to revisit it.
 
@@ -329,7 +329,7 @@ Already in vanilla and used as they are: **wheat, potato, carrot, beetroot, pump
 | F6 | Qassatat | Qassatat | pastry + ricotta or peas + spinach | furnace | C |
 | F7 | Water crackers | Galletti | flour + water + salt | furnace | B |
 | F8 | **Bigilla** (bean dip) | Bigilla | broad beans + garlic + olive oil + herbs | crafting table + bowl | A |
-| F9 | **Ġbejniet** | Ġbejniet | see ingredients; eaten as they are | — | A |
+| F9 | **Ġbejniet** | Ġbejniet | see ingredients; eaten as they are | - | A |
 | F10 | Maltese sausage | Zalzett tal-Malti | pork + salt + black pepper + garlic | crafting table → smoker | B |
 | F11 | **Rabbit stew** | **Stuffat tal-Fenek** | rabbit + tomato + onion + garlic + wine + potato + peas (+ bay) | crafting table + bowl | A |
 | F12 | Fried rabbit | Fenek moqli | rabbit + garlic + wine + olive oil | furnace | B |
@@ -358,9 +358,9 @@ Already in vanilla and used as they are: **wheat, potato, carrot, beetroot, pump
 | F35 | Lent almond biscuits | Kwareżimal | almonds + honey + flour + orange peel | furnace | C |
 | F36 | Almond macaroons | Biskuttini tal-Lewż | almonds + sugar + egg | furnace | C |
 | F37 | Bread pudding | Pudina tal-Ħobż | Maltese bread + egg + milk + sugar + cocoa + raisins | furnace | C |
-| F38 | Wine | Inbid | see ingredients | — | B |
+| F38 | Wine | Inbid | see ingredients | - | B |
 | F39 | Prickly pear liqueur | Likur tal-bajtar † | prickly pears + sugar + glass bottle | crafting table | C |
-| F40 | Carob syrup (drink) | Ġulepp tal-Ħarrub | see ingredients; old cough remedy | — | B |
+| F40 | Carob syrup (drink) | Ġulepp tal-Ħarrub | see ingredients; old cough remedy | - | B |
 
 **Raw foods** you can eat as they are: tomato, fig, orange, grapes, almonds, pomegranate, mulberry, loquat, carob pod (poor food), prickly pear (hurts unless peeled on the crafting table), raw olives (bitter: a small hunger penalty until cured).
 

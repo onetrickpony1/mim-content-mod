@@ -344,7 +344,7 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 | Tree fruits | 6 | 1 | 2 | 9 |
 | Wild food | 4 | 1 | 3 | 8 |
 | Base ingredients | ~16 | ~6 | ~4 | ~26 |
-| Imported goods | — | — | — | 8 |
+| Imported goods | - | - | - | 8 |
 | Dishes | 17 | 21 | 13 | **51** |
 | Drinks | 0 | 3 | 2 | 5 |
 
