@@ -1,0 +1,49 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+// Test mod (never in the distributable jar): the client game test that takes the art screenshots.
+sourceSets {
+	smoke {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+	}
+}
+
+loom {
+	mods {
+		"mimcontent" { sourceSet sourceSets.main }
+		"mimcontent_smoke" { sourceSet sourceSets.smoke }
+	}
+	runs {
+		smoke {
+			client()
+			source sourceSets.smoke
+			runDir 'build/smoke-run'
+			vmArg '-Dfabric.client.gametest'
+			vmArg '-Dfabric.client.gametest.modid=mimcontent_smoke'
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	filesMatching("fabric.mod.json") { expand "version": version }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}

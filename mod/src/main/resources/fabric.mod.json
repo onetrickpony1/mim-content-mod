@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "mimcontent",
+  "version": "${version}",
+  "name": "Malta in Minecraft: content mod (working name)",
+  "description": "Maltese wildlife, crops, food and everyday life for the Malta in Minecraft world.",
+  "authors": ["onetrickpony1"],
+  "contact": {"homepage": "https://maltaminecraft.com"},
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {"main": ["com.maltaminecraft.mimcontent.MimContent"]},
+  "depends": {"fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25", "fabric-api": "*"}
+}

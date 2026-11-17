@@ -17,7 +17,9 @@ An optional **Fabric 26.3 add-on mod** for the Malta in Minecraft world. It adds
 | `docs/Decisions/` | **every owner decision, one dated note with the owner's exact words; never edited, never re-opened unasked** |
 | `docs/Templates/`, `docs/Bases/` | note templates (Decision, Item, List) and the Obsidian tables |
 | `docs/Tools and Process/` | **`Keeping the vault up to date.md`**: follow it after every change |
-| `mod/` | the Fabric project, **created only when building starts** |
+| `mod/` | the Fabric 26.3 project (mod id `mimcontent`, a working name). Since 2026-11-17 it holds only the **art pilot**: the kenur, the borma, three foods, and the in-game screenshot test (`src/smoke`) |
+| `art/` | the art: scripts that make every texture and model (`art/src`), the style rules measured from vanilla (`art/STYLE.md`), reference photos with licences; see `docs/Tools and Process/Art pipeline.md` |
+| `tools/run-art.sh` | builds the mod and takes in-game screenshots on an invisible desktop (`mod/build/smoke-run/screenshots`); needs `env.sh` (Java 25 + the Gradle cache shared with the Malta project) |
 
 ## Rules
 1. **Ideas, lists and designs are not a go-ahead.** Build nothing until the owner explicitly says so.
@@ -27,4 +29,6 @@ An optional **Fabric 26.3 add-on mod** for the Malta in Minecraft world. It adds
 5. **Git:** stage files by name, never `git add -A docs`. Commits carry **no Co-Authored-By lines and no mention of Claude**; they are the owner's alone. Commit identity for this repo: `onetrickpony1 <311002920+onetrickpony1@users.noreply.github.com>` (the owner's GitHub account, same as their other repos).
 6. **Contact details to outside services:** only `https://maltaminecraft.com` or `maltainminecraft@gmail.com`; never the owner's personal details.
 7. **The owner** is a Minecraft player, not a developer. Keep updates short, lead with what changes in-game, and use "they/them".
-8. **The Malta project** (`~/Apps/Minecraft World`) has its own rules and another session may be working in it. Don't edit it from here unless asked.
+8. **Art is judged by an independent reviewer (a sub-agent), never by whoever made it** (owner 2026-11-17). Check it in-game beside vanilla before review.
+9. **Dependencies stay private:** Python tools use `art/.venv`, not system packages; no `pacman -S`.
+10. **The Malta project** (`~/Apps/Minecraft World`) has its own rules and another session may be working in it. Don't edit it from here unless asked.

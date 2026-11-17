@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "mimcontent_smoke",
+  "version": "1.0.0",
+  "name": "MiM content mod: art screenshots",
+  "environment": "client",
+  "entrypoints": {"fabric-client-gametest": ["com.maltaminecraft.mimcontent.test.ArtShots"]},
+  "depends": {"mimcontent": "*", "fabric-client-gametest-api-v1": "*"}
+}

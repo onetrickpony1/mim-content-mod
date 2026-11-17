@@ -17,3 +17,11 @@ out/
 .DS_Store
 *~
 *.swp
+
+# art tooling
+art/.venv/
+art/preview/
+env.sh
+mod/.gradle/
+mod/build/
+mod/run/
