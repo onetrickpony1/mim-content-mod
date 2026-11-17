@@ -12,12 +12,12 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 
 | | In the mod | Not yet |
 |---|---|---|
-| Items | 35 | |
+| Items | 38 | |
 | Placed dishes (eaten in slices) | 4 | |
 | Kitchen blocks | 3 (kenur, borma, borma with stuffat) | |
 | Crops, trees, wild food, animal and sea products | 1 (the lampuka) | 47 |
 | Base ingredients and imports | the 3 ġbejniet and the broth (as 2 soups) | 31 |
-| Catalogue dishes | 28 | 43 |
+| Catalogue dishes | 31 | 40 |
 | Drinks | Kinnie (3 items) | 5 |
 
 ## In the mod
@@ -64,13 +64,21 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 | ![Stuffat tal-Fenek](images/stuffat_fenek.png) | **Stuffat tal-Fenek** (D21) | `stuffat_fenek` | the national dish |
 | ![Aljotta](images/aljotta.png) | **Aljotta** (D15) | `aljotta` | fish soup |
 | ![Stuffat tal-Qarnit](images/stuffat_qarnit.png) | **Stuffat tal-Qarnit** (D35) | `stuffat_qarnit` | octopus stew |
-| ![Bigilla](images/bigilla.png) | **Bigilla** (D10) | `bigilla` | broad bean dip |
 | ![Soppa tal-Armla](images/soppa_tal_armla.png) | **Soppa tal-Armla** (D16) | `soppa_tal_armla` | widow's soup |
 | ![Minestra](images/minestra.png) | **Minestra** (D17) | `minestra` | vegetable soup |
 | ![Kawlata](images/kawlata.png) | **Kawlata** (D18) | `kawlata` | cabbage and pork soup |
 | ![Kusksu](images/kusksu.png) | **Kusksu** (D19) | `kusksu` | kusksu and broad bean soup |
 | ![Brodu tat-Tiġieġ](images/brodu_tat_tigieg.png) | **Brodu tat-Tiġieġ** (D20) | `brodu_tat_tigieg` | chicken broth |
 | ![Brodu tal-Laħam](images/brodu_tal_laham.png) | **Brodu tal-Laħam** (D20) | `brodu_tal_laham` | beef broth |
+
+### Dips (in a low terracotta dish, so they can't be mistaken for soups)
+
+| Picture | Food | Id (`mimcontent:`) | Notes |
+|---|---|---|---|
+| ![Bigilla](images/bigilla.png) | **Bigilla** (D10) | `bigilla` | broad bean dip |
+| ![Dip tal-Ġbejna](images/dip_gbejna.png) | **Dip tal-Ġbejna** (D69) | `dip_gbejna` | cream, black pepper, olive oil, ġbejna cubes |
+| ![Dip tat-Tonn](images/dip_tonn.png) | **Dip tat-Tonn** (D70) | `dip_tonn` | pink creamy tuna dip with a kunserva swirl |
+| ![Dip tat-Tewm](images/dip_tewm.png) | **Dip tat-Tewm** (D71) | `dip_tewm` | thick grey-cream garlic dip with a clove |
 
 ### Sweets
 
@@ -306,9 +314,6 @@ I'd appreciate if you could mail me (Kolforn@gmail.com) if you](https://commons.
 | (no free photo found)                                                                                                                                                                                                                                                        | **Torta tal-marmorat** (D65)                          |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Ftira tar-Randan** (D66)                            |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Ħobża ta' San Martin** (D67)                        |                                                                                                                                                                                            |
-| (being drawn) | **Dip tal-ġbejna** (D69) | |
-| (being drawn) | **Dip tat-tonn (creamy)** (D70) | |
-| (being drawn) | **Dip tat-tewm** (D71) | |
 
 ### Drinks
 

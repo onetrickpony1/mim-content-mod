@@ -36,7 +36,10 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `stuffat_fenek` | Stuffat tal-Fenek | bowls (shared terracotta bowl, plain rim) |
 | `aljotta` | Aljotta | bowls |
 | `stuffat_qarnit` | Stuffat tal-Qarnit | bowls |
-| `bigilla` | Bigilla | bowls |
+| `bigilla` | Bigilla | dips (low terracotta dish) |
+| `dip_gbejna` | Dip tal-Ġbejna | dips |
+| `dip_tonn` | Dip tat-Tonn (the pink creamy kind) | dips |
+| `dip_tewm` | Dip tat-Tewm | dips |
 | `soppa_tal_armla` | Soppa tal-Armla | soups (same bowl; each soup has its own look) |
 | `minestra` | Minestra | soups |
 | `kawlata` | Kawlata | soups |

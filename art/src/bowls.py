@@ -333,7 +333,7 @@ def over(back, front):
                 g[y][x] = front[y][x]
     return g
 
-# ---- Accepted (owner 2026-11-17), frozen and installed: bigilla v6b, galletti v3 ----
+# ---- Accepted (owner 2026-11-17), frozen: bigilla v6b (its fill now goes in the dip dish, below), galletti v3 (installed) ----
 BIGILLA_ACCEPTED = [
     "................",
     "................",
@@ -372,6 +372,31 @@ GALLETTI_ACCEPTED = [
 ]
 
 
+# ---- Bigilla in the dips' own dish (owner 2026-11-17: "i like the low terracotta dish, but without the galletta";
+# art/src/dip_dish.py). The fill keeps the accepted v6b colours: brown bean paste, olive oil, parsley, red chilli. ----
+BIGILLA_DISH_PAL = {"a": hx("#8e766a"), "b": hx("#6e5a50"), "c": hx("#4e3e38"), "q": hx("#3a2c28"),
+                    "j": hx("#d6b04a"), "e": hx("#b89a3e"), "z": hx("#4f8a3a"), "x": hx("#c8402a")}
+# Bigilla's heap, hand-drawn rows 3-9 for art/src/dip_dish.py (owner 2026-11-17: "theyre heaped a bit too perfectly"):
+# '?' paste, other chars toppings; an uneven, lopsided spooned-in silhouette of its own.
+BIGILLA_HEAP = {y: r for y, r in enumerate([
+    "................",
+    "........???.....",
+    "..???..??????...",
+    "..?jje?x?z??x?..",
+    "..?ejz?z??x?z??.",
+    "...?x??z??z??...",
+    "...??????????..."], start=3)}  # oil pooled in the spoon's hollow
+
+
+# The critic's pixel fixes (2026-11-17, art/candidates/critic_dips_C/fix_preview.png), on the finished icon.
+BIGILLA_FIXES = {(14, 7): "."}
+
+
+def bigilla_dish():
+    import dip_dish
+    return dip_dish.icon(BIGILLA_DISH_PAL, BIGILLA_HEAP, fixes=BIGILLA_FIXES)
+
+
 def main():
     ims = []
     for name, kind, base, pieces, extra in CANDS:
@@ -386,7 +411,7 @@ def main():
     main_v2()
     for item, rows in INSTALL:
         render(rows, PAL).save(os.path.join(F.MOD_ITEMS, item + ".png"))
-    render(BIGILLA_ACCEPTED, PAL).save(os.path.join(F.MOD_ITEMS, "bigilla.png"))
+    bigilla_dish()[1].save(os.path.join(F.MOD_ITEMS, "bigilla.png"))
     render(GALLETTI_ACCEPTED, GAL3).save(os.path.join(F.MOD_ITEMS, "galletti.png"))
     render(["".join(r) for r in bigilla_v4()], PAL).save(os.path.join(F.OUT, "bigilla_v4.png"))
     big = render(["".join(r) for r in bigilla_v5()], PAL)
