@@ -993,9 +993,27 @@ TIMP_LID2 = ["LRLLRLLRLR",
 TIMP_ICON2 = with_food(IMQ_ICON4, TIMP_LID2, 3)
 
 
+def glass_wall_v3():
+    """v2's warm pastry and rim/base lines, with v1's short diagonal glass streaks (bottom-left to top-right) back
+    (owner: "the classic vanilla glass streeks are replaced by whatever these lines are")."""
+    a = noise_tex("#e6cc94", [("#dcb878", 0.3), ("#f0daa8", 0.15)], 73)
+    rs = np.random.RandomState(74)
+    for y in (13, 14):
+        for x in range(16):
+            if rs.rand() < 0.45:
+                a[y, x, :3] = hx("#c08848")
+    a[11, :, :3] = hx("#f4f8f6")
+    a[15, :, :3] = hx("#d8e0dc")
+    for x in range(16):
+        for y in range(12, 15):
+            if (x + y) % 7 == 0:
+                a[y, x, :3] = hx("#fbfcf6")
+    return a
+
+
 def timpana():
     save_png(pastry_lid_v2(), "block/timpana_top.png")
-    save_png(glass_wall_v2(), "block/timpana_side.png")
+    save_png(glass_wall_v3(), "block/timpana_side.png")
     save_png(timpana_inside(), "block/timpana_inside.png")
     save_png(glass_bottom(), "block/timpana_bottom.png")
     F.render(relight(TIMP_ICON2), TIMP_PAL2).save(os.path.join(TEX, "item", "timpana.png"))
@@ -1009,7 +1027,7 @@ def timpana_compare():
     for v in ("cake", "pumpkin_pie"):
         ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
     sheet = F.compare(ims)
-    shots = os.path.join(F.OUT, "ingame_timpana_v2")
+    shots = os.path.join(F.OUT, "ingame_timpana_v3")
     crops = []
     if os.path.isdir(shots):
         for key in ("15-timpana-table", "15b-timpana-above"):
