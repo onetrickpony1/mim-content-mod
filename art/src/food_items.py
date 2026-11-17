@@ -777,6 +777,311 @@ def xema_pizelli_b():
 
 
 
+# ---- Bread dishes (candidates only, 2026-11-17; NOT in the mod yet) ----
+# Ftira: a flattish ring-shaped Maltese sourdough (en Wikipedia "Ftira"; UNESCO 2020), refs ftira_1/2.jpg.
+# Ftira għawdxija: Gozo's ftira baked open like a pizza, thin potato slices with ġbejna, olives, capers,
+# onion or anchovies (recipe sites; no free photo found). Ħobż biż-żejt: ħobż rubbed with kunserva,
+# topped with tuna, capers, olives, onion, mint (en Wikipedia "Maltese bread"), refs hobz_bizzejt_1/2.jpg.
+# Crust and flour colours are the accepted ħobż's (B3).
+BR = dict(B3)  # the accepted ħobż crust and flour colours, plus toppings
+BR.update({"#": hx("#4c2f11"), "w": hx("#f1e4c0"), "W": hx("#d9c9a0"),   # crumb
+           "K": hx("#7a2414"), "k": hx("#a8321e"), "q": hx("#c8472a"),   # kunserva
+           "t": hx("#c9a77f"), "T": hx("#a78560"),                       # tuna
+           "C": hx("#6b7a2a"), "B": hx("#2e2a22"), "b": hx("#4a3f30"),   # caper, olive
+           "n": hx("#efe9da"), "M": hx("#4f8a3a"),                       # onion, mint
+           "P": hx("#ead39a"), "p": hx("#c99a52"),                       # potato slice, its browned edge
+           "G": hx("#f2eedc"), "A": hx("#7a5a44")})                     # ġbejna, anchovy
+
+def E(px, py, cx, cy, rx, ry):
+    return ((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2 <= 1
+
+def outline_split(g):
+    """Outline: lit 'o' on the top/left, dark 'O' on the bottom/right (like the ħobż)."""
+    e = outline3(g)
+    for y in range(16):
+        for x in range(16):
+            if e[y][x] == "#" and g[y][x] != ".":
+                g[y][x] = "o" if (y < 8 and x + y < 16) else "O"
+    return g
+
+def disc3q(cx, cy, rx, ry, depth):
+    """Top face + side wall (3/4 view). Returns (grid of 'top'/'side'/None)."""
+    z = [[None] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            if E(x + .5, y + .5, cx, cy, rx, ry): z[y][x] = "top"
+            elif any(E(x + .5, y + .5 - k, cx, cy, rx, ry) for k in range(1, depth + 1)): z[y][x] = "side"
+    return z
+
+FLOUR_A = [(4, 5), (5, 5), (11, 5), (12, 5), (5, 9), (6, 9)]
+FLOUR_B = [(4, 6), (5, 6), (11, 5), (12, 5), (6, 10), (7, 10)]
+
+
+def ftira(see_through=False):
+    """Plain ftira: a broad FLAT ring, much flatter and wider than the ħobż, with a small hole in the middle;
+    matte golden crust with a few white flour patches; a low darker side. a: the hole a dark pit with a lit
+    far rim; b: flatter still, the small hole open (see-through)."""
+    if see_through:
+        cx, cy, rx, ry, depth = 8.0, 7.4, 7.2, 3.9, 2
+    else:
+        cx, cy, rx, ry, depth = 8.0, 7.2, 7.1, 4.4, 2
+    z = disc3q(cx, cy, rx, ry, depth)
+    g = [["."] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            if z[y][x] is None: continue
+            if z[y][x] == "top":
+                lit = -0.5 * (x + .5 - cx) / rx - 0.6 * (y + .5 - cy) / ry
+                g[y][x] = "l" if lit > 0.15 else ("m" if lit > -0.35 else "d")
+            else:
+                g[y][x] = "d" if x < 9 else "D"
+    for x, y in (FLOUR_B if see_through else FLOUR_A):
+        if g[y][x] in "lm": g[y][x] = "F"
+        elif g[y][x] == "d": g[y][x] = "f"
+    if see_through:
+        g[7][7] = g[7][8] = "."
+    else:
+        for x, y in ((7, 6), (8, 6), (7, 7), (8, 7)):
+            g[y][x] = "c"
+        g[7][7] = "D"; g[7][8] = "D"
+        g[5][7] = "l"; g[5][8] = "l"; g[6][6] = "D"; g[6][9] = "d"
+    g = outline_split(g)
+    return g
+
+
+def slices(g, z, centres, r=1.6):
+    """Thin potato slices, overlapping like roof tiles: pale disc, browned edge on its lower right."""
+    for sx, sy in centres:
+        for y in range(16):
+            for x in range(16):
+                if z[y][x] != "top": continue
+                d = math.hypot(x + .5 - sx, (y + .5 - sy) * 1.25)
+                if d <= r:
+                    edge = d > r - 0.9 and (x + .5 - sx) + (y + .5 - sy) > 0.3
+                    g[y][x] = "p" if edge else "P"
+
+
+def ftira_ghawdxija(variant="a"):
+    """Ftira għawdxija: a round flat Gozo bread-pie, the crust rim showing round the edge, the top covered in
+    thin overlapping potato slices with fresh ġbejna, black olives, capers, onion (a) or anchovies (b)."""
+    if variant == "a":
+        cx, cy, rx, ry, depth = 8.0, 7.3, 7.1, 4.6, 2
+    else:
+        cx, cy, rx, ry, depth = 8.0, 7.6, 6.9, 5.9, 1
+    z = disc3q(cx, cy, rx, ry, depth)
+    g = [["."] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            if z[y][x] == "top":
+                inner = E(x + .5, y + .5, cx, cy, rx - 1.3, ry - 1.1)
+                lit = -0.5 * (x + .5 - cx) / rx - 0.6 * (y + .5 - cy) / ry
+                g[y][x] = "P" if inner else ("l" if lit > 0.1 else ("m" if lit > -0.4 else "d"))
+                if inner: z[y][x] = "top"
+                else: z[y][x] = "rim"
+            elif z[y][x] == "side":
+                g[y][x] = "d" if x < 9 else "D"
+    if variant == "a":
+        cs = [(4.5, 6.0), (7.5, 5.0), (10.8, 5.6), (5.5, 8.6), (8.6, 7.8), (11.4, 8.4), (7.4, 10.0)]
+    else:
+        cs = [(5.0, 5.0), (8.2, 4.4), (11.2, 5.4), (4.2, 8.0), (7.4, 7.6), (10.6, 8.2), (6.0, 10.6), (9.4, 10.8)]
+    slices(g, z, cs)
+    if variant == "a":
+        tops = {(6, 6): "G", (7, 6): "G", (10, 8): "G", (4, 8): "B", (9, 5): "B", (11, 9): "B",
+                (6, 9): "C", (12, 6): "C", (8, 9): "n", (5, 5): "n"}
+    else:
+        tops = {(5, 6): "A", (6, 7): "A", (7, 8): "A", (10, 5): "A", (9, 6): "A", (8, 7): "A",
+                (4, 9): "B", (11, 9): "B", (8, 4): "B", (6, 11): "C", (12, 7): "C", (9, 10): "G", (10, 10): "G"}
+    for (x, y), c in tops.items():
+        if g[y][x] not in ".": g[y][x] = c
+    g = outline_split(g)
+    return g
+
+
+def hobz_bizzejt(variant="a"):
+    """Ħobż biż-żejt: ħobż rubbed with kunserva (tomato paste) so the cut face is red, a crust rim round it,
+    topped with tuna, capers, olives, onion and mint. a: a thick slice; b: half a ħobża, cut side up, its
+    domed floury crust below."""
+    if variant == "a":
+        cx, cy, rx, ry, depth = 8.0, 7.0, 6.9, 5.0, 2
+    else:
+        cx, cy, rx, ry, depth = 8.0, 6.2, 7.0, 3.9, 5
+    z = disc3q(cx, cy, rx, ry, depth)
+    g = [["."] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            if z[y][x] == "top":
+                inner = E(x + .5, y + .5, cx, cy, rx - 1.2, ry - 1.1)
+                lit = -0.5 * (x + .5 - cx) / rx - 0.6 * (y + .5 - cy) / ry
+                if inner:
+                    g[y][x] = "q" if lit > 0.25 else ("k" if lit > -0.35 else "K")
+                else:
+                    g[y][x] = "W" if variant == "a" and lit > -0.2 else ("m" if lit > -0.2 else "d")
+            elif z[y][x] == "side":
+                k = min(k for k in range(1, depth + 1) if E(x + .5, y + .5 - k, cx, cy, rx, ry))
+                lit = -0.6 * (x + .5 - cx) / rx - 0.15 * k
+                g[y][x] = "l" if lit > 0.25 else ("m" if lit > -0.25 else ("d" if lit > -0.6 else "D"))
+    if variant == "b":
+        for x, y in ((3, 9), (4, 10), (6, 11), (10, 10), (11, 11)):
+            if g[y][x] in "lm": g[y][x] = "f"
+        cx2 = {(6, 5): "t", (7, 5): "T", (8, 6): "t", (9, 5): "t", (5, 6): "n", (10, 6): "C", (11, 5): "B",
+               (4, 6): "C", (7, 7): "M", (8, 4): "B", (6, 7): "t", (10, 4): "n", (12, 6): "t"}
+    else:
+        cx2 = {(6, 5): "t", (7, 5): "T", (6, 6): "t", (8, 6): "t", (9, 7): "T", (7, 7): "t",
+               (5, 8): "C", (10, 5): "C", (11, 8): "B", (4, 6): "B", (8, 9): "n", (9, 9): "n",
+               (10, 7): "M", (6, 9): "t", (12, 6): "n"}
+    for (x, y), c in cx2.items():
+        if g[y][x] not in ".": g[y][x] = c
+    g = outline_split(g)
+    return g
+
+
+
+
+def _reoutline_split(g):
+    g = [["." if c == "." else ("m" if c in "oO" else c) for c in r] for r in g]
+    return outline_split(g)
+
+
+def ftira_v2():
+    """Critic r1 on ftira b: flatter (body rows 5-12, the top dome row removed) and matte floury."""
+    g = ftira(True)
+    g = [list("." * 16)] + g[:5] + g[6:]          # drop the first dome row, keep the rest in place
+    g = _reoutline_split(g)
+    for x, y in ((3, 7), (4, 8), (10, 9), (11, 8), (6, 10), (12, 6), (2, 6), (3, 6)):
+        if g[y][x] not in ".oO":
+            g[y][x] = "F"
+    return g
+
+
+def ftira_ghawdxija_v2():
+    """Critic r1 on ftira għawdxija b: gold potato-slice arcs instead of brown squiggles, tomato, more ġbejna."""
+    g = [["p" if c == "A" else c for c in r] for r in ftira_ghawdxija("b")]
+    for (x, y), c in {(11, 5): "k", (4, 9): "k", (5, 5): "G", (9, 8): "G", (4, 11): "G"}.items():
+        g[y][x] = c
+    return g
+
+
+def hobz_bizzejt_v2():
+    """Critic r1 on ħobż biż-żejt b: white crumb between crust and topping, more tuna, 3-row side crust."""
+    g = hobz_bizzejt("b")
+    for x, y in ((3, 4), (2, 5), (2, 6), (2, 7), (2, 8), (3, 8), (4, 8)):
+        g[y][x] = "W"
+    for (x, y), c in {(4, 5): "t", (5, 4): "T", (10, 6): "t", (6, 7): "T", (8, 8): "t"}.items():
+        g[y][x] = c
+    # red at most ~40% of the top: crumb rim along the far edge too, and more tuna flakes
+    for (x, y), c in {(6, 3): "W", (7, 3): "W", (8, 3): "W", (9, 3): "W", (4, 4): "W",
+                      (7, 6): "t", (11, 7): "T", (12, 5): "t", (9, 4): "t", (5, 7): "t"}.items():
+        g[y][x] = c
+    g = g[:10] + g[11:] + [list("." * 16)]          # side crust 4 rows -> 3
+    return g
+
+
+# Ħobż biż-żejt v3 (owner 2026-11-17): Maltese bread is cut VERTICALLY into many slices, so the dish is
+# upright cross-section slices of the ħobża: the loaf's profile (domed top, flat burnt base), crust all round,
+# the pale crumb face rubbed thin with kunserva and oil, a few toppings.
+BR["Q"] = hx("#e2a27c")   # crumb with a thin smear of kunserva and oil
+SLICE_RUNS = {3: [(5, 10)], 4: [(3, 12)], 5: [(2, 13)], 6: [(1, 14)], 7: [(1, 14)], 8: [(1, 14)], 9: [(1, 14)],
+              10: [(1, 14)], 11: [(1, 14)], 12: [(1, 14)], 13: [(2, 13)]}
+
+
+def _slice(runs, dx=0, dy=0, toppings=None, smear_seed=0):
+    g = runs_grid({y + dy: [(a + dx, b + dx) for a, b in rr] for y, rr in runs.items()})
+    edge = outline3(g)
+    ring = outline3([["." if edge[y][x] == "#" else c for x, c in enumerate(r)] for y, r in enumerate(edge)])
+    base = max(y for y in range(16) if any(c != "." for c in g[y]))
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] == ".":
+                continue
+            if edge[y][x] == "#":
+                g[y][x] = "o" if (y < base - 2 and x + y < 16 + dx + dy) else "O"
+            elif ring[y][x] == "#":       # the crust band round the slice: burnt at the base, gold on the dome
+                g[y][x] = "D" if y >= base - 1 else ("l" if x + y < 13 + dx + dy else ("m" if y < 8 + dy else "d"))
+            else:                          # crumb, a thin kunserva smear in streaks, a few holes
+                h = (x * 5 + y * 3 + smear_seed) % 7
+                g[y][x] = "Q" if h in (0, 3) else ("q" if h == 5 and (x + y) % 3 == 0 else "w")
+                if (x * 3 + y * 7 + smear_seed) % 13 == 0:
+                    g[y][x] = "W"
+    for (x, y), c in (toppings or {}).items():
+        if g[y + dy][x + dx] not in ".oO":
+            g[y + dy][x + dx] = c
+    return g
+
+
+V3_TOPS = {(5, 6): "t", (6, 6): "T", (6, 7): "t", (9, 9): "t", (10, 9): "T", (10, 6): "B", (11, 6): "b",
+           (4, 9): "C", (8, 7): "C", (7, 10): "n", (8, 10): "n", (11, 9): "M", (12, 8): "M"}
+
+
+def hobz_bizzejt_v3a():
+    """One upright slice of ħobża, face-on, topped."""
+    return _slice(SLICE_RUNS, toppings=V3_TOPS)
+
+
+def hobz_bizzejt_v3b():
+    """Two slices overlapping: one behind, up and to the right, mostly hidden; the front one topped."""
+    small = {y: [(a + 1, b - 2)] for y, ((a, b),) in SLICE_RUNS.items() if y >= 3}
+    back = _slice(small, dx=2, dy=-2, smear_seed=3)
+    front_runs = {y: [(a, b - 2)] for y, ((a, b),) in SLICE_RUNS.items()}
+    front = _slice(front_runs, dx=0, dy=1, toppings={(5, 6): "t", (6, 6): "T", (6, 7): "t", (8, 9): "t",
+                   (9, 9): "T", (9, 6): "B", (10, 6): "b", (4, 9): "C", (7, 7): "C", (6, 10): "n",
+                   (10, 8): "M", (11, 8): "M"}, smear_seed=1)
+    g = [r[:] for r in back]
+    for y in range(16):
+        for x in range(16):
+            if front[y][x] != ".":
+                g[y][x] = front[y][x]
+    return g
+
+
+def ftira_v3():
+    """Critic r2: ftira v2 up one row (rows 4-11) so its centre matches the ħobż."""
+    return ftira_v2()[1:] + [list("." * 16)]
+
+
+def ftira_ghawdxija_v3():
+    """Critic r2: the potato made the signature: overlapping slices as short gold lower-edge crescents on pale
+    slice bodies with a white highlight up-left; the scattered gold flecks removed; tomato, olive, caper."""
+    g = [["P" if c == "p" else c for c in r] for r in ftira_ghawdxija_v2()]
+    for y, spans in ((6, ((3, 4), (7, 8), (11, 12))), (8, ((2, 3), (5, 6), (9, 10))), (10, ((4, 5), (8, 9)))):
+        for a, b in spans:
+            for x in range(a, b + 1):
+                g[y][x] = "p"
+            if g[y - 1][a - 1] not in "oOlmd":   # never over the outline or the crust rim
+                g[y - 1][a - 1] = "G"
+    for (x, y), c in {(6, 7): "k", (10, 10): "k", (4, 10): "B", (9, 5): "C"}.items():
+        g[y][x] = c
+    return g
+
+
+BR["r"] = hx("#c8603a")   # kunserva red-orange (critic r3: #e2a27c read as ham)
+BR["S"] = hx("#f0dca0")   # potato slice, pale top
+BR["s"] = hx("#b07a36")   # potato slice, darker lower-right rim
+
+
+def hobz_bizzejt_v4():
+    """The owner's pick v3b with the kunserva smear red-orange instead of pink."""
+    return [["r" if c == "Q" else c for c in r] for r in hobz_bizzejt_v3b()]
+
+
+def ftira_ghawdxija_v4():
+    """Critic r3: the face as fish-scale potato slices like roof tiles: pale tops, a darker lower-right rim on
+    each slice, rows offset so the arcs overlap; ġbejna cut to three spots; olives, capers, tomato kept."""
+    g = ftira_ghawdxija_v3()
+    keep = set("oOlmdBCk")
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] not in keep and g[y][x] != ".":
+                g[y][x] = "S"
+    for y, xs in ((6, (4, 7, 10)), (8, (3, 6, 9, 12)), (10, (5, 8, 11))):
+        for x in xs:
+            for px, py in ((x - 1, y), (x, y), (x + 1, y - 1)):   # a short arc: bottom edge turning up the right
+                if g[py][px] == "S":
+                    g[py][px] = "s"
+    for x, y in ((5, 5), (8, 7), (7, 9)):
+        g[y][x] = "G"
+    return g
+
+
 def autooutline(rows):
     """Every opaque pixel touching transparency becomes outline: lit 'O' where it faces up/left,
     shaded '#' where it faces down/right; filling at the edge becomes the filling's shade."""
@@ -899,10 +1204,456 @@ def main():
     gb.save(os.path.join(MOD_ITEMS, "gbejna.png"))
     v3.append(("gbejna_v6", gb))
     preview(v3).save(os.path.join(OUT, "preview.png"))
-    for name, make in (("pastizz_xema_irkotta_a", xema_irkotta_a), ("pastizz_xema_irkotta_b", xema_irkotta_b),
-                       ("pastizz_xema_pizelli_a", xema_pizelli_a), ("pastizz_xema_pizelli_b", xema_pizelli_b)):
-        render(["".join(r) for r in make()], P3).save(os.path.join(OUT, name + ".png"))  # candidates only
+    for name, make in (("ftira_a", lambda: ftira(False)), ("ftira_b", lambda: ftira(True)),
+                       ("ftira_ghawdxija_a", lambda: ftira_ghawdxija("a")), ("ftira_ghawdxija_b", lambda: ftira_ghawdxija("b")),
+                       ("hobz_bizzejt_a", lambda: hobz_bizzejt("a")), ("hobz_bizzejt_b", lambda: hobz_bizzejt("b")),
+                       ("ftira_v2", ftira_v2), ("ftira_ghawdxija_v2", ftira_ghawdxija_v2), ("hobz_bizzejt_v2", hobz_bizzejt_v2),
+                       ("hobz_bizzejt_v3a", hobz_bizzejt_v3a), ("hobz_bizzejt_v3b", hobz_bizzejt_v3b),
+                       ("ftira_v3", ftira_v3), ("ftira_ghawdxija_v3", ftira_ghawdxija_v3),
+                       ("hobz_bizzejt_v4", hobz_bizzejt_v4), ("ftira_ghawdxija_v4", ftira_ghawdxija_v4)):
+        render(["".join(r) for r in make()], BR).save(os.path.join(OUT, name + ".png"))  # candidates only
+    # tax-xema': the owner accepted both "b" candidates (2026-11-17); they are installed in the mod
+    for name, make, item in (("pastizz_xema_irkotta_a", xema_irkotta_a, None),
+                             ("pastizz_xema_irkotta_b", xema_irkotta_b, "pastizz_xema_irkotta"),
+                             ("pastizz_xema_pizelli_a", xema_pizelli_a, None),
+                             ("pastizz_xema_pizelli_b", xema_pizelli_b, "pastizz_xema_pizelli")):
+        im = render(["".join(r) for r in make()], P3)
+        im.save(os.path.join(OUT, name + ".png"))
+        if item:
+            im.save(os.path.join(MOD_ITEMS, item + ".png"))
+    round5()
     print("wrote", len(images), "round-1 candidates, v2 and v3 pieces (v3 into the mod) and preview.png")
+
+
+# ---- Ftira, frozen (owner accepted ftira_v3, 2026-11-17): installed as ftira.png; byte-identical to the candidate ----
+FTIRA_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "...ooooooooOO...",
+    ".ooFFFloommmFOO.",
+    ".olFllo..OmmmdO.",
+    ".OlmFmmOOmmFddO.",
+    ".OmmmmmmddFdddO.",
+    ".OddmmFfddddDDO.",
+    "..OOdddddDDDOO..",
+    "....OOOOOOOO....",
+    "................",
+    "................",
+    "................",
+    "................",
+]
+
+
+# ---- Round 5 (2026-11-17): ħobż biż-żejt and ftira għawdxija redone from scratch ----
+# Ħobż biż-żejt (owner): the ħobża is sliced VERTICALLY into many slices, so each slice is a cross-section of the
+# round loaf: wide, low and rounded (not a sandwich-loaf dome), dark crust all round with a burnt flat base, and
+# the crumb VERY white, clearly white under a thin smear of kunserva and a few toppings.
+V5 = dict(B3)
+V5.update({"O": hx("#4c2f11"), "o": hx("#6f4418"), "c": hx("#3e260d"),     # outline lit / shade, burnt base
+           "w": hx("#f4efe2"), "W": hx("#e3dccb"),                         # crumb, crumb holes / shade
+           "r": hx("#c8603a"), "R": hx("#a84a2c"),                         # kunserva smear, its thicker bits
+           "t": hx("#c9a77f"), "T": hx("#a78560"),                         # tuna flakes
+           "B": hx("#2e2a22"), "b": hx("#5a4c3a"),                         # olive, its shine
+           "C": hx("#6b7a2a"), "M": hx("#4f8a3a"), "N": hx("#76ad52")})    # caper, mint leaf, mint lit
+
+
+def _slice_runs(runs, dx=0, dy=0):
+    m = [[False] * 16 for _ in range(16)]
+    for y, (x0, x1) in runs.items():
+        for x in range(x0 + dx, x1 + dx + 1):
+            m[y + dy][x] = True
+    return m
+
+
+def _slice_paint(m, toppings, holes=()):
+    """Thin crust like a real cut ħobża: dark outline all round, a 1-px golden crust band over the top, a burnt
+    band along the flat base; everything else is very white crumb (greyer next to the lower-right crust)."""
+    g = [["w" if m[y][x] else "." for x in range(16)] for y in range(16)]
+    edge = outline3(g)
+    ys = [y for y in range(16) if any(m[y])]
+    top, base = ys[0], ys[-1]
+    xs = [x for x in range(16) if any(m[y][x] for y in ys)]
+    midx = (xs[0] + xs[-1]) / 2
+    isedge = lambda x, y: 0 <= x < 16 and 0 <= y < 16 and edge[y][x] == "#" and m[y][x]
+    for y in ys:
+        for x in range(16):
+            if not m[y][x]:
+                continue
+            if edge[y][x] == "#":
+                g[y][x] = "c" if y >= base - 1 and (y + 1 >= 16 or not m[y + 1][x]) else \
+                          ("o" if (x - midx) * 0.6 + (y - top) < 3.5 else "O")
+            elif y >= base - 1:
+                g[y][x] = "D"                                       # burnt base
+            elif isedge(x, y - 1):
+                g[y][x] = "l" if x < midx else ("m" if x < midx + 4 else "d")   # golden top crust
+            elif isedge(x + 1, y) and x > midx or y == base - 2:
+                g[y][x] = "W"
+    for x, y in holes:
+        if g[y][x] == "w": g[y][x] = "W"
+    for (x, y), ch in toppings.items():
+        if g[y][x] in "wW": g[y][x] = ch
+    return g
+
+
+SLICE5 = {4: (5, 10), 5: (3, 12), 6: (2, 13), 7: (1, 14), 8: (1, 14), 9: (1, 14), 10: (1, 14), 11: (2, 13), 12: (3, 12)}
+
+
+def hobz_bizzejt_v5a():
+    """One upright slice, face on: the round loaf's cross-section, 14 x 9 (rows 4-12)."""
+    tops = {(5, 7): "t", (6, 7): "T", (4, 8): "r", (5, 8): "r", (7, 8): "r", (8, 8): "R", (9, 7): "r", (10, 7): "r",
+            (6, 8): "t", (11, 8): "B", (11, 7): "b", (4, 9): "C", (10, 9): "t", (9, 9): "T", (6, 10): "M", (7, 10): "N",
+            (12, 9): "C", (8, 9): "r"}
+    return _slice_paint(_slice_runs(SLICE5), tops, [(9, 6), (3, 10), (12, 6)])
+
+
+def hobz_bizzejt_v5b():
+    """Two slices: one upright behind (upper right), the front one leaning back against it, top tipped right."""
+    back = _slice_paint(_slice_runs({2: (7, 12), 3: (5, 13), 4: (4, 14), 5: (4, 14), 6: (4, 14), 7: (4, 14),
+                                     8: (5, 14), 9: (5, 13), 10: (7, 12)}),
+                        {(9, 5): "r", (10, 5): "r", (11, 6): "r", (12, 5): "C", (10, 6): "t", (13, 6): "t"}, [(8, 6)])
+    front = _slice_paint(_slice_runs({7: (5, 10), 8: (3, 11), 9: (2, 12), 10: (2, 12), 11: (1, 11), 12: (1, 11),
+                                      13: (1, 10), 14: (2, 8)}),
+                         {(4, 10): "t", (5, 10): "T", (3, 11): "r", (4, 11): "r", (6, 11): "r", (7, 11): "R",
+                          (8, 10): "r", (9, 10): "r", (8, 11): "B", (8, 12): "b", (3, 12): "C", (6, 12): "M", (7, 12): "N",
+                          (10, 11): "t", (5, 11): "t"}, [(7, 9), (2, 12)])
+    g = [r[:] for r in back]
+    for y in range(16):
+        for x in range(16):
+            if front[y][x] != ".":
+                g[y][x] = front[y][x]
+    return g
+
+
+# Ftira għawdxija (owner): "not made from a ftira at all. its a differently baked thing." The owner's photos
+# (art/references/ftira_ghawdxija_owner_*, reference only): a round open bake, a THICK golden pastry rim folded
+# over the edge in pleats like a rustic galette, the middle covered in overlapping pale potato slices, with
+# tomato, red onion, olives and herbs between them.
+FG = {"O": hx("#6a3f16"), "o": hx("#8a5622"),                           # outline lit / shade
+      "h": hx("#f2cd85"), "l": hx("#e0a956"), "m": hx("#c98a3c"), "d": hx("#a2652a"), "D": hx("#7e4c1e"),  # pastry
+      "x": hx("#4a3018"),                                                # shadow under the folded rim
+      "S": hx("#f3e6b4"), "s": hx("#c9a24e"), "u": hx("#a98a4a"),       # potato slice, its edge, a roasted spot
+      "r": hx("#c63d26"), "R": hx("#8f2a1c"),                            # tomato
+      "v": hx("#8a3d68"), "B": hx("#2b2620"), "g": hx("#5d7f34")}        # red onion, olive, herbs
+
+
+def _galette(cx, cy, rx, ry, depth, rim_in, folds, filling_cs, disc, filler, phase=0.0, wall="d"):
+    g = [["."] * 16 for _ in range(16)]
+    zone = [[None] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            u, v = (x + .5 - cx) / rx, (y + .5 - cy) / ry
+            th = math.atan2(v, u)
+            f = (th / (2 * math.pi) * folds + phase) % 1.0                 # position within a pleat
+            rout = 1.0 - (0.09 if f < 0.16 else 0.0)                      # each pleat's edge tucks in a little
+            r = math.hypot(u, v)
+            if r <= rout:
+                zone[y][x] = ("fill", f) if r < rim_in else ("rim", f)
+            elif depth and any(math.hypot(u, (y + .5 - k - cy) / ry) <= rout for k in range(1, depth + 1)) and v > 0:
+                zone[y][x] = ("side", f)
+    for y in range(16):
+        for x in range(16):
+            z = zone[y][x]
+            if not z: continue
+            kind, f = z
+            lit = -0.8 * (x + .5 - cx) / rx - 0.85 * (y + .5 - cy) / ry      # light from the top left
+            if kind == "rim":
+                k = lit + (0.35 if f > 0.55 else 0.0) - (0.5 if f < 0.16 else 0.0)   # pleat: lit roll, dark crease
+                g[y][x] = "h" if k > 0.6 else "l" if k > 0.15 else "m" if k > -0.3 else "d" if k > -0.75 else "D"
+            elif kind == "side":
+                g[y][x] = "d" if x + .5 < cx else "D"
+            else:
+                g[y][x] = filler(x, y)
+    for (sx, sy) in filling_cs:                                            # potato slices, back to front
+        for y in range(16):
+            for x in range(16):
+                if not zone[y][x] or zone[y][x][0] != "fill": continue
+                du, dv = (x + .5 - sx) / disc[0], (y + .5 - sy) / disc[1]
+                d = math.hypot(du, dv)
+                if d <= 1:
+                    g[y][x] = "s" if (d > 0.55 and du + dv > 0.5) else "S"
+    # the rim's inner wall: in shade on the top left (it faces away from the light), lit on the bottom right
+    for y in range(16):
+        for x in range(16):
+            if not (zone[y][x] and zone[y][x][0] == "rim"): continue
+            nb = lambda dx, dy: 0 <= x + dx < 16 and 0 <= y + dy < 16 and zone[y + dy][x + dx] and zone[y + dy][x + dx][0] == "fill"
+            if nb(1, 0) or nb(0, 1):
+                g[y][x] = wall
+            elif nb(-1, 0) or nb(0, -1):
+                g[y][x] = "l"
+    return g, zone
+
+
+def _ftg_filler(x, y):
+    return "r"
+
+
+def _fill_map(g, z, rows):
+    """Hand-placed filling: potato slices (S lit, s their lower-right edge, u a roasted spot) with tomato,
+    red onion, olive and herbs between them; '.' keeps what is there; only filling pixels change."""
+    for y, row in rows.items():
+        for x, c in enumerate(row):
+            if c != "." and z[y][x] and z[y][x][0] == "fill":
+                g[y][x] = c
+
+
+def _ftg_finish(g):
+    e = outline3(g)
+    for y in range(16):
+        for x in range(16):
+            if e[y][x] == "#" and g[y][x] != ".":
+                g[y][x] = "O" if (y >= 8 or x + y > 17) else "o"
+    return g
+
+
+def _potatoes(g, z, discs, disc, gaps, extra=None):
+    """Filling: a bed of tomato, red onion, olive and herbs ('gaps', picked per pixel), then potato slices laid
+    over it in the order given (later ones overlap earlier ones). disc: rows of the slice shape, '.' = not part
+    of it, 'S' pale top, 's' its darker lower-right edge."""
+    for y in range(16):
+        for x in range(16):
+            if z[y][x] and z[y][x][0] == "fill":
+                g[y][x] = gaps[(x * 5 + y * 3) % len(gaps)]
+    for x0, y0 in discs:
+        for dy, row in enumerate(disc):
+            for dx, c in enumerate(row):
+                x, y = x0 + dx, y0 + dy
+                if c != "." and 0 <= x < 16 and 0 <= y < 16 and z[y][x] and z[y][x][0] == "fill":
+                    g[y][x] = c
+    for (x, y), c in (extra or {}).items():
+        if z[y][x] and z[y][x][0] == "fill":
+            g[y][x] = c
+
+
+def ftira_ghawdxija_v5a():
+    """From above: round, a thick pleated golden rim (3 px), round pale potato slices overlapping in rows across
+    the middle, tomato, red onion, olive and herbs showing between them. 14 px across, rows 1-14."""
+    g, z = _galette(8.0, 8.0, 7.0, 7.0, 0, 0.62, 9, [], (1, 1), _ftg_filler, 0.3, wall="m")
+    _potatoes(g, z, [(4, 4), (8, 4), (2, 7), (6, 7), (10, 7), (4, 10), (8, 10)],
+              (".SS.", "SSSs", ".ss."), "rRrvrRgr", {(7, 8): "u", (5, 5): "u", (10, 6): "B", (8, 9): "g", (10, 10): "R", (11, 8): "R"})
+    return _ftg_finish(g)
+
+
+def ftira_ghawdxija_v5b():
+    """Three-quarter view: the same bake as an ellipse with a low side, the near rim thick and rolled over,
+    the potato slices squashed into ovals. 14 x 11, rows 3-13."""
+    g, z = _galette(8.0, 7.3, 7.0, 4.6, 2, 0.6, 9, [], (1, 1), _ftg_filler, 0.3)
+    _potatoes(g, z, [(4, 5), (8, 5), (2, 7), (6, 7), (10, 7), (4, 9), (8, 9)],
+              ("SSSs", ".ss."), "rRrvrRgr", {(7, 7): "u", (11, 6): "B", (5, 9): "g", (9, 9): "v"})
+    return _ftg_finish(g)
+
+
+FG["H"] = hx("#fbf3d0")   # potato slice highlight
+
+
+def ftira_ghawdxija_v6():
+    """Critic r5 on v5a: the reverse of 'pizza': a red tomato bed (darker in the lower-right gaps) with five big
+    pale potato slices, 3 x 2 each, red showing between them; only four accents. Rim pixels as in v5a."""
+    g, z = _galette(8.0, 8.0, 7.0, 7.0, 0, 0.62, 9, [], (1, 1), _ftg_filler, 0.3, wall="m")
+    fill = lambda x, y: z[y][x] and z[y][x][0] == "fill"
+    for y in range(16):
+        for x in range(16):
+            if fill(x, y):
+                g[y][x] = "R" if x + y >= 17 else "r"
+    for x0, y0 in ((4, 4), (8, 4), (5, 7), (9, 7), (6, 10)):
+        for dx, c in enumerate("HSS"):
+            if fill(x0 + dx, y0): g[y0][x0 + dx] = c
+        for dx in range(3):
+            if fill(x0 + dx, y0 + 1): g[y0 + 1][x0 + dx] = "s"
+    for (x, y), c in {(7, 6): "B", (11, 9): "B", (4, 9): "v", (8, 9): "g"}.items():
+        if fill(x, y): g[y][x] = c
+    return _ftg_finish(g)
+
+
+# critic r6: an exact filling layout (no straight red lines); critic key -> palette: H=H, P=S, S=s, R=r, D=R, O=B, N=v, G=g
+FTG_V7 = {4: (5, "RHPSDR"), 5: (4, "RPPPSHPR"), 6: (4, "HPSNRPPS"), 7: (4, "PPPSGPSD"), 8: (4, "SSRHPPOR"),
+          9: (4, "RODPPPSH"), 10: (4, "RHPSSRPP"), 11: (5, "DSRGRS")}
+
+
+def ftira_ghawdxija_v7():
+    """v6's rim, size and outline; the filling replaced by FTG_V7 (rim pixels kept where a cell is rim)."""
+    g, z = _galette(8.0, 8.0, 7.0, 7.0, 0, 0.62, 9, [], (1, 1), _ftg_filler, 0.3, wall="m")
+    key = {"H": "H", "P": "S", "S": "s", "R": "r", "D": "R", "O": "B", "N": "v", "G": "g"}
+    for y, (x0, row) in FTG_V7.items():
+        for i, c in enumerate(row):
+            x = x0 + i
+            if z[y][x] and z[y][x][0] == "fill":
+                g[y][x] = key[c]
+    return _ftg_finish(g)
+
+
+# ---- Round 6 (owner 2026-11-17): ħobż biż-żejt "far too much white and its really bone white". The owner's photos
+# art/references/hobz_bizzejt_owner_1/2.jpg (reference only): the slice face is covered almost edge to edge in
+# kunserva, heaped with tuna, olives, capers, onion, a basil/mint leaf, sometimes crumbled ġbejna; only a golden
+# toasted crust rim shows. Same rounded slice outline as v5a.
+V6 = dict(V5)
+V6.update({"r": hx("#b8432c"), "q": hx("#c8603a"), "R": hx("#8f2a1c"),          # kunserva base, lit, shadow
+           "B": hx("#2b2620"), "C": hx("#6b7a2a"), "G": hx("#ece4cf"), "e": hx("#e6d9bc"),
+           "n": hx("#c9a0b8")})                                                   # onion (pale pink-white)
+
+
+def _toast(m, tops, crumb_line=False):
+    """Slice outline from the mask: dark outline (burnt base), a 1-px golden toasted crust band all round
+    (lit top left, darker lower right), the face covered in kunserva, lit at the top left, shaded lower right."""
+    g = [["r" if m[y][x] else "." for x in range(16)] for y in range(16)]
+    edge = outline3(g)
+    inner = [["." if edge[y][x] == "#" else g[y][x] for x in range(16)] for y in range(16)]
+    ring = outline3(inner)
+    ys = [y for y in range(16) if any(m[y])]
+    top, base = ys[0], ys[-1]
+    xs = [x for x in range(16) if any(m[y][x] for y in ys)]
+    midx = (xs[0] + xs[-1]) / 2
+    for y in ys:
+        for x in range(16):
+            if not m[y][x]:
+                continue
+            k = (x - midx) * 0.45 + (y - top) * 0.9
+            if edge[y][x] == "#":
+                g[y][x] = "c" if y == base else ("o" if k < 3.5 else "O")
+            elif ring[y][x] == "#":
+                g[y][x] = "D" if y >= base - 1 else ("l" if k < 1.8 else "m" if k < 4.2 else "d")
+            else:
+                g[y][x] = "q" if k < 1.2 else ("R" if k > 5.6 else "r")
+                if crumb_line and ring[y - 1][x] == "#" and y - 1 > top:
+                    g[y][x] = "e"
+    for (x, y), ch in tops.items():
+        if g[y][x] in "qrRe": g[y][x] = ch
+    return g
+
+
+def hobz_bizzejt_v6a():
+    """One slice (v5a's outline), red face heaped with toppings."""
+    tops = {(5, 6): "t", (6, 6): "T", (6, 7): "t", (9, 6): "B", (10, 6): "b", (8, 7): "C", (4, 8): "C",
+            (11, 7): "t", (11, 8): "T", (12, 8): "t", (7, 8): "G", (8, 8): "G", (5, 9): "M", (6, 9): "N",
+            (9, 9): "t", (10, 9): "T", (3, 7): "n", (12, 6): "C", (10, 8): "R", (7, 9): "R"}
+    return _toast(_slice_runs(SLICE5), tops)
+
+
+def hobz_bizzejt_v6b():
+    """Two smaller slices side by side and staggered, as on a plate (owner photo 1)."""
+    left = _toast(_slice_runs({5: (2, 5), 6: (1, 6), 7: (0, 7), 8: (0, 7), 9: (0, 7), 10: (0, 7), 11: (1, 6), 12: (2, 5)}),
+                  {(2, 7): "t", (3, 7): "T", (5, 7): "B", (5, 8): "b", (2, 9): "C", (3, 8): "G", (4, 9): "t", (5, 9): "T",
+                   (3, 10): "M", (4, 10): "N"})
+    right = _toast(_slice_runs({3: (10, 13), 4: (9, 14), 5: (8, 15), 6: (8, 15), 7: (8, 15), 8: (8, 15), 9: (9, 14), 10: (10, 13)}),
+                   {(10, 5): "t", (11, 5): "T", (10, 6): "t", (13, 5): "C", (13, 6): "B", (13, 7): "b", (10, 7): "G",
+                    (11, 7): "M", (12, 7): "N", (12, 6): "R"})
+    g = [r[:] for r in left]
+    for y in range(16):
+        for x in range(16):
+            if right[y][x] != "." and g[y][x] == ".":
+                g[y][x] = right[y][x]
+    return g
+
+
+# Ftira għawdxija v8 (owner: prefers v5b, "maybe clean that one up a bit on the crust area"): v5b's filling exactly,
+# the rim redrawn as one clean thick folded band: smooth outline, highlight along the top-left, shade lower right,
+# the near rim a thick roll with regular pleat creases.
+FTG_V8_RIM = [
+    "................",
+    "................",
+    "....oooooooo....",
+    "..oohhllllllmoo.",
+    ".ohlm******lmdO.",
+    ".ohm********ldO.",
+    ".olm********ldO.",
+    ".olm********mdO.",
+    ".Olml******lmdO.",
+    ".Olhhllhllmlm dO.".replace(" ", ""),
+    ".OmlmdlmdmmdmDO.",
+    "..OdmDdmDddDDO..",
+    "....OOOOOOOO....",
+    "................",
+    "................",
+    "................",
+]
+
+
+def ftira_ghawdxija_v8():
+    src = up1(ftira_ghawdxija_v5b)()
+    g = [list(r) for r in FTG_V8_RIM]
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] == "*":
+                g[y][x] = src[y][x]
+    return g
+
+
+def ftira_ghawdxija_v9():
+    """Critic r7 on v8: back to v5b's round, slightly lumpy outline; v8's filling and rim colours kept.
+    Any pastry pixel left touching transparency becomes outline, so the outline has no gaps."""
+    g = ftira_ghawdxija_v8()
+    for (x, y), c in {(14, 3): ".", (1, 4): ".", (14, 4): ".", (2, 4): "o", (13, 4): "O",
+                      (1, 10): ".", (14, 10): ".", (2, 10): "O", (13, 10): "O",
+                      (4, 12): ".", (11, 12): ".", (4, 11): "O", (11, 11): "O",
+                      (1, 7): ".", (2, 7): "o"}.items():
+        g[y][x] = c
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] not in ".oO" and any(not (0 <= x + dx < 16 and 0 <= y + dy < 16) or g[y + dy][x + dx] == "."
+                                            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                print(f"v9: outline gap filled at {x},{y}")
+                g[y][x] = "O" if (y >= 8 or x + y > 17) else "o"
+    return g
+
+
+def up1(make):
+    """Up one row, so the mass centre sits near vanilla's 7.5-8.0."""
+    return lambda: make()[1:] + [["."] * 16]
+
+
+V5_CANDIDATES = (("hobz_bizzejt_v5a", up1(hobz_bizzejt_v5a), V5), ("hobz_bizzejt_v5b", up1(hobz_bizzejt_v5b), V5),
+                 ("ftira_ghawdxija_v5a", ftira_ghawdxija_v5a, FG), ("ftira_ghawdxija_v5b", up1(ftira_ghawdxija_v5b), FG),
+                 ("ftira_ghawdxija_v6", ftira_ghawdxija_v6, FG), ("ftira_ghawdxija_v7", ftira_ghawdxija_v7, FG),
+                 ("hobz_bizzejt_v6a", up1(hobz_bizzejt_v6a), V6), ("hobz_bizzejt_v6b", hobz_bizzejt_v6b, V6),
+                 ("ftira_ghawdxija_v8", ftira_ghawdxija_v8, FG), ("ftira_ghawdxija_v9", ftira_ghawdxija_v9, FG))
+FINAL = ("hobz_bizzejt_v6a", "ftira_ghawdxija_v5b", "ftira_ghawdxija_v9")   # critic r7: bread_final.png
+COMPARE = ("hobz_bizzejt_v6a", "hobz_bizzejt_v6b", "ftira_ghawdxija_v5b", "ftira_ghawdxija_v8")  # owner r6
+
+
+def round5():
+    """Install the frozen ftira; write the round-5 candidates (NOT installed) and bread_compare.png."""
+    fi = render(FTIRA_ACCEPTED, BR)
+    fi.save(os.path.join(MOD_ITEMS, "ftira.png"))
+    ims = [("Ħobż", Image.open(os.path.join(MOD_ITEMS, "hobz_malti.png")).convert("RGBA")), ("Ftira", fi)]
+    picked = {}
+    for name, make, pal in V5_CANDIDATES:
+        rows = ["".join(r) for r in make()]
+        check(name, rows)
+        im = render(rows, pal)
+        im.save(os.path.join(OUT, name + ".png"))
+        lbl = ("Ħobż biż-żejt " if name.startswith("hobz") else "Ftira għawdxija ") + name.split("_")[-1]
+        if name in COMPARE or name in FINAL:
+            picked[name] = (lbl, im)
+    head = ims[:]
+    ims += [picked[n] for n in COMPARE]
+    final = head + [picked[n] for n in FINAL]
+    for v in ("bread", "pumpkin_pie", "cookie"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(VANILLA, v + ".png")).convert("RGBA")))
+    compare(ims).save(os.path.join(OUT, "bread_compare.png"))
+    van = [i for i in ims if i[0].startswith("vanilla")]
+    compare(final + van).save(os.path.join(OUT, "bread_final.png"))
+
+
+def compare(ims):
+    slot, bg, ink = (139, 139, 139, 255), (198, 198, 198, 255), (30, 30, 30, 255)
+    S, cw = 8, 16 * 8 + 20
+    W = 16 + len(ims) * cw
+    H = 16 + 22 + 18 + 40 + 16 * S + 40
+    sheet = Image.new("RGBA", (W, H), bg)
+    d = ImageDraw.Draw(sheet)
+    f = label_font(12)
+    for i, (n, im) in enumerate(ims):
+        x0 = 16 + i * cw
+        d.rectangle([x0, 16, x0 + 17, 33], fill=slot)                       # 1x
+        sheet.alpha_composite(im, (x0 + 1, 17))
+        d.rectangle([x0 + 30, 16, x0 + 30 + 35, 51], fill=slot)            # 2x
+        sheet.alpha_composite(im.resize((32, 32), Image.NEAREST), (x0 + 32, 18))
+        y8 = 64
+        d.rectangle([x0, y8, x0 + 16 * S - 1, y8 + 16 * S - 1], fill=slot)  # 8x
+        sheet.alpha_composite(im.resize((16 * S, 16 * S), Image.NEAREST), (x0, y8))
+        d.text((x0, y8 + 16 * S + 4), n, fill=ink, font=f)
+    return sheet
 
 
 if __name__ == "__main__":

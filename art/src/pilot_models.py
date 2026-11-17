@@ -143,7 +143,7 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "gbejna"):
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "gbejna"):
         write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
@@ -157,6 +157,8 @@ def main():
         "item.mimcontent.pastizz_xema_irkotta": "Pastizz tax-Xema' tal-Irkotta",
         "item.mimcontent.pastizz_xema_pizelli": "Pastizz tax-Xema' tal-Piżelli",
         "item.mimcontent.ftira": "Ftira",
+        "item.mimcontent.hobz_bizzejt": "Ħobż biż-Żejt",
+        "item.mimcontent.ftira_ghawdxija": "Ftira Għawdxija",
         "item.mimcontent.gbejna": "Ġbejna",
     })
 
