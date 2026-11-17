@@ -21,7 +21,7 @@ public class ArtShots implements FabricClientGameTest {
             int[] p = context.computeOnClient(mc -> new int[] {mc.player.getBlockX(), mc.player.getBlockY(), mc.player.getBlockZ()});
             int x = p[0], y = p[1], z = p[2] + 5;
             // a limestone floor to stand the row on, so the colours read against stone, not grass
-            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:smooth_sandstone", x - 8, y - 1, z - 6, x + 8, y - 1, z + 10));
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:smooth_sandstone", x - 8, y - 1, z - 6, x + 8, y - 1, z + 13));
             // the row, left to right as seen from the camera (camera looks south, so +x is on the left)
             String[] row = {
                 "minecraft:furnace[facing=north,lit=true]",
@@ -56,6 +56,13 @@ public class ArtShots implements FabricClientGameTest {
                 server.runCommand(String.format("setblock %d %d %d minecraft:spruce_planks", x + 3 - 2 * i, y, z + 8));
                 server.runCommand(String.format("setblock %d %d %d %s", x + 3 - 2 * i, y + 1, z + 8, dishes2[i]));
             }
+            // a fourth table: timpana whole, part-eaten, nearly gone, beside a whole imqarrun il-forn
+            String[] dishes3 = {"mimcontent:timpana[eaten=0]", "mimcontent:timpana[eaten=2]",
+                "mimcontent:timpana[eaten=4]", "mimcontent:imqarrun_il_forn[eaten=0]"};
+            for (int i = 0; i < dishes3.length; i++) {
+                server.runCommand(String.format("setblock %d %d %d minecraft:spruce_planks", x + 3 - 2 * i, y, z + 11));
+                server.runCommand(String.format("setblock %d %d %d %s", x + 3 - 2 * i, y + 1, z + 11, dishes3[i]));
+            }
             context.runOnClient(mc -> { if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
             world.getConnection().waitForChunksRender();
             context.waitTicks(40);
@@ -70,6 +77,9 @@ public class ArtShots implements FabricClientGameTest {
             // the camera player falls between shots, so it stands on an invisible barrier for the view from above
             server.runCommand(String.format("setblock %d %d %d minecraft:barrier", x, y + 1, z + 5));
             shot(context, server, x + 0.5, y + 2.0, z + 5.5, 0, 50, "14b-imqarrun-above");
+            shot(context, server, x, y + 2.0, z + 8.4, 0, 30, "15-timpana-table");
+            server.runCommand(String.format("setblock %d %d %d minecraft:barrier", x, y + 1, z + 8));
+            shot(context, server, x + 0.5, y + 2.0, z + 8.5, 0, 50, "15b-timpana-above");
             server.runCommand("time set 18000");
             context.waitTicks(20);
             shot(context, server, x + 2, y + 1.6, z - 2.6, 0, 22, "05-kenur-close-night");
@@ -129,8 +139,8 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("11-hotbar-bowls");
-            String[] oven = {"minecraft:cake", "mimcontent:ross_il_forn", "mimcontent:imqarrun_il_forn", "minecraft:pumpkin_pie", "mimcontent:stuffat_fenek",
-                "mimcontent:ftira_ghawdxija", "mimcontent:hobz_malti", "minecraft:bread", "minecraft:baked_potato"};
+            String[] oven = {"minecraft:cake", "mimcontent:ross_il_forn", "mimcontent:imqarrun_il_forn", "mimcontent:timpana", "minecraft:pumpkin_pie", "mimcontent:stuffat_fenek",
+                "mimcontent:ftira_ghawdxija", "mimcontent:hobz_malti", "minecraft:bread"};
             for (int i = 0; i < oven.length; i++) {
                 server.runCommand("item replace entity @a hotbar." + i + " with " + oven[i]);
             }

@@ -859,6 +859,178 @@ def imqarrun_compare():
     out.save(os.path.join(F.OUT, "imqarrun_compare.png"))
 
 
+# ---- Timpana (owner: "the exact same as imqarrun, but baked in pie crust. use a clear glass dish ... the top and sides
+# from the outside (its glass so see through) should also have the pastry"); photo art/references/oven_owner/timpana/
+# (reference only): a thick golden blistered shortcrust lid, a pale pastry wall down the sides and base, the imqarrun
+# penne and mince inside. ----
+PASTRY = {"pale": "#ecd29a", "lit": "#f6e4b8", "gold": "#d8a85e", "brown": "#b87a3a", "mark": "#9a6a34",
+          "crimp": "#c8904a"}
+GLASS = {"rim": "#eef8f8", "streak": "#f4fcfc", "tint": "#d6dcc0", "tint2": "#c8d0b4", "edge": "#a8bcb8"}
+
+
+def pastry_lid():
+    """The lid seen from above (the portions' top faces use x 2-13, z 2-13): pale shortcrust with golden-brown baked
+    patches and blisters, a few fork marks, a crimped edge round the dish."""
+    rs = np.random.RandomState(61)
+    a = noise_tex(PASTRY["pale"], [(PASTRY["lit"], 0.18), (PASTRY["gold"], 0.2), (PASTRY["brown"], 0.07)], 62)
+    for _ in range(6):                                          # baked patches
+        x, y = rs.randint(2, 13), rs.randint(2, 13)
+        for ddx, ddy in ((0, 0), (1, 0), (0, 1), (1, 1), (-1, 0)):
+            a[(y + ddy) % 16, (x + ddx) % 16, :3] = hx(PASTRY["gold"] if rs.rand() < 0.7 else PASTRY["brown"])
+    for x, y in ((5, 5), (5, 6), (10, 9), (10, 10), (7, 11), (8, 11), (11, 4), (11, 5)):   # fork marks / vents
+        a[y, x, :3] = hx(PASTRY["mark"])
+    for i in range(2, 14):                                      # crimped edge
+        col = hx(PASTRY["crimp"] if i % 2 else PASTRY["lit"])
+        a[2, i, :3] = a[13, i, :3] = a[i, 2, :3] = a[i, 13, :3] = col
+    return a
+
+
+def glass_wall():
+    """The glass wall (rows 11-15 used; row 11 the rim): pale pastry seen through a faintly cyan glass, a glassy rim
+    and diagonal highlight streaks."""
+    a = noise_tex(GLASS["tint"], [(GLASS["tint2"], 0.3)], 63)
+    a[11, :, :3] = hx(GLASS["rim"])
+    a[15, :, :3] = hx(GLASS["edge"])
+    for x in range(16):
+        for y in range(12, 15):
+            if (x + y) % 7 == 0:
+                a[y, x, :3] = hx(GLASS["streak"])
+    return a
+
+
+def glass_bottom():
+    return noise_tex(GLASS["tint"], [(GLASS["tint2"], 0.25), (GLASS["streak"], 0.1)], 64)
+
+
+def timpana_inside():
+    """The imqarrun cut face with a ~2-px pastry lid at the top of the face (rows 11-12), a 1-px pastry base (row 15)
+    and 1-px pastry walls at the dish's sides (columns 2 and 13)."""
+    a = penne_inside_v4()
+    for x in range(16):
+        a[11, x, :3] = hx(PASTRY["gold"] if x % 3 else PASTRY["brown"])
+        a[12, x, :3] = hx(PASTRY["pale"])
+        a[15, x, :3] = hx(PASTRY["pale"])
+    for y in range(11, 16):
+        for x in (2, 13):
+            a[y, x, :3] = hx(PASTRY["pale"] if y > 11 else PASTRY["gold"])
+    return a
+
+
+TIMP_PAL = dict(ICON3_PAL, **{
+    "O": hx("#46585a"), "o": hx("#6a7e80"), "H": hx("#f2fafa"), "m": hx("#d4e4e2"), "n": hx("#8aa2a0"),
+    "f": hx("#d0d8c0"), "w": hx("#d8d0a0"), "W": hx("#c2b888"), "v": hx("#aca478"), "k": hx("#8e8c70"),
+    "L": hx(PASTRY["lit"]), "r": hx(PASTRY["pale"]), "R": hx(PASTRY["gold"]), "x": hx(PASTRY["mark"]),
+    "g": hx("#fff2cc"), "M": hx(PASTRY["brown"])})
+TIMP_LID = ["RLRLRLRLRL",
+            "LrrgrrRrrR",
+            "RrgrxrrRrL",
+            "LrrrxrRRrR",
+            "RrRrrrgRMM",
+            "MRMRMRMRMR"]
+TIMP_ICON = with_food(IMQ_ICON4, TIMP_LID, 3)
+
+
+# v2 (owner: "from the sides the pastry reads as green through the glass. on top, the crust doesnt really look like
+# crust just streaks, the icons dotting is too uniform")
+def pastry_lid_v2():
+    """A thick shortcrust lid: pale cream-gold with irregular rounded golden-brown blotches (darker in the middle),
+    small blisters (light, darker beneath), a few cracks, two vent slits, a thumbed/crimped rim."""
+    rs = np.random.RandomState(71)
+    a = noise_tex("#ecd29a", [("#f2dcaa", 0.25), ("#e2c286", 0.15)], 72)
+    for _ in range(7):                                          # baked blotches
+        cx, cy, r = 3 + rs.rand() * 10, 3 + rs.rand() * 10, 1.4 + rs.rand() * 1.8
+        for y in range(16):
+            for x in range(16):
+                d = np.hypot(x + .5 - cx, (y + .5 - cy) * (0.8 + rs.rand() * 0.4))
+                if d < r * 0.45:
+                    a[y, x, :3] = hx("#b07034")
+                elif d < r * 0.8:
+                    a[y, x, :3] = hx("#c8904a")
+                elif d < r and rs.rand() < 0.6:
+                    a[y, x, :3] = hx("#dcae66")
+    for _ in range(7):                                          # blisters
+        x, y = rs.randint(3, 13), rs.randint(3, 12)
+        a[y, x, :3] = hx("#fbefcc")
+        a[y + 1, x, :3] = hx("#c8944e")
+    for pts in (((5, 9), (6, 10), (6, 11)), ((10, 4), (11, 5))):  # cracks
+        for x, y in pts:
+            a[y, x, :3] = hx("#9a6a34")
+    for x, y in ((7, 6), (8, 6), (9, 9), (10, 9)):             # vent slits
+        a[y, x, :3] = hx("#7a4a22")
+    for i in range(2, 14):                                      # thumbed rim: two light, one dark
+        col = hx("#c8904a" if i % 3 == 0 else "#f2dcaa")
+        a[2, i, :3] = a[13, i, :3] = a[i, 2, :3] = a[i, 13, :3] = col
+    return a
+
+
+def glass_wall_v2():
+    """Warm pastry seen through clear glass: cream-gold, golden-brown where it baked against the glass (lower rows);
+    the glass only as a pale rim line, a cool base edge and two near-white vertical streaks."""
+    a = noise_tex("#e6cc94", [("#dcb878", 0.3), ("#f0daa8", 0.15)], 73)
+    rs = np.random.RandomState(74)
+    for y in (13, 14):
+        for x in range(16):
+            if rs.rand() < 0.45:
+                a[y, x, :3] = hx("#c08848")
+    a[11, :, :3] = hx("#f4f8f6")
+    a[15, :, :3] = hx("#d8e0dc")
+    for x in (3, 4, 11):
+        for y in (12, 13, 14):
+            if not (x == 4 and y == 14):
+                a[y, x, :3] = hx("#fbfcf6")
+    return a
+
+
+TIMP_PAL2 = dict(TIMP_PAL, **{"w": hx("#e2c890"), "W": hx("#cbb07a"), "v": hx("#b49a68"), "k": hx("#988458"),
+                              "f": hx("#e4e8de"), "r": hx("#ecd29a"), "R": hx("#c8904a"), "M": hx("#a86c32"),
+                              "L": hx("#f6e4b8"), "g": hx("#fdf2d0")})
+TIMP_LID2 = ["LRLLRLLRLR",
+             "LrRRrrrgrL",
+             "RRMRrgrrrR",
+             "LrRrrRrrRL",
+             "RrrrRMRrrR",
+             "MRMMRMRMMR"]
+TIMP_ICON2 = with_food(IMQ_ICON4, TIMP_LID2, 3)
+
+
+def timpana():
+    save_png(pastry_lid_v2(), "block/timpana_top.png")
+    save_png(glass_wall_v2(), "block/timpana_side.png")
+    save_png(timpana_inside(), "block/timpana_inside.png")
+    save_png(glass_bottom(), "block/timpana_bottom.png")
+    F.render(relight(TIMP_ICON2), TIMP_PAL2).save(os.path.join(TEX, "item", "timpana.png"))
+    models("timpana")
+
+
+def timpana_compare():
+    ims = [("Timpana", Image.open(os.path.join(TEX, "item", "timpana.png")).convert("RGBA"))]
+    for n, lbl in (("ross_il_forn", "Ross il-forn"), ("imqarrun_il_forn", "Imqarrun il-forn")):
+        ims.append((lbl, Image.open(os.path.join(TEX, "item", n + ".png")).convert("RGBA")))
+    for v in ("cake", "pumpkin_pie"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
+    sheet = F.compare(ims)
+    shots = os.path.join(F.OUT, "ingame_timpana_v2")
+    crops = []
+    if os.path.isdir(shots):
+        for key in ("15-timpana-table", "15b-timpana-above"):
+            fs = [f for f in sorted(os.listdir(shots)) if key + ".png" in f]
+            if fs:
+                im = Image.open(os.path.join(shots, fs[0])).convert("RGBA")
+                w, h = im.size
+                c = im.crop((0, int(h * 0.25), w, int(h * 0.62)))
+                crops.append(c)
+                cc = im.crop((0, int(h * 0.30), int(w * 0.5), int(h * 0.55)))   # close: the whole dish's top and side
+                crops.append(cc.resize((cc.width * 2, cc.height * 2), Image.NEAREST))
+    out = Image.new("RGBA", (max([sheet.width] + [c.width for c in crops]),
+                             sheet.height + sum(c.height + 8 for c in crops)), (198, 198, 198, 255))
+    out.alpha_composite(sheet, (0, 0))
+    y = sheet.height + 8
+    for c in crops:
+        out.alpha_composite(c, (0, y))
+        y += c.height + 8
+    out.save(os.path.join(F.OUT, "timpana_compare.png"))
+
+
 def save_png(a, rel):
     p = os.path.join(TEX, rel)
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -900,6 +1072,8 @@ def main():
     imqarrun_compare()
     ross_icon_compare()
     imqarrun_icon_compare()
+    timpana()
+    timpana_compare()
 
 
 if __name__ == "__main__":
