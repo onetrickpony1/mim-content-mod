@@ -2,6 +2,7 @@ package com.maltaminecraft.mimcontent;
 
 import com.maltaminecraft.mimcontent.block.BormaBlock;
 import com.maltaminecraft.mimcontent.block.KenurBlock;
+import com.maltaminecraft.mimcontent.block.SliceDishBlock;
 import java.util.function.Function;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
@@ -28,6 +29,9 @@ public class MimContent implements ModInitializer {
         .mapColor(MapColor.TERRACOTTA_ORANGE).strength(0.6F).sound(SoundType.DECORATED_POT).noOcclusion());
     public static final Block BORMA_STUFFAT = block("borma_stuffat", BormaBlock::new, BlockBehaviour.Properties.of()
         .mapColor(MapColor.TERRACOTTA_ORANGE).strength(0.6F).sound(SoundType.DECORATED_POT).noOcclusion());
+
+    public static final Block ROSS_IL_FORN = block("ross_il_forn", p -> new SliceDishBlock(p, 4, 0.6F), BlockBehaviour.Properties.of()
+        .mapColor(MapColor.COLOR_ORANGE).strength(0.5F).sound(SoundType.WOOL).noOcclusion());
 
     public static final Item HOBZ_MALTI = item("hobz_malti", Item::new, new Item.Properties());
     public static final Item PASTIZZ_IRKOTTA = item("pastizz_irkotta", Item::new, new Item.Properties());

@@ -168,6 +168,7 @@ def main():
         "item.mimcontent.bigilla": "Bigilla",
         "item.mimcontent.galletti": "Galletti",
         "item.mimcontent.gbejna": "Ġbejna",
+        "block.mimcontent.ross_il_forn": "Ross il-Forn",
     })
 
 

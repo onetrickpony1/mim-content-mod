@@ -333,6 +333,44 @@ def over(back, front):
                 g[y][x] = front[y][x]
     return g
 
+# ---- Accepted (owner 2026-11-17), frozen and installed: bigilla v6b, galletti v3 ----
+BIGILLA_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    "....oooooooo....",
+    "..ooggggggggOO..",
+    ".oHg}}}}}x}}gLO.",
+    ".oH}}EJ~zz}z}LO.",
+    ".oL{~zE~zxz}~lO.",
+    ".OLu~~zx~~~~GlO.",
+    ".OLLLLLlllllldO.",
+    "..OOllllmmmdOO..",
+    "....ODDDDDDO....",
+    ".....OOOOOO.....",
+    "................",
+    "................",
+    "................",
+]
+GALLETTI_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    "....ooo..ooo....",
+    "...ohhloohhlo...",
+    "..ohklkshklktO..",
+    "..ohlllshllltO..",
+    "..olklkslklktO..",
+    "...otttsssttO...",
+    "....OOshhlsO....",
+    ".....ohklktO....",
+    ".....ohllltO....",
+    ".....olklktO....",
+    "......otttO.....",
+    ".......OOO......",
+    "................",
+]
+
 
 def main():
     ims = []
@@ -348,6 +386,8 @@ def main():
     main_v2()
     for item, rows in INSTALL:
         render(rows, PAL).save(os.path.join(F.MOD_ITEMS, item + ".png"))
+    render(BIGILLA_ACCEPTED, PAL).save(os.path.join(F.MOD_ITEMS, "bigilla.png"))
+    render(GALLETTI_ACCEPTED, GAL3).save(os.path.join(F.MOD_ITEMS, "galletti.png"))
     render(["".join(r) for r in bigilla_v4()], PAL).save(os.path.join(F.OUT, "bigilla_v4.png"))
     big = render(["".join(r) for r in bigilla_v5()], PAL)
     big.save(os.path.join(F.OUT, "bigilla_v5.png"))

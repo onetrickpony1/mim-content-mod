@@ -42,6 +42,13 @@ public class ArtShots implements FabricClientGameTest {
             server.runCommand(String.format("setblock %d %d %d mimcontent:borma", x + 2, y + 1, z + 2));
             server.runCommand(String.format("setblock %d %d %d mimcontent:borma_stuffat", x, y + 1, z + 2));
             server.runCommand(String.format("setblock %d %d %d minecraft:flower_pot", x - 2, y + 1, z + 2));
+            // a second table: ross il-forn whole, part-eaten and nearly gone, beside a vanilla cake
+            String[] dishes = {"mimcontent:ross_il_forn[eaten=0]", "mimcontent:ross_il_forn[eaten=2]",
+                "mimcontent:ross_il_forn[eaten=4]", "minecraft:cake"};
+            for (int i = 0; i < dishes.length; i++) {
+                server.runCommand(String.format("setblock %d %d %d minecraft:spruce_planks", x + 3 - 2 * i, y, z + 5));
+                server.runCommand(String.format("setblock %d %d %d %s", x + 3 - 2 * i, y + 1, z + 5, dishes[i]));
+            }
             context.runOnClient(mc -> { if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
             world.getConnection().waitForChunksRender();
             context.waitTicks(40);
@@ -50,6 +57,8 @@ public class ArtShots implements FabricClientGameTest {
             shot(context, server, x + 2, y + 1.6, z - 2.6, 0, 22, "02-kenur-close-day");
             shot(context, server, x + 3.5, y + 2.6, z - 1.5, 35, 40, "03-kenur-above-day");
             shot(context, server, x + 1, y + 2.4, z + 0.2, 0, 50, "04-pots-on-table-day");
+            shot(context, server, x, y + 2.0, z + 2.4, 0, 30, "12-ross-il-forn-table");
+            shot(context, server, x + 0.5, y + 2.6, z + 3.0, 0, 55, "12b-ross-il-forn-above");
             server.runCommand("time set 18000");
             context.waitTicks(20);
             shot(context, server, x + 2, y + 1.6, z - 2.6, 0, 22, "05-kenur-close-night");
@@ -109,6 +118,13 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("11-hotbar-bowls");
+            String[] oven = {"minecraft:cake", "mimcontent:ross_il_forn", "minecraft:pumpkin_pie", "mimcontent:stuffat_fenek",
+                "mimcontent:ftira_ghawdxija", "mimcontent:hobz_malti", "minecraft:bread", "minecraft:baked_potato", "minecraft:cookie"};
+            for (int i = 0; i < oven.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + oven[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("13-hotbar-oven");
             System.out.println("[smoke] art screenshots written");
         }
     }
