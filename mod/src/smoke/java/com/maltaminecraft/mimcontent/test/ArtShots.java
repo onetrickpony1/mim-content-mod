@@ -173,8 +173,8 @@ public class ArtShots implements FabricClientGameTest {
             context.waitTicks(10);
             context.takeScreenshot("18-hotbar-cheese");
             // the drinks: Kinnie beside vanilla bottles and drinks
-            String[] drinks = {"minecraft:glass_bottle", "minecraft:potion", "mimcontent:kinnie", "minecraft:honey_bottle",
-                "minecraft:milk_bucket", "minecraft:experience_bottle", "minecraft:dragon_breath", "mimcontent:pastizz_irkotta", "minecraft:bread"};
+            String[] drinks = {"minecraft:glass_bottle", "minecraft:potion", "mimcontent:kinnie", "mimcontent:kinnie_can", "mimcontent:kinnie_glass",
+                "minecraft:honey_bottle", "minecraft:milk_bucket", "minecraft:experience_bottle", "mimcontent:pastizz_irkotta"};
             for (int i = 0; i < drinks.length; i++) {
                 server.runCommand("item replace entity @a hotbar." + i + " with " + drinks[i]);
             }
