@@ -5,7 +5,7 @@ status: "open"
 ---
 # Food systems (draft 3)
 
-**State:** design only. Nothing is built.
+**State:** design only. None of these systems is built; only food art is in the mod so far ([[Food progress]]).
 
 **What shaped it:**
 - [[2026-11-17 Food – go bigger, new art and systems, a materially Maltese change]]: food must change the game in a Maltese way, with new art and stations allowed.
@@ -17,7 +17,7 @@ status: "open"
   - freshness is off;
   - rennet comes from both lambs and plants.
 
-[[Food design]] (draft 1) is **the catalogue**: crops, ingredients, the 51 dishes and their values. This note is **how food is made and what it adds to the game**.
+[[Food design]] (draft 1) is **the catalogue**: crops, ingredients, the 68 dishes and their values. This note is **how food is made and what it adds to the game**.
 
 Marks: **✓** = checked against a source (listed at the end); **†** = general knowledge, still to check.
 

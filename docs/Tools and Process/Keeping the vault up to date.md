@@ -10,7 +10,8 @@ After every change (a design, an owner decision, code):
 3. **Where a new note goes:** the folder of its subject. A note that belongs to two subjects goes where it mostly belongs and is linked from the other subject page.
 4. **Lists before notes:** an item lives as a line in its list until it is agreed for building. Then it gets its own note ([[Templates/Item|Item]]) and the list line links to it.
 5. **When something is built:** set the item's `status` to `built` and fill in its `id` (the mod's item or entity id).
-6. **[[STATUS]]** is updated whenever what's in progress or waiting changes.
-7. **Git:** commit the docs with the change they describe, one subject per commit, staging files by name.
+6. **Food art accepted by the owner:** add it to [[Food in the mod]], move its row from **Not yet** to **In the mod** in [[Food progress]], and re-run `art/tools/doc_pictures.py` for its picture.
+7. **[[STATUS]]** is updated whenever what's in progress or waiting changes.
+8. **Git:** commit the docs with the change they describe, one subject per commit, staging files by name.
 
 **Status values:** `idea` → `open` (being designed or waiting on the owner) → `planned` (agreed) → `built` → `dropped`.

@@ -3,7 +3,7 @@ type: "topic"
 ---
 # Food in the mod
 
-What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has its texture or model, a name and an id, and can be seen in the game. **There's no gameplay yet**: no recipes, no food values (except placeholders on the slice dishes), and no cooking. That waits for the owner's go-ahead. Every entry was accepted by the owner; the decision notes are in [[Decisions]].
+What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has its texture or model, a name and an id, and can be seen in the game. **There's no gameplay yet**: no recipes, no food values (except placeholders on the slice dishes), and no cooking. That waits for the owner's go-ahead. Every entry was accepted by the owner; the decision notes are in [[Decisions]]. The same list with pictures, beside everything not drawn yet, is [[Food progress]].
 
 ## Items (16×16 icons)
 | Id (`mimcontent:`) | Name | Batch |

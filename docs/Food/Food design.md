@@ -5,7 +5,7 @@ status: "open"
 ---
 # Food design (draft 1, 2026-11-17)
 
-**State:** design only. Nothing is built. Building waits for the owner's go-ahead.
+**State:** the art for 24 of these dishes, the lampuka, the three ġbejniet and Kinnie is in the mod; nothing else is drawn, and no gameplay (recipes, food values, cooking) is built. [[Food progress]] shows what's done and what isn't, with a picture of each. Building gameplay waits for the owner's go-ahead.
 
 > **2026-11-17, draft 2:** the owner asked to go bigger ([[2026-11-17 Food – go bigger, new art and systems, a materially Maltese change]]). This note is now **the catalogue** (crops, ingredients, dishes, values). The "no new machines" and low-art rules below are **dropped**, and the "made in" columns now point to the Maltese stations in **[[Food systems]]**, which explains how each one changes.
 
@@ -262,20 +262,20 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 
 ### 7d. Meat
 
-| # | Dish | English | Recipe → where | Food / Sat | Extra | Tier |
-|---|---|---|---|---|---|---|
-| D21 | **Stuffat tal-fenek** ✓ | Rabbit stew (the national dish) | cooked rabbit + zalza + wine + potato + peas + garlic + bowl → table | 12 / High | Absorption I, 60 s. **The best food in the mod.** | A |
-| D22 | Fenek moqli ✓ | Fried rabbit | raw rabbit + garlic + wine + olive oil → marinated → furnace | 8 / Good | The fenkata's second course | B |
-| D23 | **Zalzett tal-Malti** † | Maltese sausage | 2 mince (pork) + salt + black pepper + coriander + garlic + ħwawar → 3 raw → smoker | 6 / Good | **Kawlata, ftira** | B |
-| D24 | Laħam fuq il-fwar ✓ | Steamed beef | raw beef + garlic + ħwawar + olive oil + lemon → smoker | 8 / Good | Traditionally steamed over a pot of soup ✓; Sunday lunch | B |
-| D25 | Braġjoli † | Beef olives | raw beef + mince + egg + breadcrumbs + ħwawar + zalza → furnace | 9 / Good | | C |
-| D26 | **Ross il-forn** † | Baked rice | rice + 2 mince + 2 egg + zalza + dried ġbejna → raw dish → furnace | **placeable, 6 slices × 4 / Normal** | The Sunday baker's oven dish (life idea 80) | A |
-| D27 | **Timpana** † | Pastry-cased macaroni | 2 pastry + macaroni + 2 mince + zalza + 2 egg → raw dish → furnace | **placeable, 6 slices × 5 / Normal** | | A |
-| D28 | Mqarrun il-forn † | Baked macaroni | macaroni + 2 mince + zalza + 2 egg + dried ġbejna → raw dish → furnace | placeable, 6 slices × 4 / Normal | Timpana without the pastry | B |
-| D29 | Ravjul ✓ | Maltese ravioli | ravjul pasta + ricotta + parsley + egg → 4 raw ravjul; then 4 raw ravjul + zalza + bowl → table | 8 / Good | | B |
-| D30 | Qarabagħli mimli † | Stuffed marrows | 2 marrows + mince + egg + dried ġbejna + breadcrumbs → furnace | 7 / Good | | B |
-| D31 | Qaqoċċ mimli † | Stuffed artichokes | artichoke + breadcrumbs + cured olives + capers + garlic + anchovies → furnace | 6 / Good | | C |
-| D32 | Kapunata † | Kapunata | aubergine + pepper + zalza + capers + cured olives + bowl → table | 7 / Good | | B |
+| #   | Dish                    | English                         | Recipe → where                                                                                  | Food / Sat                           | Extra                                                    | Tier |
+| --- | ----------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------- | ---- |
+| D21 | **Stuffat tal-fenek** ✓ | Rabbit stew (the national dish) | cooked rabbit + zalza + wine + potato + peas + garlic + bowl → table                            | 12 / High                            | Absorption I, 60 s. **The best food in the mod.**        | A    |
+| D22 | Fenek moqli ✓           | Fried rabbit                    | raw rabbit + garlic + wine + olive oil → marinated → furnace                                    | 8 / Good                             | The fenkata's second course                              | B    |
+| D23 | **Zalzett tal-Malti** † | Maltese sausage                 | 2 mince (pork) + salt + black pepper + coriander + garlic + ħwawar → 3 raw → smoker             | 6 / Good                             | **Kawlata, ftira**                                       | B    |
+| D24 | Laħam fuq il-fwar ✓     | Steamed beef                    | raw beef + garlic + ħwawar + olive oil + lemon → smoker                                         | 8 / Good                             | Traditionally steamed over a pot of soup ✓; Sunday lunch | B    |
+| D25 | Braġjoli †              | Beef olives                     | raw beef + mince + egg + breadcrumbs + ħwawar + zalza → furnace                                 | 9 / Good                             |                                                          | C    |
+| D26 | **Ross il-forn** †      | Baked rice                      | rice + 2 mince + 2 egg + zalza + dried ġbejna → raw dish → furnace                              | **placeable, 6 slices × 4 / Normal** | The Sunday baker's oven dish (life idea 80)              | A    |
+| D27 | **Timpana** †           | Pastry-cased macaroni           | 2 pastry + macaroni + 2 mince + zalza + 2 egg → raw dish → furnace                              | **placeable, 6 slices × 5 / Normal** |                                                          | A    |
+| D28 | Mqarrun il-forn †       | Baked macaroni                  | macaroni + 2 mince + zalza + 2 egg + dried ġbejna → raw dish → furnace                          | placeable, 6 slices × 4 / Normal     | Timpana without the pastry                               | B    |
+| D29 | Ravjul ✓                | Maltese ravioli                 | ravjul pasta + ricotta + parsley + egg → 4 raw ravjul; then 4 raw ravjul + zalza + bowl → table | 8 / Good                             |                                                          | B    |
+| D30 | Qarabagħli mimli †      | Stuffed marrows                 | 2 marrows + mince + egg + dried ġbejna + breadcrumbs → furnace                                  | 7 / Good                             |                                                          | B    |
+| D31 | Qaqoċċ mimli †          | Stuffed artichokes              | artichoke + breadcrumbs + cured olives + capers + garlic + anchovies → furnace                  | 6 / Good                             |                                                          | C    |
+| D32 | Kapunata †              | Kapunata                        | aubergine + pepper + zalza + capers + cured olives + bowl → table                               | 7 / Good                             |                                                          | B    |
 
 ### 7e. Fish and sea
 

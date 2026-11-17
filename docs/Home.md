@@ -11,7 +11,7 @@ This is **layer 2** of the owner's three layers ([[2026-11-15 Three layers – v
 2. **this add-on mod**;
 3. a full overhaul at generation (long-term; don't start).
 
-**Where it stands:** [[STATUS]]. Nothing is built yet.
+**Where it stands:** [[STATUS]]. The first food art is in the mod, with no gameplay yet: see [[Food progress]] for what's done and what isn't, with pictures.
 
 ## Subjects
 - [[Food]]: crops, ingredients, dishes, drinks

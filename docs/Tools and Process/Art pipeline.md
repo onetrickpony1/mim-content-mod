@@ -14,9 +14,9 @@ How the mod's art is made and checked (since the art pilot, 2026-11-17). The det
 ## Since the pilot: maker, critic, owner (2026-11-17)
 The owner rejected art that reviewers had passed, and asked for the work to be orchestrated ([[2026-11-17 The pastizz is the flagship, with ricotta and pea kinds]] and the decisions after it).
 1. **The owner's photos first.** The owner puts photos in `~/Pictures/<Dish>/`. They're copied to `art/references/*_owner*/`, kept **out of git**, used for reference only and never traced. They outrank web research.
-2. **A maker** draws candidates (usually two or three) with a re-runnable script: `art/src/food_items.py` (bread, pastizzi, ġbejna), `sweets.py`, `bowls.py`, `oven_dishes.py` (the slice dishes and their icons). The scripts reproduce every accepted texture byte for byte.
+2. **A maker** draws candidates (usually two or three) with a re-runnable script: `art/src/food_items.py` (bread, pastizzi, ġbejna), `sweets.py`, `bowls.py` (the shared terracotta bowl and the first four bowl dishes), `soppa.py`, `minestra.py`, `kawlata.py`, `brodu.py` (kusksu and the two broths), `oven_dishes.py` (the slice dishes and their icons), `torta_icon_cake.py`, `fish.py` (lampuka), `gbejniet.py` (dried and peppered) and `drinks.py` (Kinnie). The scripts reproduce every accepted texture byte for byte.
 3. **A separate critic**, new each round, judges at true hotbar size and in the game, gives exact pixel fixes, and the maker applies them. This loops until the critic passes it.
-4. **The owner decides.** Their picks and corrections are recorded in [[Decisions]] with their exact words.
+4. **The owner decides.** Their picks and corrections are recorded in [[Decisions]] with their exact words. Then the item moves to **In the mod** in [[Food in the mod]] and [[Food progress]], and `art/tools/doc_pictures.py` refreshes that page's pictures.
 5. **Rules learnt along the way:**
    - vertical centre about 7.5–8 like vanilla foods;
    - lit from the top-left;
