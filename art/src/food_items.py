@@ -12,7 +12,22 @@ the round-2 pieces art/candidates/*_v2.png (also copied into the mod as hobz_mal
 pastizz_irkotta.png, pastizz_pizelli.png) and art/candidates/preview.png (the v2 pieces beside vanilla).
 """
 import os
+import sys
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
+from font import label_font  # noqa: E402  (Pillow's default font has no ħ ż ġ)
+
+LABELS = {"hobz": "Ħobż", "pastizz_irkotta": "Pastizz tal-irkotta", "pastizz_pizelli": "Pastizz tal-piżelli",
+          "gbejna": "Ġbejna"}
+
+
+def label(name):
+    """File-style name -> real Maltese spelling plus the version, e.g. hobz_v6 -> 'Ħobż v6'."""
+    for k, v in LABELS.items():
+        if name.startswith(k + "_"):
+            return v + " " + name[len(k) + 1:]
+    return name
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.normpath(os.path.join(HERE, ".."))
@@ -463,6 +478,31 @@ def irkotta_v3():
     return g
 
 
+
+IRK_RUNS4 = sym({1: [(13, 14)], 2: [(10, 14)], 3: [(7, 14)], 4: [(5, 14)], 5: [(4, 13)], 6: [(3, 13)], 7: [(3, 13)]})
+
+
+def irkotta_v4():
+    """The owner's pick (2026-11-17): round 4's ricotta pastizz, exactly. Long diamond with short tip stalks,
+    ricotta lens along the central seam (1 px at the ends, 3 px in the middle), chevrons at both ends,
+    crisp darker tips. Later rounds (v5-v7) are kept only as candidate files."""
+    g = diagonal_pastry(IRK_RUNS4)
+    lens_r = [(10, 5), (9, 6), (8, 7), (7, 8), (6, 9), (5, 10), (8, 6), (7, 7), (6, 8)]
+    lens_R = [(9, 7), (8, 8), (7, 9)]
+    paint(g, "r", lens_r)
+    paint(g, "R", lens_R)
+    lens = set(lens_r + lens_R)
+    for x, y in list(lens):
+        for dx, dy in ((1, 0), (0, 1), (-1, 0), (0, -1)):
+            q = (x + dx, y + dy)
+            if q in lens or g[q[1]][q[0]] in "#.":
+                continue
+            g[q[1]][q[0]] = "#" if dx + dy > 0 else "D"
+    end_chevrons(g)
+    for (x, y), ch in {(13, 2): "d", (13, 3): "D", (2, 13): "d"}.items():
+        g[y][x] = ch
+    return g
+
 def tilted_mask(cx=7.8, cy=8.5, a=7.6, b=5.1, ang=24, p=1.7):
     """Rounded body whose long axis rises to the right by ang degrees; p < 2 gives softly pointed ends."""
     t = math.radians(ang)
@@ -606,9 +646,135 @@ def hobz_v3(cap=(7.6, 6.6, 6.3, 3.4)):
 
 V3 = [
     ("hobz_v6", hobz_v3, B3, "hobz_malti"),
-    ("pastizz_irkotta_v7", irkotta_v3, P3, "pastizz_irkotta"),
-    ("pastizz_pizelli_v6", pizelli_v3R, P3, "pastizz_pizelli"),
+    ("pastizz_irkotta_v7", irkotta_v3, P3, None),  # candidate only; the owner picked v4
+    ("pastizz_irkotta_v4", irkotta_v4, P3, "pastizz_irkotta"),
+    ("pastizz_pizelli_v6", pizelli_v3R, P3, None),  # superseded by the owner's pick (round 8)
+    ("pastizz_pizelli_v8a", lambda: [list(r) for r in pizelli_v8a()], PASTRY, None),
+    ("pastizz_pizelli_v8b", lambda: [list(r) for r in pizelli_v8b()], P3, "pastizz_pizelli"),
 ]
+
+
+# ---- Round 8 (owner 2026-11-17): the piżelli redone from round-1 candidate b ----
+# Owner: "its quite close, but it has a bit of a dangly tail which real ones dont have." The tail at the top
+# left ((2,2), (3,2), (2,3) and the nub at (3,4)) is removed; (3,3) stays as a short blunt folded point flush
+# with the round body (pastizzi_1, pastizzi_4). Not moved: rows 3-14, mass centre 8.3 (vanilla foods 7.5-8.8;
+# moving up a row would give 7.3).
+def _pizelli_b_no_tail():
+    rows = [list(r) for r in PIZELLI_B]
+    for x, y in ((2, 2), (3, 2), (2, 3), (3, 4)):
+        rows[y][x] = "."
+    return ["".join(r) for r in rows]
+
+
+def pizelli_v8a():
+    """Closest to b: tail removed, b's own palette and pixels otherwise."""
+    return autooutline(_pizelli_b_no_tail())
+
+
+def pizelli_v8b():
+    """b without the tail, in the accepted irkotta's outline and pastry ramp (P3), with the pea seam in the
+    later yellow-olive: lighter #c8c24a along the seam, #a39f35 at its outer edge, one #6d6a2a shadow."""
+    g = [list(r) for r in autooutline(_pizelli_b_no_tail())]
+    remap = {"O": "#", "y": "Y", "g": "Y", "G": "y"}
+    for y in range(16):
+        for x in range(16):
+            g[y][x] = remap.get(g[y][x], g[y][x])
+    g[11][5] = "s"  # one shadow pea deep in the seam
+    # light from the top left (tl_minus_br >= 0.05 with the single outline): pastry just inside the
+    # right-hand outline goes one step darker
+    for y in range(15):
+        for x in range(15):
+            if (g[y][x + 1] == "#" or g[y + 1][x] == "#") and g[y][x] in "lmd" and x + y > 15:
+                g[y][x] = {"l": "m", "m": "d", "d": "D"}[g[y][x]]
+            elif g[y][x] == "m" and x + y < 12:  # and the top-left pastry one step lighter
+                g[y][x] = "l"
+    g = g[1:] + [["."] * 16]  # critic r8: up one row, rows 2-13, centre 7.5 like vanilla
+    return ["".join(r) for r in g]
+
+
+# ---- Pastizz tax-xema' (round 9 research candidates, 2026-11-17; NOT in the mod yet) ----
+# Round / half-moon pastizzi of PUFF pastry (en/mt Wikipedia "Pastizz"; Guide Me Malta), smooth glossy
+# egg-washed top (references xema_1.jpg, xema_2.jpg); xema' = wax/candles (Wiktionary); the name's link to a
+# waxy shine is unconfirmed. Same outline and pastry ramp (P3) as the accepted pastizzi.
+def ell(cx, cy, rx, ry, ang=0.0, cut=None):
+    t = math.radians(ang)
+    g = [["."] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x + .5 - cx, y + .5 - cy
+            u = dx * math.cos(t) - dy * math.sin(t); v = dx * math.sin(t) + dy * math.cos(t)
+            if (u / rx) ** 2 + (v / ry) ** 2 <= 1 and (cut is None or cut(x, y)):
+                g[y][x] = "m"
+    return g
+
+def dome(g, cx, cy, rx, ry, steps=(0.97, 0.74, 0.42)):
+    """Dome light from the top left: h / l / m / d by the lit amount."""
+    L = (-0.55, -0.65, 0.52)
+    n = math.sqrt(sum(c * c for c in L)); L = [c / n for c in L]
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] == ".": continue
+            u, v = (x + .5 - cx) / rx, (y + .5 - cy) / ry
+            r2 = min(u * u + v * v, 0.97)
+            nz = math.sqrt(1 - r2); nn = math.sqrt(u * u + v * v + nz * nz)
+            lit = (u * L[0] + v * L[1] + nz * L[2]) / nn
+            g[y][x] = "h" if lit > steps[0] else "l" if lit > steps[1] else "m" if lit > steps[2] else "d"
+
+def xema_a():
+    """Round tax-xema': a puffed disc of puff pastry with a glossy egg-wash (wax-like) shine, a folded
+    rim with a little ricotta showing at the lower right."""
+    g = ell(8.0, 7.9, 6.3, 5.8)
+    dome(g, 8.0, 7.9, 6.3, 5.8)
+    g = outline3(g)
+    rim = [(x, y) for y in range(16) for x in range(16) if g[y][x] not in ".#"
+           and any(g[y + dy][x + dx] == "#" for dx, dy in ((1, 0), (0, 1))) and x + y >= 17]
+    paint(g, "D", rim)
+    paint(g, "l", [(x, 9) for x in range(3, 11)])     # a puffed layer showing round the fold
+    paint(g, "D", [(x, 10) for x in range(3, 10)])
+    paint(g, "r", [(10, 10), (11, 9), (12, 8)]); paint(g, "R", [(9, 11), (10, 11)])
+    paint(g, "l", [(4, 4), (5, 4), (4, 6), (5, 6), (6, 5), (7, 4)])
+    paint(g, "h", [(5, 5), (4, 5), (6, 4)])  # the waxy egg-wash shine
+    return g
+
+def xema_b():
+    """Half-moon tax-xema': puff pastry folded over, round back on top, the folded straight edge along
+    the bottom (pastry edge pressed, layers showing as a dark line), deep glossy gold, one shine."""
+    g = ell(8.0, 9.6, 6.6, 6.4, cut=lambda x, y: y <= 11)
+    for x in range(3, 13):
+        g[12][x] = "m"
+    dome(g, 8.0, 10.0, 6.6, 6.6)
+    g = outline3(g)
+    paint(g, "D", [(x, 11) for x in range(2, 13)])   # the pressed fold edge, puffed layers in it
+    paint(g, "l", [(x, 10) for x in range(2, 12)])
+    paint(g, "D", [(x, 9) for x in range(2, 11, 2)])
+    paint(g, "r", [(12, 10), (13, 9)]); paint(g, "R", [(12, 11)])
+    paint(g, "l", [(4, 5), (6, 5), (4, 7), (5, 7), (7, 5), (3, 6)])
+    paint(g, "h", [(5, 5), (4, 6), (5, 6)])
+    return g
+
+def xema_c():
+    """Round tax-xema' seen a little from the side: a glossy domed top over a band of puffed flaky layers
+    (puff pastry, not the spiral filo of the diamond ones), ricotta showing in one gap."""
+    top = ell(8.0, 5.6, 6.4, 3.3)
+    side = ell(8.0, 9.2, 6.4, 3.6)
+    g = [["." if top[y][x] == "." and side[y][x] == "." else "m" for x in range(16)] for y in range(16)]
+    dome(top, 8.0, 5.6, 6.4, 3.3)
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] == ".": continue
+            if top[y][x] != ".":
+                g[y][x] = top[y][x]
+            else:
+                lit = x < 10
+                g[y][x] = ("l" if lit else "m") if y % 2 == 0 else ("d" if lit else "D")
+    g = outline3(g)
+    rim = [(x, y) for y in range(15) for x in range(16) if top[y][x] != "." and top[y + 1][x] == "."]
+    paint(g, "D", rim)   # the glossy top's edge over the flaky side
+    paint(g, "r", [(11, 10), (12, 10)]); paint(g, "R", [(12, 11)])
+    paint(g, "l", [(4, 4), (6, 4), (3, 5), (5, 6), (7, 4)])
+    paint(g, "h", [(5, 4), (4, 5), (5, 5)])
+    return [["."] * 16] + g[:-1]  # down one row: centre 8.0 like vanilla foods
+
 
 
 def autooutline(rows):
@@ -689,11 +855,11 @@ def preview(images):
         d.rectangle([x0, y0, x0 + 16 * S - 1, y0 + 16 * S - 1], fill=slot)
         e = im.resize((16 * S, 16 * S), Image.NEAREST)
         sheet.alpha_composite(e, (x0, y0))
-        d.text((x0, y0 + 16 * S + 1), n, fill=(30, 30, 30, 255))
+        d.text((x0, y0 + 16 * S + 1), label(n), fill=(30, 30, 30, 255), font=label_font(12))
     # real-size rows: 1x and 2x, on slot grey, everything side by side
     y = 16 + rows_big * (cell + 14) + 6
     for scale in (1, 2):
-        d.text((16, y), f"{scale}x", fill=(30, 30, 30, 255))
+        d.text((16, y), f"{scale}x", fill=(30, 30, 30, 255), font=label_font(12))
         x = 40
         for n, im in big:
             sz = 18 * scale
@@ -725,13 +891,16 @@ def main():
         im.save(os.path.join(OUT, name + ".png"))
         if item:
             im.save(os.path.join(MOD_ITEMS, item + ".png"))
-        v3.append((name, im))
+        if name not in ("pastizz_pizelli_v6", "pastizz_irkotta_v7"):  # superseded; kept as files only
+            v3.append((name, im))
     # the ġbejna (r6) is made here now (gbejna_v6); pilot_textures.gbejna is kept for history
     gb = render(["".join(r) for r in gbejna_v6()], GBEJNA_PAL)
     gb.save(os.path.join(OUT, "gbejna_v6.png"))
     gb.save(os.path.join(MOD_ITEMS, "gbejna.png"))
     v3.append(("gbejna_v6", gb))
     preview(v3).save(os.path.join(OUT, "preview.png"))
+    for name, make in (("pastizz_xema_a", xema_a), ("pastizz_xema_b", xema_b), ("pastizz_xema_c", xema_c)):
+        render(["".join(r) for r in make()], P3).save(os.path.join(OUT, name + ".png"))  # candidates only
     print("wrote", len(images), "round-1 candidates, v2 and v3 pieces (v3 into the mod) and preview.png")
 
 
