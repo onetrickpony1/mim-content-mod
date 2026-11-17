@@ -212,6 +212,14 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("21-hotbar-dips");
+            // ġelat Malti beside the sweets, the dips and the soups, so its dish reads as neither
+            String[] gelat = {"minecraft:snowball", "minecraft:cookie", "minecraft:pumpkin_pie", "mimcontent:gelat_malti", "mimcontent:kannoli",
+                "mimcontent:imqaret", "mimcontent:bigilla", "mimcontent:aljotta", "minecraft:mushroom_stew"};
+            for (int i = 0; i < gelat.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + gelat[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("22-hotbar-gelat");
             System.out.println("[smoke] art screenshots written");
         }
     }

@@ -32,6 +32,7 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `imqaret` | Imqaret | sweets |
 | `kannoli` | Kannoli (plain ricotta) | sweets |
 | `qaghaq_ghasel` | Qagħaq tal-Għasel | sweets |
+| `gelat_malti` | Ġelat Malti (ġelat tan-nanna) | sweets |
 | `stuffat_fenek` | Stuffat tal-Fenek | bowls (shared terracotta bowl, plain rim) |
 | `aljotta` | Aljotta | bowls |
 | `stuffat_qarnit` | Stuffat tal-Qarnit | bowls |

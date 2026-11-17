@@ -12,12 +12,12 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 
 | | In the mod | Not yet |
 |---|---|---|
-| Items | 34 | |
+| Items | 35 | |
 | Placed dishes (eaten in slices) | 4 | |
 | Kitchen blocks | 3 (kenur, borma, borma with stuffat) | |
 | Crops, trees, wild food, animal and sea products | 1 (the lampuka) | 47 |
 | Base ingredients and imports | the 3 ġbejniet and the broth (as 2 soups) | 31 |
-| Catalogue dishes | 27 | 44 |
+| Catalogue dishes | 28 | 43 |
 | Drinks | Kinnie (3 items) | 5 |
 
 ## In the mod
@@ -79,6 +79,7 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 | ![Imqaret](images/imqaret.png) | **Imqaret** (D40) | `imqaret` | date pastries |
 | ![Kannoli](images/kannoli.png) | **Kannoli** (D42) | `kannoli` | plain ricotta |
 | ![Qagħaq tal-Għasel](images/qaghaq_ghasel.png) | **Qagħaq tal-Għasel** (D41) | `qaghaq_ghasel` | honey rings, Christmas |
+| ![Ġelat Malti](images/gelat_malti.png) | **Ġelat Malti** (D68) | `gelat_malti` | ġelat tan-nanna: cream scoops, almonds, glacé cherries |
 
 ### Pastries and bread rings
 
@@ -305,7 +306,6 @@ I'd appreciate if you could mail me (Kolforn@gmail.com) if you](https://commons.
 | (no free photo found)                                                                                                                                                                                                                                                        | **Torta tal-marmorat** (D65)                          |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Ftira tar-Randan** (D66)                            |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Ħobża ta' San Martin** (D67)                        |                                                                                                                                                                                            |
-| (no free photo found)                                                                                                                                                                                                                                                        | **Ġelat Malti** (D68)                                 |                                                                                                                                                                                            |
 | (being drawn) | **Dip tal-ġbejna** (D69) | |
 | (being drawn) | **Dip tat-tonn (creamy)** (D70) | |
 | (being drawn) | **Dip tat-tewm** (D71) | |
