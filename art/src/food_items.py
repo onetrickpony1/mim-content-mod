@@ -692,88 +692,88 @@ def pizelli_v8b():
     return ["".join(r) for r in g]
 
 
-# ---- Pastizz tax-xema' (round 9 research candidates, 2026-11-17; NOT in the mod yet) ----
-# Round / half-moon pastizzi of PUFF pastry (en/mt Wikipedia "Pastizz"; Guide Me Malta), smooth glossy
-# egg-washed top (references xema_1.jpg, xema_2.jpg); xema' = wax/candles (Wiktionary); the name's link to a
-# waxy shine is unconfirmed. Same outline and pastry ramp (P3) as the accepted pastizzi.
-def ell(cx, cy, rx, ry, ang=0.0, cut=None):
+# ---- Pastizzi tax-xema' (owner's facts and photos, 2026-11-17; candidates only, NOT in the mod yet) ----
+# Puff pastry, smooth and glossy, no filling showing. Tal-irkotta: a full circle like a mini pie, about double
+# the normal pastizz; tal-piżelli: a half-moon, the normal size but about twice as thick. Shapes from the
+# owner's photos art/references/xema_owner_*.jpg/png (reference only). Same outline and ramp as irkotta v4.
+def top_mask(shape, **k):
+    m = [[False] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            m[y][x] = shape(x + .5, y + .5, **k)
+    return m
+
+def circle(px, py, cx, cy, rx, ry):
+    return ((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2 <= 1
+
+def half(px, py, cx, cy, rx, ry, ang):
     t = math.radians(ang)
+    dx, dy = px - cx, py - cy
+    u = dx * math.cos(t) - dy * math.sin(t)       # along the straight (folded) edge
+    v = dx * math.sin(t) + dy * math.cos(t)       # away from it, towards the round back
+    return v >= 0 and (u / rx) ** 2 + (v / ry) ** 2 <= 1
+
+def extruded(top, depth, shade_top, ring=None, shine=()):
+    """3/4 view of a thick pastry: the top face, and below it the side wall (the top shifted down 1..depth
+    rows) shown as stacked pale puff layers, darker towards the right."""
     g = [["."] * 16 for _ in range(16)]
     for y in range(16):
         for x in range(16):
-            dx, dy = x + .5 - cx, y + .5 - cy
-            u = dx * math.cos(t) - dy * math.sin(t); v = dx * math.sin(t) + dy * math.cos(t)
-            if (u / rx) ** 2 + (v / ry) ** 2 <= 1 and (cut is None or cut(x, y)):
-                g[y][x] = "m"
+            if top[y][x]:
+                g[y][x] = shade_top(x, y)
+            elif any(0 <= y - k and top[y - k][x] for k in range(1, depth + 1)):
+                k = min(k for k in range(1, depth + 1) if 0 <= y - k and top[y - k][x])
+                right = x >= 10
+                g[y][x] = ("l" if not right else "m") if k % 2 == 1 else ("d" if not right else "D")
+    g = outline3(g)
+    for y in range(1, 16):  # the glossy (waxy) egg-wash catches the light along the top-left rim
+        for x in range(1, 16):
+            if top[y][x] and g[y][x] not in ".#" and (g[y - 1][x] == "#" or g[y][x - 1] == "#") and x < 8:
+                g[y][x] = "h"
+            elif top[y][x] and g[y][x] not in ".#" and (g[y - 1][x] == "#") and x < 11:
+                g[y][x] = "l"
+    for x, y in (ring or []):
+        if g[y][x] not in ".#": g[y][x] = "D"
+    paint(g, "h", shine)
     return g
 
-def dome(g, cx, cy, rx, ry, steps=(0.97, 0.74, 0.42)):
-    """Dome light from the top left: h / l / m / d by the lit amount."""
-    L = (-0.55, -0.65, 0.52)
-    n = math.sqrt(sum(c * c for c in L)); L = [c / n for c in L]
+def lit_shade(cx, cy, rx, ry):
+    def f(x, y):
+        u, v = (x + .5 - cx) / rx, (y + .5 - cy) / ry
+        lit = -0.6 * u - 0.6 * v
+        r = math.hypot(u, v)
+        if r > 0.85 and lit < 0.2: return "d"
+        return "l" if lit > 0.2 else ("m" if lit > -0.25 else "d")
+    return f
+
+def ring_pts(cx, cy, rx, ry, frac):
+    pts = []
     for y in range(16):
         for x in range(16):
-            if g[y][x] == ".": continue
-            u, v = (x + .5 - cx) / rx, (y + .5 - cy) / ry
-            r2 = min(u * u + v * v, 0.97)
-            nz = math.sqrt(1 - r2); nn = math.sqrt(u * u + v * v + nz * nz)
-            lit = (u * L[0] + v * L[1] + nz * L[2]) / nn
-            g[y][x] = "h" if lit > steps[0] else "l" if lit > steps[1] else "m" if lit > steps[2] else "d"
+            r = math.hypot((x + .5 - cx) / rx, (y + .5 - cy) / ry)
+            if abs(r - frac) < 0.12: pts.append((x, y))
+    return pts
 
-def xema_a():
-    """Round tax-xema': a puffed disc of puff pastry with a glossy egg-wash (wax-like) shine, a folded
-    rim with a little ricotta showing at the lower right."""
-    g = ell(8.0, 7.9, 6.3, 5.8)
-    dome(g, 8.0, 7.9, 6.3, 5.8)
-    g = outline3(g)
-    rim = [(x, y) for y in range(16) for x in range(16) if g[y][x] not in ".#"
-           and any(g[y + dy][x + dx] == "#" for dx, dy in ((1, 0), (0, 1))) and x + y >= 17]
-    paint(g, "D", rim)
-    paint(g, "l", [(x, 9) for x in range(3, 11)])     # a puffed layer showing round the fold
-    paint(g, "D", [(x, 10) for x in range(3, 10)])
-    paint(g, "r", [(10, 10), (11, 9), (12, 8)]); paint(g, "R", [(9, 11), (10, 11)])
-    paint(g, "l", [(4, 4), (5, 4), (4, 6), (5, 6), (6, 5), (7, 4)])
-    paint(g, "h", [(5, 5), (4, 5), (6, 4)])  # the waxy egg-wash shine
-    return g
+def xema_irkotta_a():
+    cx, cy, rx, ry = 8.0, 6.4, 7.0, 3.9
+    top = top_mask(circle, cx=cx, cy=cy, rx=rx, ry=ry)
+    return extruded(top, 4, lit_shade(cx, cy, rx, ry), ring_pts(cx, cy, rx, ry, 0.62), [(4, 4), (5, 4), (3, 5)])
 
-def xema_b():
-    """Half-moon tax-xema': puff pastry folded over, round back on top, the folded straight edge along
-    the bottom (pastry edge pressed, layers showing as a dark line), deep glossy gold, one shine."""
-    g = ell(8.0, 9.6, 6.6, 6.4, cut=lambda x, y: y <= 11)
-    for x in range(3, 13):
-        g[12][x] = "m"
-    dome(g, 8.0, 10.0, 6.6, 6.6)
-    g = outline3(g)
-    paint(g, "D", [(x, 11) for x in range(2, 13)])   # the pressed fold edge, puffed layers in it
-    paint(g, "l", [(x, 10) for x in range(2, 12)])
-    paint(g, "D", [(x, 9) for x in range(2, 11, 2)])
-    paint(g, "r", [(12, 10), (13, 9)]); paint(g, "R", [(12, 11)])
-    paint(g, "l", [(4, 5), (6, 5), (4, 7), (5, 7), (7, 5), (3, 6)])
-    paint(g, "h", [(5, 5), (4, 6), (5, 6)])
-    return g
+def xema_irkotta_b():
+    cx, cy, rx, ry = 8.0, 7.3, 7.0, 4.6
+    top = top_mask(circle, cx=cx, cy=cy, rx=rx, ry=ry)
+    return extruded(top, 2, lit_shade(cx, cy, rx, ry), ring_pts(cx, cy, rx, ry, 0.6), [(4, 4), (5, 3), (3, 5)])
 
-def xema_c():
-    """Round tax-xema' seen a little from the side: a glossy domed top over a band of puffed flaky layers
-    (puff pastry, not the spiral filo of the diamond ones), ricotta showing in one gap."""
-    top = ell(8.0, 5.6, 6.4, 3.3)
-    side = ell(8.0, 9.2, 6.4, 3.6)
-    g = [["." if top[y][x] == "." and side[y][x] == "." else "m" for x in range(16)] for y in range(16)]
-    dome(top, 8.0, 5.6, 6.4, 3.3)
-    for y in range(16):
-        for x in range(16):
-            if g[y][x] == ".": continue
-            if top[y][x] != ".":
-                g[y][x] = top[y][x]
-            else:
-                lit = x < 10
-                g[y][x] = ("l" if lit else "m") if y % 2 == 0 else ("d" if lit else "D")
-    g = outline3(g)
-    rim = [(x, y) for y in range(15) for x in range(16) if top[y][x] != "." and top[y + 1][x] == "."]
-    paint(g, "D", rim)   # the glossy top's edge over the flaky side
-    paint(g, "r", [(11, 10), (12, 10)]); paint(g, "R", [(12, 11)])
-    paint(g, "l", [(4, 4), (6, 4), (3, 5), (5, 6), (7, 4)])
-    paint(g, "h", [(5, 4), (4, 5), (5, 5)])
-    return [["."] * 16] + g[:-1]  # down one row: centre 8.0 like vanilla foods
+def xema_pizelli_a():
+    cx, cy, rx, ry = 7.6, 9.6, 7.0, 6.6
+    top = top_mask(half, cx=cx, cy=cy, rx=rx, ry=ry, ang=180)   # round back up, folded edge at the bottom
+    return extruded(top, 3, lit_shade(cx, cy - 3, rx, ry * 0.6), None, [(5, 6), (6, 5)])
+
+def xema_pizelli_b():
+    """Thicker still: the folded edge as a 4-row band of puff layers, the round back tilted a little."""
+    cx, cy, rx, ry = 8.0, 8.8, 6.9, 5.8
+    top = top_mask(half, cx=cx, cy=cy, rx=rx, ry=ry, ang=190)
+    return extruded(top, 4, lit_shade(cx, cy - 3, rx, ry * 0.6), None, [(5, 5), (6, 4)])
 
 
 
@@ -899,7 +899,8 @@ def main():
     gb.save(os.path.join(MOD_ITEMS, "gbejna.png"))
     v3.append(("gbejna_v6", gb))
     preview(v3).save(os.path.join(OUT, "preview.png"))
-    for name, make in (("pastizz_xema_a", xema_a), ("pastizz_xema_b", xema_b), ("pastizz_xema_c", xema_c)):
+    for name, make in (("pastizz_xema_irkotta_a", xema_irkotta_a), ("pastizz_xema_irkotta_b", xema_irkotta_b),
+                       ("pastizz_xema_pizelli_a", xema_pizelli_a), ("pastizz_xema_pizelli_b", xema_pizelli_b)):
         render(["".join(r) for r in make()], P3).save(os.path.join(OUT, name + ".png"))  # candidates only
     print("wrote", len(images), "round-1 candidates, v2 and v3 pieces (v3 into the mod) and preview.png")
 

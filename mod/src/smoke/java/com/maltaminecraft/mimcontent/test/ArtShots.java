@@ -76,6 +76,15 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("07-hotbar-food");
+            // the pastizz family, between vanilla foods
+            String[] pastizzi = {"minecraft:cookie", "mimcontent:pastizz_irkotta", "mimcontent:pastizz_pizelli",
+                "mimcontent:pastizz_xema_irkotta", "mimcontent:pastizz_xema_pizelli", "minecraft:pumpkin_pie",
+                "minecraft:bread", "mimcontent:hobz_malti", "minecraft:baked_potato"};
+            for (int i = 0; i < pastizzi.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + pastizzi[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("08-hotbar-pastizzi");
             System.out.println("[smoke] art screenshots written");
         }
     }

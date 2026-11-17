@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "mimcontent:item/pastizz_xema_irkotta"
+ }
+}
