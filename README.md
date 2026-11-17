@@ -10,7 +10,7 @@ The mod is in its art phase. Everything below can be seen in the game, but has n
 
 - **Maltese food:** ħobż tal-Malti, ftira, ħobż biż-żejt, ftira Għawdxija, galletti, four kinds of pastizzi, ġbejna, imqaret, kannoli and qagħaq tal-għasel.
 - **Stews and dips** in a Maltese terracotta bowl: stuffat tal-fenek, aljotta, stuffat tal-qarnit and bigilla.
-- **Oven dishes you set on a table and eat in slices**, like a cake: ross il-forn, imqarrun il-forn and timpana.
+- **Oven dishes you set on a table and eat in slices**, like a cake: ross il-forn, imqarrun il-forn, timpana and torta tal-lampuki.
 - **A kitchen:** the kenur (a stone stove) and the borma (a clay stew pot).
 
 The full list with item ids is in [docs/Food/Food in the mod.md](docs/Food/Food%20in%20the%20mod.md).

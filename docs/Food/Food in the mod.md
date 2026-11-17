@@ -31,7 +31,8 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 |---|---|---|---|
 | `ross_il_forn` | Ross il-Forn | foil tray | placed dish "tentatively works"; icon v6 |
 | `imqarrun_il_forn` | Imqarrun il-Forn | white ceramic dish with grip lips, 3D penne top | done; icon v5a |
-| `timpana` | Timpana | clear glass dish, pastry lid and walls | done |
+| `timpana` | Timpana | foil tray, pastry lid and walls | done |
+| `torta_lampuki` | Torta tal-Lampuki | round pie in a terracotta dish, eaten in wedges; icon in the cake view | done |
 
 These use one block class, `SliceDishBlock`. Its food values are placeholders.
 
@@ -39,6 +40,6 @@ These use one block class, `SliceDishBlock`. Its food values are placeholders.
 `kenur` (the stone stove, with a pot on it), `borma` and `borma_stuffat`. The owner said these "can pass for now".
 
 ## Still to draw for phase 1
-- **Dishes:** torta tal-lampuki (a slice dish), lampuka moqlija, dried and peppered ġbejniet.
+- **Dishes:** lampuka moqlija, dried and peppered ġbejniet.
 - **Then:** ingredients, crops with growth stages, fruit, and the station blocks (forn, quern, taġen).
 - **Before each batch, wait for the owner's photos** ([[2026-11-17 Bigilla v6b and galletti accepted; wait for photos before each batch]]).

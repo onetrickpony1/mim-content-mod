@@ -1013,13 +1013,47 @@ def glass_wall_v3():
     return a
 
 
+# owner: "change the timpana from being in a glass dish to a foil dish and change the icon to match": the ross
+# il-forn's foil tray (its side and bottom textures, same geometry) with the accepted pastry lid and cut face;
+# the icon is the ross v6 foil tray (pleated front wall) holding the timpana's pastry lid.
+TIMP_FOIL_PAL = dict(ICON3_PAL, **{k: TIMP_PAL2[k] for k in ("r", "R", "M", "L", "g")})
+TIMP_ICON_FOIL = with_food(ROSS_V5, TIMP_LID2, 3)
+
+
 def timpana():
     save_png(pastry_lid_v2(), "block/timpana_top.png")
-    save_png(glass_wall_v3(), "block/timpana_side.png")
+    save_png(side_tex(), "block/timpana_side.png")          # foil (was glass_wall_v3)
     save_png(timpana_inside(), "block/timpana_inside.png")
-    save_png(glass_bottom(), "block/timpana_bottom.png")
-    F.render(relight(TIMP_ICON2), TIMP_PAL2).save(os.path.join(TEX, "item", "timpana.png"))
+    save_png(bottom_tex(), "block/timpana_bottom.png")      # foil (was glass_bottom)
+    F.render(relight(TIMP_ICON_FOIL), TIMP_FOIL_PAL).save(os.path.join(TEX, "item", "timpana.png"))
     models("timpana")
+
+
+def timpana_foil_compare():
+    ims = [("Timpana (foil)", Image.open(os.path.join(TEX, "item", "timpana.png")).convert("RGBA"))]
+    for n, lbl in (("ross_il_forn", "Ross il-forn"), ("imqarrun_il_forn", "Imqarrun il-forn")):
+        ims.append((lbl, Image.open(os.path.join(TEX, "item", n + ".png")).convert("RGBA")))
+    glass = os.path.join(F.OUT, "timpana_icon_glass.png")
+    if os.path.exists(glass):
+        ims.append(("Timpana (old glass)", Image.open(glass).convert("RGBA")))
+    sheet = F.compare(ims)
+    shots = os.path.join(F.OUT, "ingame_timpana_foil")
+    crops = []
+    if os.path.isdir(shots):
+        for key in ("15-timpana-table", "15b-timpana-above"):
+            fs = [f for f in sorted(os.listdir(shots)) if key + ".png" in f]
+            if fs:
+                im = Image.open(os.path.join(shots, fs[0])).convert("RGBA")
+                w, h = im.size
+                crops.append(im.crop((0, int(h * 0.25), w, int(h * 0.62))))
+    out = Image.new("RGBA", (max([sheet.width] + [c.width for c in crops]),
+                             sheet.height + sum(c.height + 8 for c in crops)), (198, 198, 198, 255))
+    out.alpha_composite(sheet, (0, 0))
+    y = sheet.height + 8
+    for c in crops:
+        out.alpha_composite(c, (0, y))
+        y += c.height + 8
+    out.save(os.path.join(F.OUT, "timpana_foil_compare.png"))
 
 
 def timpana_compare():
@@ -1329,7 +1363,7 @@ def torta():
     save_png(torta_side(), "block/torta_lampuki_side.png")
     save_png(torta_inside(), "block/torta_lampuki_inside.png")
     save_png(plate_tex(), "block/torta_lampuki_plate.png")
-    torta_icons()[TORTA_ICON_PICK].save(os.path.join(TEX, "item", "torta_lampuki.png"))
+    # The icon is made by art/src/torta_icon_cake.py (owner pick "c", 2026-11-17), not here.
     name = "torta_lampuki"
     tex = {"particle": f"{NS}:block/{name}_top", "top": f"{NS}:block/{name}_top", "side": f"{NS}:block/{name}_side",
            "inside": f"{NS}:block/{name}_inside", "plate": f"{NS}:block/{name}_plate"}
@@ -1423,7 +1457,7 @@ def main():
     ross_icon_compare()
     imqarrun_icon_compare()
     timpana()
-    timpana_compare()
+    timpana_foil_compare()
     torta()
     torta_compare()
 
