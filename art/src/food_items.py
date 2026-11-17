@@ -32,8 +32,9 @@ def label(name):
 HERE = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.normpath(os.path.join(HERE, ".."))
 OUT = os.path.join(ART, "candidates")
-VANILLA = ("/tmp/claude-1000/-home-cultar-Apps-Untitled-Malta-in-Minecraft-Content-Mod/"
-           "e094b0a5-e6f9-4507-a5c0-ed895a344095/scratchpad/vanilla/assets/minecraft/textures/item")
+# Vanilla textures for the comparison sheets (Mojang's, so never committed): extract them from the game jar into
+# art/.vanilla (see art/README.md), or point MIM_VANILLA_TEXTURES at a "textures" folder.
+VANILLA = os.path.join(os.environ.get("MIM_VANILLA_TEXTURES", os.path.join(ART, ".vanilla")), "item")
 
 
 def hx(h):
