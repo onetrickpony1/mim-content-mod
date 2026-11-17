@@ -143,7 +143,7 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass", "soppa_tal_armla", "minestra", "kawlata", "kusksu", "brodu_tat_tigieg", "brodu_tal_laham", "qassata_irkotta", "qassata_pizelli", "qaghaq_hmira", "qaghqa_appostli", "dip_gbejna", "dip_tonn", "dip_tewm", "gelat_malti", "stuffat_bebbux", "fenek_moqli"):
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass", "soppa_tal_armla", "minestra", "kawlata", "kusksu", "brodu_tat_tigieg", "brodu_tal_laham", "qassata_irkotta", "qassata_pizelli", "qaghaq_hmira", "qaghqa_appostli", "dip_gbejna", "dip_tonn", "dip_tewm", "gelat_malti", "stuffat_bebbux", "fenek_moqli", "luzzu", "luzzu_red", "luzzu_brown"):
         write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
@@ -191,6 +191,12 @@ def main():
         "item.mimcontent.gelat_malti": "Ġelat Malti",
         "item.mimcontent.stuffat_bebbux": "Stuffat tal-Bebbux",
         "item.mimcontent.fenek_moqli": "Fenek Moqli",
+        "item.mimcontent.luzzu": "Luzzu (Green)",
+        "entity.mimcontent.luzzu": "Luzzu (Green)",
+        "item.mimcontent.luzzu_red": "Luzzu (Red)",
+        "entity.mimcontent.luzzu_red": "Luzzu (Red)",
+        "item.mimcontent.luzzu_brown": "Luzzu (Brown)",
+        "entity.mimcontent.luzzu_brown": "Luzzu (Brown)",
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
         "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
         "block.mimcontent.timpana": "Timpana",

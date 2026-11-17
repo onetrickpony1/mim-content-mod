@@ -8,12 +8,12 @@ type: "topic"
 - **Food, draft 3** (2026-11-17): [[Food systems]] holds six Maltese food systems in five phases. They give **bonuses only**, and vanilla farming is untouched. [[Food design]] (draft 1) is the catalogue of crops and dishes. Food is one part of the mod, not all of it.
 
 - **Dishes are paused** for now (owner, 2026-11-17).
-- **The luzzu** ([[Luzzu]]): a rideable Maltese fishing boat with its own model. Its look is in progress (version 3: the owner's oar, width and colour-scheme notes plus the critic's fixes). The buffs the owner picked (more seats, a fish hold, engine speed, finding home; the fishing bonus later) come next.
+- **The luzzu** ([[Luzzu]]): a rideable Maltese fishing boat with its own model. **Accepted** (2026-11-17) in three colour schemes, with diagonal icons. The buffs the owner picked are built, each with a config switch: 4 seats, a 27-slot fish hold, 25% faster on open sea, 10% faster heading home (the fishing bonus waits for the fish and season systems).
 - **Grocery delivery** ([[Grocery delivery ideas]]): 19 ideas for ordering imported ingredients to your door; ideas only, waiting for the owner's picks.
 - **How art is made:** a maker draws from the owner's photos, a separate critic judges it, and the owner has the final say ([[Art pipeline]]). The owner's photos come first: **wait for them before each batch**.
 
 ## Waiting on the owner
-- **The luzzu's look** (version 3) once it's ready.
+- **Trying the luzzu's buffs** in the game.
 - **Grocery delivery:** which ideas to take forward, and the 8 questions in [[Grocery delivery ideas]].
 - **Photos for the next food batch** when dishes start again: ingredients, crops, fruit and the station blocks.
 - **Decided 2026-11-17:** calendar both; start with phase 1 and its art ([[2026-11-17 Calendar both, start with phase 1 and its art]]). Earlier answers: rennet both, Maltese dishes only on Maltese blocks, freshness off, no dry-island system, no other-mod links ([[2026-11-17 Food – bonuses not penalties, food is one part of the mod, no other-mod links|decision]]).
@@ -27,4 +27,4 @@ type: "topic"
 - **Layer 3**, the full overhaul at generation: long-term, don't start ([[2026-11-15 Three layers – vanilla world, add-on mod, overhaul later|decision]]).
 
 ## Set up
-- The Fabric project (`mod/`, id `mimcontent`, a working name) holds the food art ([[Food in the mod]]), the kitchen blocks and the in-game screenshot test (`src/smoke`, run by `tools/run-art.sh`).
+- The Fabric project (`mod/`, id `mimcontent`, a working name) holds the food art ([[Food in the mod]]), the kitchen blocks, the luzzu with its buffs (switches in `config/mimcontent.json`) and the in-game test (`src/smoke`: the art screenshots and the luzzu buffs check, run by `tools/run-art.sh`).

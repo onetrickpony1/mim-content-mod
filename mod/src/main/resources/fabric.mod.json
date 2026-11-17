@@ -8,6 +8,10 @@
   "contact": {"homepage": "https://maltaminecraft.com"},
   "license": "All-Rights-Reserved",
   "environment": "*",
-  "entrypoints": {"main": ["com.maltaminecraft.mimcontent.MimContent"]},
+  "entrypoints": {
+    "main": ["com.maltaminecraft.mimcontent.MimContent"],
+    "client": ["com.maltaminecraft.mimcontent.client.MimContentClient"]
+  },
+  "mixins": ["mimcontent.mixins.json"],
   "depends": {"fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25", "fabric-api": "*"}
 }

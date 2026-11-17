@@ -236,8 +236,80 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("24-hotbar-fenek");
+
+            // the luzzu: a pool of still water past the tables, the luzzu beside a vanilla oak boat for scale
+            int pz = z + 25;
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:air", x - 9, y, z + 17, x + 9, y + 8, z + 34));
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:smooth_sandstone", x - 9, y - 3, z + 17, x + 9, y - 1, z + 34));
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:water", x - 7, y - 2, z + 21, x + 7, y - 1, z + 30));
+            server.runCommand(String.format(java.util.Locale.ROOT, "summon mimcontent:luzzu %.1f %d %.1f {Rotation:[90f,0f]}", x - 2.0, y, pz + 0.5));
+            server.runCommand(String.format(java.util.Locale.ROOT, "summon minecraft:oak_boat %.1f %d %.1f {Rotation:[90f,0f]}", x + 4.0, y, pz + 0.5));
+            context.runOnClient(mc -> {
+                if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+            });
+            world.getConnection().waitForChunksRender();
+            context.waitTicks(60);
+            double bx = x - 2.0, bz = pz + 0.5;
+            look(context, server, x + 1.0, y + 1.0, bz - 5.5, x + 1.0, y + 0.3, bz, "25-luzzu-side");
+            look(context, server, bx - 3.5, y + 1.0, bz - 2.5, bx, y + 0.3, bz, "25b-luzzu-front");
+            look(context, server, bx + 3.5, y + 1.0, bz - 2.5, bx, y + 0.3, bz, "25c-luzzu-back");
+            look(context, server, bx - 1.0, y + 3.0, bz - 1.0, bx, y, bz, "25d-luzzu-above");
+            // seated: the camera player in the luzzu, seen from behind
+            server.runCommand(String.format(java.util.Locale.ROOT, "tp @a %.2f %d %.2f", bx, y + 1, bz));
+            server.runCommand("ride @p mount @e[type=mimcontent:luzzu,limit=1]");
+            context.waitTicks(10);
+            context.runOnClient(mc -> {
+                mc.player.setYRot(35.0F);
+                mc.player.setXRot(20.0F);
+                mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK);
+            });
+            context.waitTicks(15);
+            context.takeScreenshot("25e-luzzu-ridden");
+            server.runCommand("ride @p dismount");
+            context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+            // ashore, as luzzus are seen on the slipways: the whole hull, keel and bottom paint, beside the oak boat
+            server.runCommand("kill @e[type=mimcontent:luzzu]");
+            server.runCommand("kill @e[type=minecraft:oak_boat]");
+            server.runCommand(String.format(java.util.Locale.ROOT, "summon mimcontent:luzzu %.1f %d %.1f {Rotation:[90f,0f]}", x - 2.0, y, z + 18.5));
+            server.runCommand(String.format(java.util.Locale.ROOT, "summon minecraft:oak_boat %.1f %d %.1f {Rotation:[90f,0f]}", x + 4.0, y, z + 18.5));
+            context.waitTicks(20);
+            look(context, server, x + 1.0, y + 1.0, z + 23.5, x + 1.0, y + 0.4, z + 18.5, "25f-luzzu-ashore-side");
+            look(context, server, bx - 3.0, y + 1.0, z + 22.5, bx, y + 0.4, z + 18.5, "25g-luzzu-ashore-bow");
+            // the colour schemes side by side on the water: green, red, brown
+            server.runCommand("kill @e[type=mimcontent:luzzu]");
+            String[] schemes = {"mimcontent:luzzu", "mimcontent:luzzu_red", "mimcontent:luzzu_brown"};
+            for (int i = 0; i < schemes.length; i++) {
+                server.runCommand(String.format(java.util.Locale.ROOT, "summon %s %.1f %d %.1f {Rotation:[90f,0f]}", schemes[i], x - 1.0, y, z + 22.5 + 3 * i));
+            }
+            context.waitTicks(30);
+            look(context, server, x + 5.0, y + 1.5, z + 20.5, x - 1.0, y + 0.3, z + 25.5, "25h-luzzu-schemes");
+            look(context, server, x - 6.5, y + 1.0, z + 25.5, x - 1.0, y + 0.5, z + 25.5, "25i-luzzu-schemes-bow");
+
+            // the luzzu items beside the vanilla boats
+            String[] boats = {"minecraft:oak_boat", "minecraft:spruce_boat", "mimcontent:luzzu", "mimcontent:luzzu_red", "mimcontent:luzzu_brown",
+                "minecraft:cherry_boat", "minecraft:mangrove_boat", "minecraft:bamboo_raft", "minecraft:dark_oak_boat"};
+            for (int i = 0; i < boats.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + boats[i]);
+            }
+            context.runOnClient(mc -> {
+                if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+            });
+            server.runCommand(String.format("tp @a %d %d %d 0 -60", x, y, z - 7));
+            context.waitTicks(20);
+            context.takeScreenshot("26-hotbar-luzzu");
             System.out.println("[smoke] art screenshots written");
         }
+    }
+
+    /** A shot from feet position (fx, fy, fz) looking at (tx, ty, tz), standing on an invisible barrier (kept out of
+     *  the water, so the water shows no hole round it). */
+    private static void look(ClientGameTestContext context, net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server,
+                             double fx, double fy, double fz, double tx, double ty, double tz, String name) {
+        double dx = tx - fx, dy = ty - (fy + 1.62), dz = tz - fz;
+        float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
+        float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+        server.runCommand(String.format("setblock %d %d %d minecraft:barrier", (int) Math.floor(fx), (int) Math.floor(fy) - 1, (int) Math.floor(fz)));
+        shot(context, server, fx, fy, fz, yaw, pitch, name);
     }
 
     private static void shot(ClientGameTestContext context, net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server,

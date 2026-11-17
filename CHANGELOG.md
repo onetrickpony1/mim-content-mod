@@ -3,6 +3,11 @@
 ## Unreleased
 
 ### Features
+- **The luzzu.** Malta's painted fishing boat, with its own model, in three colour schemes (green, red and brown). Place it and ride it like a vanilla boat. It has four extras, each one switchable in `config/mimcontent.json` (set one to `false` and that part works like a vanilla boat again; vanilla boats never change):
+  - **4 seats** instead of 2. The first one aboard steers.
+  - **A fish hold** with 27 slots, like a chest boat, without giving up a seat. Sneak and use the boat to open it, or press your inventory key while riding. Whatever is in it drops when the boat breaks.
+  - **An engine:** 25% faster than a vanilla boat out on open sea, normal speed near the shore and in shallow water.
+  - **It finds home:** 10% faster when you steer toward the harbour it last set out from (where you placed it, or where its driver last stepped off at a shore).
 - **Maltese food in the game.** ħobż tal-Malti, ftira, ħobż biż-żejt, ftira Għawdxija, galletti, pastizzi tal-irkotta, tal-piżelli and the two tax-xema' kinds, ġbejna (fresh, dried and peppered), imqaret, kannoli and qagħaq tal-għasel, each with its own icon.
 - **Qassatat and bread rings.** Qassata tal-irkotta and tal-piżelli, round pleated pastries with the filling showing on top, and two sesame bread rings: the everyday qagħqa tal-ħmira and the big Holy Week qagħqa tal-appostli with almonds.
 - **Ġelat Malti.** Grandma's ice cream: cream scoops with toasted almonds and glacé cherries in a cream fluted bowl.

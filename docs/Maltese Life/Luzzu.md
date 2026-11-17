@@ -2,7 +2,7 @@
 type: item
 kind: boat
 subject: Maltese Life
-status: open
+status: accepted
 tier: 
 maltese: Luzzu
 english: Maltese fishing boat
@@ -12,24 +12,31 @@ id: mimcontent:luzzu
 
 The luzzu is Malta's traditional double-ended fishing boat, brightly painted, with the Eye of Osiris on the bow. In the game it is a **rideable boat with its own 3D model**, placed and steered like a vanilla boat ([[2026-11-17 Luzzu - a rideable boat with its own model]]).
 
-**State (2026-11-17):** in the mod as a work in progress; the look is being redrawn round by round (maker, critic, owner). Not accepted yet.
+**State (2026-11-17):** **accepted by the owner** after nine rounds (maker, critic, owner), in three colour schemes, with the diagonal item icons ([[2026-11-17 Luzzu accepted, diagonal icons]]).
 
 ## How you get it
-- Placed from the luzzu item, like a vanilla boat; breaking it gives the item back. Crafting comes later.
+- Placed from the luzzu item, like a vanilla boat; breaking it gives the item back (and whatever is in the fish hold). Crafting comes later.
 
 ## The look
 - **Its own model**, not a recoloured vanilla boat: a pointed hull at both ends, a sheer that rises toward bow and stern, tall raked posts (the bow post taller), rubbing strakes, an open middle with end decks.
 - **Paint:** banded like the real boats, with the Eye of Osiris on both sides of the bow.
 - **Owner's notes on version 2** ([[2026-11-17 Luzzu - oars match the accent, a bit wider, several colour schemes]]): oars shaped like real luzzu oars and painted in the boat's accent colour; a little wider; **several colour schemes** (green accent with green oars; red accent, blue at the top, blue oars; more if the photos show them), each its own boat and item like vanilla's wood types.
+- **Later notes:** it sits high, with only the bottom paint under water ([[2026-11-17 Luzzu - sits higher in the water]]); both ends come to a point, seen from above and head-on ([[2026-11-17 Luzzu - pointed ends]]).
+- **Colour schemes:** green (`mimcontent:luzzu`: yellow capping, red band, green posts and oars), red (`luzzu_red`: blue at the top, red band and posts, blue oars), brown (`luzzu_brown`: a varnished wood band, wooden posts and oars).
+- **Item icons:** the diagonal pose of the vanilla boat icons (owner: "theyre cute").
 
 ## Buffs (picked by the owner; each behind a config switch, vanilla boats unchanged)
-From [[2026-11-17 Luzzu buffs - seats, fish hold, fishing, engine, homing]]:
-1. **More seats:** 3 to 4 players.
-2. **A fish hold:** storage without losing a seat.
-3. **Fishing bonus:** better catches, and the lampuka under the kannizzati in season. Waits for the fish and season systems.
-4. **Engine speed:** about 20 to 30% faster than a vanilla boat on open sea, normal near the shore.
-5. **It finds home:** a small speed boost toward the harbour it last set out from.
-Building the buffs starts once the current round of the look is done (owner: "you can start on them").
+From [[2026-11-17 Luzzu buffs - seats, fish hold, fishing, engine, homing]]. **Built 2026-11-17** (waiting for the owner to try them). Each has its own switch in `config/mimcontent.json`, written with every switch on the first time the game starts. `false` gives that part back its vanilla boat behaviour; restart after editing. On a server, the server's file decides for everyone.
+
+| Buff | Switch | What it does |
+|---|---|---|
+| More seats | `luzzu_more_seats` | **4 seats** (vanilla 2), along the hull: the helmsman at the oars amidships (the first to board, the only one who steers), then one aft, one in the bow, one at the stern. Same hitbox as a vanilla boat. |
+| A fish hold | `luzzu_fish_hold` | **27 slots**, like a chest boat, without losing a seat. Use to board; sneak and use (or use a full boat) to open the hold; while riding, the inventory key opens it. Saved with the boat; everything in it drops when the boat breaks (even with the switch off, so nothing is lost). |
+| Fishing bonus | (none yet) | **Not built.** Waits for the fish and season systems; a note marks where it goes. |
+| Engine speed | `luzzu_engine` | **25% faster** than a vanilla boat on open sea: water all round for 4 blocks and at least 3 deep. Near the shore, in a channel or in shallow water it goes at vanilla speed. The speed eases in and out over a couple of seconds, so there's no jolt. |
+| It finds home | `luzzu_finds_home` | Remembers its **harbour**: where it was placed, and where its driver last stepped off at a shore (not at open sea). Steering within **30 degrees** of the harbour, more than 16 blocks away, adds **10%** (on top of the engine). Saved with the boat. |
+
+The seats sit 2 px higher than a vanilla boat's, on the luzzu's raised floor (it rides high in the water).
 
 ## Art
 - Made by `art/src/luzzu.py`, which writes the texture, the item icon and the model code together, so they can't drift apart.

@@ -3,22 +3,30 @@ package com.maltaminecraft.mimcontent;
 import com.maltaminecraft.mimcontent.block.BormaBlock;
 import com.maltaminecraft.mimcontent.block.KenurBlock;
 import com.maltaminecraft.mimcontent.block.SliceDishBlock;
+import com.maltaminecraft.mimcontent.entity.LuzzuBoat;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.dispenser.BoatDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 
-/** Art pilot (2026-11-17): the kenur, the borma and three foods, registered only so they can be seen in-game. */
+/** Art pilot (2026-11-17): the kenur, the borma and the foods, registered only so they can be seen in-game; and the luzzu, a rideable boat. */
 public class MimContent implements ModInitializer {
     public static final String MOD_ID = "mimcontent";
 
@@ -83,11 +91,27 @@ public class MimContent implements ModInitializer {
     public static final Item GBEJNA_NIEXFA = item("gbejna_niexfa", Item::new, new Item.Properties());
     public static final Item GBEJNA_TAL_BZAR = item("gbejna_tal_bzar", Item::new, new Item.Properties());
 
+    /**
+     * The luzzu: placed, ridden and broken like a vanilla boat, with its own model and the owner's buffs (more seats,
+     * a fish hold, an engine, finding home; each switchable in config/mimcontent.json, see LuzzuBoat).
+     * One type per colour scheme, like vanilla's wood types: green (the default), red and brown.
+     */
+    public static final EntityType<LuzzuBoat> LUZZU = luzzu("luzzu", () -> MimContent.LUZZU_ITEM);
+    public static final Item LUZZU_ITEM = boatItem("luzzu", LUZZU);
+    public static final EntityType<LuzzuBoat> LUZZU_RED = luzzu("luzzu_red", () -> MimContent.LUZZU_RED_ITEM);
+    public static final Item LUZZU_RED_ITEM = boatItem("luzzu_red", LUZZU_RED);
+    public static final EntityType<LuzzuBoat> LUZZU_BROWN = luzzu("luzzu_brown", () -> MimContent.LUZZU_BROWN_ITEM);
+    public static final Item LUZZU_BROWN_ITEM = boatItem("luzzu_brown", LUZZU_BROWN);
+
     @Override
     public void onInitialize() {
+        MimConfig.load();
+        DispenserBlock.registerBehavior(LUZZU_ITEM, new BoatDispenseItemBehavior(LUZZU));
+        DispenserBlock.registerBehavior(LUZZU_RED_ITEM, new BoatDispenseItemBehavior(LUZZU_RED));
+        DispenserBlock.registerBehavior(LUZZU_BROWN_ITEM, new BoatDispenseItemBehavior(LUZZU_BROWN));
     }
 
-    static Identifier id(String path) {
+    public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
@@ -96,6 +120,20 @@ public class MimContent implements ModInitializer {
         Block block = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(props.setId(key)));
         item(name, p -> new BlockItem(block, p), new Item.Properties().useBlockDescriptionPrefix());
         return block;
+    }
+
+    private static EntityType<LuzzuBoat> luzzu(String name, Supplier<Item> drop) {
+        return entity(name, EntityType.Builder.<LuzzuBoat>of((type, level) -> new LuzzuBoat(type, level, drop), MobCategory.MISC)
+            .noLootTable().sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+    }
+
+    private static Item boatItem(String name, EntityType<LuzzuBoat> type) {
+        return item(name, p -> new BoatItem(type, p), new Item.Properties().stacksTo(1));
+    }
+
+    private static <T extends Entity> EntityType<T> entity(String name, EntityType.Builder<T> builder) {
+        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id(name));
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
     }
 
     private static Item item(String name, Function<Item.Properties, Item> factory, Item.Properties props) {
