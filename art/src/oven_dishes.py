@@ -1163,8 +1163,7 @@ def torta_inside():
     a black olive, a pea, a fleck of carrot), a 1 px bottom crust."""
     a = noise_tex("#3a5222", [("#b8946a", 0.22), ("#c4a878", 0.3), ("#a88c60", 0.14), ("#2a3c18", 0.12), ("#22201c", 0.05),
                               ("#78a040", 0.04), ("#d0742a", 0.02)], 83)
-    a[11, :, :3] = hx("#e4ac52")
-    a[12, :, :3] = hx("#c88a3c")
+    a[11, :, :3] = hx("#d89c48")      # owner: "crust is too thick on top" -> a 1 px top crust
     a[15, :, :3] = hx("#b07434")
     return a
 
@@ -1193,7 +1192,7 @@ TORTA_ICON2 = [
     ".oLlLLlxxllslmO.",
     ".oLsllllllllmmO.",
     "oLdLdldldldmdmmO",
-    "oPmdmdmdmdmdmdDO",
+    "oPpppppppppppppO",
     "oPpppppppppppppO",
     ".oPppppppppppqO.",
     "..oqqqqqqqqqqO..",
@@ -1206,12 +1205,38 @@ def torta_icon():
     return TORTA_ICON2[2:] + TORTA_ICON2[:2]
 
 
+# owner: "make the icon more similar to the timpana ross il forn etc in style but rounded instead inside of the dish":
+# the dish icons' framing, rim and front wall, rounded into an oval terracotta pie dish, a thin golden lid inside
+TORTA_PAL3 = {"O": hx("#623a26"), "o": hx("#8a583c"), "H": hx("#c08060"), "m": hx("#a86a4c"), "n": hx("#7c4630"),
+              "f": hx("#b47454"), "w": hx("#9c5c40"), "W": hx("#884e36"), "v": hx("#74422e"), "k": hx("#6c3a28"),
+              "L": hx("#f0c470"), "r": hx("#e0a84e"), "R": hx("#c08030"), "M": hx("#a86c2c"), "g": hx("#f8e8c0"),
+              "x": hx("#6e4220")}
+TORTA_ICON3 = [
+    "................",
+    "...OOOOOOOOOO...",
+    ".OOHHHHHHHmmmOO.",
+    ".OHRLLRLLRLLRnO.",
+    "OHLLrrrgrrrrrLnO",
+    "OHRLgrrrrrrrrRnO",
+    "OHLrrrrxxrrrrLnO",
+    "OHRrrgrrrrrrrRnO",
+    "OHLrrrrrrrgrrLnO",
+    ".OHRMRMRMRMRMnO.",
+    ".OmffffffffffnO.",
+    ".OmwwwwwwwwwwkO.",
+    "..OmwwwwwwwwkO..",
+    "...OOOOOOOOOO...",
+    "................",
+    "................",
+]
+
+
 def torta():
     save_png(torta_top(), "block/torta_lampuki_top.png")
     save_png(torta_side(), "block/torta_lampuki_side.png")
     save_png(torta_inside(), "block/torta_lampuki_inside.png")
     save_png(plate_tex(), "block/torta_lampuki_plate.png")
-    F.render(torta_icon(), TORTA_PAL).save(os.path.join(TEX, "item", "torta_lampuki.png"))
+    F.render(relight(TORTA_ICON3), TORTA_PAL3).save(os.path.join(TEX, "item", "torta_lampuki.png"))
     name = "torta_lampuki"
     tex = {"particle": f"{NS}:block/{name}_top", "top": f"{NS}:block/{name}_top", "side": f"{NS}:block/{name}_side",
            "inside": f"{NS}:block/{name}_inside", "plate": f"{NS}:block/{name}_plate"}
@@ -1226,12 +1251,13 @@ def torta():
 
 
 def torta_compare():
-    ims = [("Torta tal-lampuki", Image.open(os.path.join(TEX, "item", "torta_lampuki.png")).convert("RGBA")),
-           ("Timpana", Image.open(os.path.join(TEX, "item", "timpana.png")).convert("RGBA"))]
+    ims = [(t, Image.open(os.path.join(TEX, "item", n + ".png")).convert("RGBA")) for t, n in (
+        ("Torta tal-lampuki", "torta_lampuki"), ("Timpana", "timpana"), ("Ross il-forn", "ross_il_forn"),
+        ("Imqarrun il-forn", "imqarrun_il_forn"))]
     for v in ("pumpkin_pie", "cake"):
         ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
     sheet = F.compare(ims)
-    shots = os.path.join(F.OUT, "ingame_torta_v3")
+    shots = os.path.join(F.OUT, "ingame_torta_v4")
     crops = []
     if os.path.isdir(shots):
         for key in ("16-torta-table", "16b-torta-above"):
@@ -1240,6 +1266,9 @@ def torta_compare():
                 im = Image.open(os.path.join(shots, fs[0])).convert("RGBA")
                 w, h = im.size
                 crops.append(im.crop((0, int(h * 0.25), w, int(h * 0.62))))
+                if key == "16-torta-table":   # a close crop of the cut face (the pie eaten 2)
+                    c = im.crop((int(w * 0.27), int(h * 0.42), int(w * 0.40), int(h * 0.58)))
+                    crops.append(c.resize((c.width * 4, c.height * 4), Image.NEAREST))
     out = Image.new("RGBA", (max([sheet.width] + [c.width for c in crops]),
                              sheet.height + sum(c.height + 8 for c in crops)), (198, 198, 198, 255))
     out.alpha_composite(sheet, (0, 0))
