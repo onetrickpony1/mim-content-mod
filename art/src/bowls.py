@@ -1,0 +1,279 @@
+"""Item textures for four Maltese bowl dishes (candidates only, 2026-11-17; NOT in the mod).
+
+One shared terracotta bowl (the accepted borma's clay colours, textures/block/borma_side.png) so the four read as a set,
+and clearly not vanilla's low dark wooden bowl: orange-red clay, deeper, a pale lip, a small foot.
+Two bowl shapes: "a" deep (3/4 view), "b" a lower, wider dish with a cream glaze line on the lip (†: Maltese
+earthenware is often glazed inside; unchecked).
+
+Contents (references art/references/stuffat_1-2, aljotta_1, qarnit_1-2, bigilla_1; see SOURCES.tsv):
+- Stuffat tal-fenek: dark red-brown tomato-and-wine sauce, rabbit pieces, potato, carrot, peas†.
+- Aljotta: fish broth with garlic, herbs and tomato (en Wikipedia "Maltese cuisine"); the Commons photo shows an orange
+  broth with pale fish chunks; rice, a lemon wedge and marjoram/mint†.
+- Stuffat tal-qarnit: octopus stewed in a dark red sauce; the Commons photos show curled pieces with suckers, green
+  olives and capers.
+- Bigilla: mashed tic beans (ful ta' Ġirba), olive oil, salt, red pepper, a dip (en Wikipedia "Bigilla"); the Commons
+  photo shows a khaki-brown paste with parsley and chilli.
+
+Run:  art/.venv/bin/python art/src/bowls.py
+Writes art/candidates/{stuffat_fenek,aljotta,stuffat_qarnit,bigilla}_{a,b}.png and bowls_compare.png.
+"""
+import math
+import os
+import sys
+
+from PIL import Image
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import food_items as F  # noqa: E402
+
+hx, render, outline3 = F.hx, F.render, F.outline3
+
+PAL = {
+    # terracotta bowl (borma family)
+    "o": hx("#7e4028"), "O": hx("#62301c"), "H": hx("#d49a72"), "L": hx("#c27a52"), "l": hx("#b06a46"),
+    "m": hx("#a0583a"), "d": hx("#874a33"), "D": hx("#6e3a26"), "g": hx("#efe0b8"),   # g: cream glaze line
+    # stuffat tal-fenek
+    "1": hx("#96452a"), "2": hx("#7a3420"), "3": hx("#5a2414"),                       # sauce lit / mid / dark
+    "r": hx("#a97650"), "R": hx("#7e5434"),                                          # rabbit
+    "p": hx("#ecd08a"), "P": hx("#c9a35a"),                                          # potato
+    "c": hx("#d9762a"), "e": hx("#6f9a3a"),                                          # carrot, pea
+    # aljotta
+    "4": hx("#eba25c"), "5": hx("#dc8838"), "6": hx("#bf6a28"),                       # broth
+    "f": hx("#f3ede0"), "F": hx("#d5cbb8"), "i": hx("#fbf7ea"),                      # fish, fish shade, rice
+    "y": hx("#f4de4c"), "Y": hx("#d4b02a"), "h": hx("#5f8a3a"),                      # lemon, rind, herb
+    # stuffat tal-qarnit
+    "7": hx("#a83a26"), "8": hx("#8a2a1c"), "9": hx("#661c12"),                       # sauce
+    "q": hx("#bc6a84"), "Q": hx("#8a4058"), "s": hx("#f0c4cc"),                      # octopus, shade, suckers
+    "v": hx("#8a9a40"), "V": hx("#5a6624"), "k": hx("#4e5e26"),                      # green olive, its shade, caper
+    # bigilla
+    "a": hx("#ab9a6c"), "b": hx("#8c7c52"), "B": hx("#6c5e3c"),                       # khaki paste lit / mid / shade
+    "j": hx("#cdb848"), "x": hx("#c8402a"), "z": hx("#4f8a3a"),                      # oil, chilli, parsley
+    "t": hx("#e2c088"), "T": hx("#b48c52"),                                          # galletta
+}
+
+
+def blank():
+    return [["."] * 16 for _ in range(16)]
+
+
+def E(px, py, cx, cy, rx, ry):
+    return ((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2 <= 1
+
+
+# The shared bowls, drawn by hand; '?' marks the contents' surface. a: deep, 3/4 view, small foot.
+BOWL_A = [
+    "................",
+    "................",
+    "....oooooooo....",
+    "..ooHHHHLLLLOO..",
+    ".oHH????????LLO.",
+    ".oH??????????LO.",
+    ".oL??????????lO.",
+    ".OLL????????llO.",
+    "..OLLLLLllllOO..",
+    "..OlllllmmmddO..",
+    "...OllmmmmddO...",
+    "....OlmmmddO....",
+    ".....ODDDDO.....",
+    "......OOOO......",
+    "................",
+    "................",
+]
+# b: lower and wider, a cream glaze line inside the lip (†), a wider foot.
+BOWL_B = [
+    "................",
+    "................",
+    "................",
+    "....oooooooo....",
+    "..ooggggggggOO..",
+    ".oHg????????gLO.",
+    ".oH??????????LO.",
+    ".oL??????????lO.",
+    ".OLg????????glO.",
+    ".OLLLLLlllllldO.",
+    "..OOllllmmmdOO..",
+    "....ODDDDDDO....",
+    ".....OOOOOO.....",
+    "................",
+    "................",
+    "................",
+]
+
+
+def bowl(kind):
+    """The shared bowl. Returns (grid, zone) where zone[y][x] is True for the contents' surface."""
+    rows = BOWL_A if kind == "a" else BOWL_B
+    g = [list(r) for r in rows]
+    zone = [[c == "?" for c in r] for r in rows]
+    return g, zone
+
+
+def fill(kind, base, pieces):
+    """Contents: a surface coloured by 'base' (lit, mid, dark from the top left / inner shadow at the back), then the
+    hand-placed pieces {(x, y): ch} (only on the surface)."""
+    g, zone = bowl(kind)
+    zs = [(x, y) for y in range(16) for x in range(16) if zone[y][x]]
+    top = min(y for _, y in zs)
+    for x, y in zs:
+        back = y == top or not zone[y - 1][x]                 # the inner shadow under the back lip
+        g[y][x] = base[2] if back else (base[0] if (x + y) % 5 == 0 and x < 9 else base[1])
+    for (x, y), ch in pieces.items():
+        if zone[y][x]:
+            g[y][x] = ch
+    return g
+
+
+DY = {"a": 0, "b": 1}   # the b bowl's surface sits one row lower
+
+
+def dish(kind, base, pieces, extra=None):
+    """Contents in 'a' coordinates (surface rows 4-7), moved down for the b bowl; extra = pixels drawn over the
+    bowl itself (a lemon wedge or a galletta on the rim), also in 'a' coordinates."""
+    dy = DY[kind]
+    g = fill(kind, base, {(x, y + dy): c for (x, y), c in pieces.items()})
+    for (x, y), c in (extra or {}).items():
+        g[y + dy][x] = c
+    return g
+
+
+FENEK = {(5, 5): "r", (6, 5): "r", (5, 6): "R", (6, 6): "R", (7, 4): "r", (9, 6): "p", (10, 6): "p", (10, 7): "P",
+         (9, 7): "P", (8, 5): "e", (11, 5): "e", (4, 7): "e", (7, 7): "e", (10, 4): "p", (11, 4): "P"}
+ALJOTTA = {(5, 5): "f", (6, 5): "f", (6, 6): "F", (9, 6): "f", (10, 6): "F", (8, 4): "f", (4, 6): "i", (7, 6): "i",
+           (11, 6): "i", (8, 7): "i", (8, 5): "h", (5, 7): "h", (10, 5): "i"}
+LEMON = {(11, 2): "Y", (12, 2): "y", (12, 3): "y", (13, 3): "Y", (11, 3): "y", (13, 4): "Y", (12, 4): "y"}
+QARNIT = {(6, 4): "q", (7, 4): "q", (8, 4): "Q", (5, 5): "q", (8, 5): "s", (9, 5): "Q", (5, 6): "s", (6, 6): "q",
+          (7, 6): "s", (8, 6): "Q", (10, 6): "v", (11, 6): "V", (11, 5): "v", (4, 6): "k", (10, 7): "k", (6, 7): "q"}
+BIGILLA = {(4, 5): "B", (5, 4): "B", (6, 4): "B", (7, 4): "B", (10, 5): "B", (11, 6): "B", (6, 6): "B", (7, 6): "B",
+           (8, 6): "B", (9, 6): "B", (6, 5): "j", (7, 5): "j", (8, 5): "j", (9, 4): "x", (5, 6): "z", (10, 7): "z",
+           (11, 5): "z", (7, 7): "x", (4, 7): "z"}
+GALLETTA = {(12, 1): "o", (13, 1): "o", (11, 2): "o", (12, 2): "t", (13, 2): "t", (14, 2): "O", (11, 3): "t",
+            (12, 3): "t", (13, 3): "T", (14, 3): "O", (11, 4): "T", (12, 4): "t", (13, 4): "T", (14, 4): "O",
+            (12, 5): "O", (13, 5): "O"}
+
+CANDS = [(f"{n}_{k}", k, base, pieces, extra) for n, base, pieces, extra in (
+    ("stuffat_fenek", "123", FENEK, None), ("aljotta", "456", ALJOTTA, LEMON),
+    ("stuffat_qarnit", "789", QARNIT, None), ("bigilla", "abB", BIGILLA, None)) for k in "ab"]
+CANDS = [(n, k, b, p, (GALLETTA if n == "bigilla_b" else e)) for n, k, b, p, e in CANDS]
+LABELS = {"stuffat_fenek": "Stuffat tal-fenek", "aljotta": "Aljotta", "stuffat_qarnit": "Stuffat tal-qarnit",
+          "bigilla": "Bigilla"}
+
+
+def main():
+    ims = []
+    for name, kind, base, pieces, extra in CANDS:
+        rows = ["".join(r) for r in dish(kind, base, pieces, extra)]
+        F.check(name, rows)
+        im = render(rows, PAL)
+        im.save(os.path.join(F.OUT, name + ".png"))
+        ims.append((LABELS[name[:-2]] + " " + kind, im))
+    for v in ("bowl", "mushroom_stew", "rabbit_stew", "beetroot_soup"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
+    F.compare(ims).save(os.path.join(F.OUT, "bowls_compare.png"))
+    main_v2()
+    print("wrote", len(CANDS), "bowl candidates, bowls_compare.png, the v2 set and bowls_final.png")
+
+
+# ---- v2 (critic round 1 + the owner's photos art/references/bowls_owner/, which override the Commons ones) ----
+# All four in bowl b. Owner's photos: fenek in a terracotta dish, red-brown sauce, rabbit, potato, carrot, peas, bay;
+# aljotta orange-red broth, white fish, rice, lots of parsley, lemon; qarnit dark red sauce, dark red-purple curled
+# tentacles with suckers, potato, peas, black olives; bigilla a purple-brown/grey-brown bean paste (not the critic's
+# pinkish-brown), olive oil, plenty of parsley and red chilli, galletti.
+PAL.update({"G": hx("#c9b08a"), "u": hx("#d8c49a"),                       # glaze line in shade (critic)
+            "n": hx("#4a6a30"),                                           # bay leaf
+            "M": hx("#8e2e40"), "N": hx("#5e1a28"), "S": hx("#e2aab0"),   # octopus as in the owner's photos
+            "K": hx("#2b2622"),                                           # black olive
+            "A": hx("#8a6c66"), "W": hx("#6e5250"), "X": hx("#503c3a"),   # bigilla paste: lit, mid, shade
+            "J": hx("#d6b04a")})                                          # olive oil
+
+
+def v2(base, pieces, extra=None):
+    g = fill("b", base, pieces)
+    for (x, y), c in (extra or {}).items():
+        g[y][x] = c
+    g[8][12], g[8][3] = "G", "u"
+    return g
+
+
+def stuffat_fenek_v2():
+    return v2("123", {(7, 5): "r", (8, 5): "R", (6, 6): "r", (7, 6): "r", (6, 7): "R", (7, 7): "R", (10, 6): "p",
+                      (11, 6): "p", (10, 7): "P", (11, 7): "P", (4, 7): "c", (9, 8): "c", (5, 6): "e", (9, 6): "e",
+                      (8, 8): "e", (12, 7): "e", (10, 5): "n", (11, 5): "n"})
+
+
+def aljotta_v2():
+    p = {(x, y + 1): c for (x, y), c in ALJOTTA.items()}
+    p.update({(5, 5): "h", (10, 8): "h", (7, 6): "h", (4, 6): "h"})
+    return v2("456", p, {(x, y + 1): c for (x, y), c in LEMON.items()})
+
+
+def stuffat_qarnit_v2():
+    """A curled tentacle (a C round a dark centre, pale suckers on its inner side), potato, peas, black olives."""
+    return v2("789", {(5, 7): "M", (5, 6): "M", (6, 5): "M", (7, 5): "M", (8, 6): "N", (7, 7): "N", (6, 7): "S",
+                      (6, 6): "S", (7, 6): "9", (10, 6): "p", (11, 6): "P", (9, 8): "p", (4, 8): "e", (11, 7): "e",
+                      (9, 6): "e", (10, 7): "K", (9, 5): "K", (3, 7): "e"})
+
+
+def bigilla_v2():
+    return v2("AWX", {(4, 6): "X", (5, 5): "X", (10, 6): "X", (11, 7): "X", (5, 6): "J", (6, 6): "J", (7, 6): "J",
+                      (8, 6): "z", (9, 6): "z", (8, 7): "z", (10, 7): "z", (6, 8): "z", (11, 6): "z", (5, 7): "z",
+                      (9, 5): "x", (7, 8): "x", (9, 7): "x", (4, 8): "W", (10, 8): "W"},
+              {**{(x, y + 1): c for (x, y), c in GALLETTA.items()}, (12, 6): "X", (13, 6): "L"})
+
+
+PAL["E"] = hx("#b89a3e")   # oil, pooled darker
+
+
+def bigilla_v3():
+    """Critic r2: the oil as a pooled drizzle."""
+    g = bigilla_v2()
+    for (x, y), c in {(5, 6): "E", (6, 6): "J", (7, 6): "W", (6, 7): "E"}.items():
+        g[y][x] = c
+    return g
+
+
+def stuffat_qarnit_v3():
+    """Critic r2: the tentacle as a C-curl (outer arc, suckers on the inner curve, a dark curled tip)."""
+    g = stuffat_qarnit_v2()
+    for (x, y), c in {(5, 6): "9", (5, 7): "9", (6, 6): "8", (6, 7): "8", (5, 5): "9"}.items():
+        g[y][x] = c
+    for x, y in ((4, 6), (5, 5), (6, 5), (7, 6), (7, 7), (6, 8)):
+        g[y][x] = "M"
+    g[6][6] = g[7][5] = "S"
+    g[8][5] = "N"
+    return g
+
+
+FINAL = (("stuffat_fenek_v2", "Stuffat tal-fenek v2"), ("aljotta_v2", "Aljotta v2"),
+         ("stuffat_qarnit_v3", "Stuffat tal-qarnit v3"), ("bigilla_v3", "Bigilla v3"))
+
+
+V2 = (("stuffat_fenek_v2", stuffat_fenek_v2), ("aljotta_v2", aljotta_v2), ("stuffat_qarnit_v2", stuffat_qarnit_v2),
+      ("bigilla_v2", bigilla_v2), ("stuffat_qarnit_v3", stuffat_qarnit_v3), ("bigilla_v3", bigilla_v3))
+
+
+def main_v2():
+    made = {}
+    for name, make in V2:
+        rows = ["".join(r) for r in make()]
+        F.check(name, rows)
+        made[name] = render(rows, PAL)
+        made[name].save(os.path.join(F.OUT, name + ".png"))
+    ims = [(lbl, made[n]) for n, lbl in FINAL]
+    for v in ("bowl", "mushroom_stew", "rabbit_stew", "beetroot_soup"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
+    F.compare(ims).save(os.path.join(F.OUT, "bowls_final.png"))
+
+
+def show_zone(kind):
+    g, zone = bowl(kind)
+    return ["".join("#" if zone[y][x] else ("." if g[y][x] == "." else "+") for x in range(16)) for y in range(16)]
+
+
+if __name__ == "__main__" and "--zones" in sys.argv:
+    for k in "ab":
+        print("\n".join(show_zone(k)))
+        print()
+    sys.exit()
+if __name__ == "__main__":
+    main()

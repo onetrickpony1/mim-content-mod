@@ -481,6 +481,64 @@ FINAL = ("imqaret_v2", "kannoli_v2", "qaghaq_ghasel_a")
 LABELS = {"imqaret": "Imqaret", "kannoli": "Kannoli", "qaghaq_ghasel": "Qagħaq tal-għasel"}
 
 
+# ---- Accepted (owner 2026-11-17), frozen and installed: imqaret v2, kannoli v2, qagħaq tal-għasel a ----
+IMQARET_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    "................",
+    ".....oooooooooo.",
+    "....okhhlhlllkO.",
+    "....okhllmllkO..",
+    "...okllmhmmlkO..",
+    "...oklmmmdmkO...",
+    "..okmmdmmdmkO...",
+    "..OkmddmddkO....",
+    ".OOOOOOOOOOO....",
+    "................",
+    "................",
+    "................",
+    "................",
+]
+KANNOLI_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    ".........occCc..",
+    "........oowwWc..",
+    ".......ohdDWcc..",
+    "......ohdlDO.O..",
+    ".....ohdlmdO....",
+    "....ohllhdO.....",
+    "....oddmdO......",
+    "..ocwDDdO.......",
+    "..cWwWOO........",
+    "..cWWCO.........",
+    "...ccc..........",
+    "................",
+    "................",
+]
+QAGHAQ_ACCEPTED = [
+    "................",
+    "......oooo......",
+    "....oohllloo....",
+    "...ohKkklllkO...",
+    "..ohlmooooKklO..",
+    ".ohlmo....OkllO.",
+    ".okko......OllO.",
+    ".oKKo......OllO.",
+    ".ollo......OKKO.",
+    ".ollo......OkkO.",
+    ".ollkO....OhlmO.",
+    "..olkKOOOOhlmO..",
+    "...OklllkkKmO...",
+    "....OOllmmOO....",
+    "......OOOO......",
+    "................",
+]
+INSTALL = (("imqaret", IMQARET_ACCEPTED, FRY2), ("kannoli", KANNOLI_ACCEPTED, FRY2), ("qaghaq_ghasel", QAGHAQ_ACCEPTED, QAG))
+
+
 def main():
     ims, made = [], {}
     for name, make, pal in CANDS:
@@ -507,6 +565,8 @@ def main():
         vm[name] = render(rows, pal)
         vm[name].save(os.path.join(F.OUT, name + ".png"))
     variants_sheet(vm).save(os.path.join(F.OUT, "sweets_variants.png"))
+    for item, rows, pal in INSTALL:
+        render(rows, pal).save(os.path.join(F.MOD_ITEMS, item + ".png"))
     print("wrote", len(CANDS), "sweets candidates and sweets_compare.png")
 
 
