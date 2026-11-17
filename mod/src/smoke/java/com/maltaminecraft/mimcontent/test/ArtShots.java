@@ -143,12 +143,28 @@ public class ArtShots implements FabricClientGameTest {
             context.takeScreenshot("10-hotbar-sweets");
             // the bowls
             String[] bowls = {"minecraft:bowl", "mimcontent:stuffat_fenek", "mimcontent:aljotta", "mimcontent:stuffat_qarnit",
-                "minecraft:mushroom_stew", "minecraft:rabbit_stew", "minecraft:beetroot_soup", "mimcontent:bigilla", "mimcontent:galletti"};
+                "minecraft:mushroom_stew", "minecraft:rabbit_stew", "minecraft:beetroot_soup", "mimcontent:bigilla", "mimcontent:soppa_tal_armla"};
             for (int i = 0; i < bowls.length; i++) {
                 server.runCommand("item replace entity @a hotbar." + i + " with " + bowls[i]);
             }
             context.waitTicks(10);
             context.takeScreenshot("11-hotbar-bowls");
+            // the soups side by side, so each Maltese soup reads differently from the others and from vanilla's
+            String[] soups = {"mimcontent:aljotta", "mimcontent:soppa_tal_armla", "mimcontent:minestra", "mimcontent:kawlata",
+                "mimcontent:stuffat_fenek", "minecraft:beetroot_soup", "minecraft:mushroom_stew", "minecraft:rabbit_stew", "minecraft:bowl"};
+            for (int i = 0; i < soups.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + soups[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("11b-hotbar-soups");
+            // all eight Maltese soups in one row, so each can be told from the others
+            String[] soups2 = {"mimcontent:aljotta", "mimcontent:soppa_tal_armla", "mimcontent:minestra", "mimcontent:kawlata",
+                "mimcontent:kusksu", "mimcontent:brodu_tat_tigieg", "mimcontent:brodu_tal_laham", "mimcontent:stuffat_fenek", "minecraft:beetroot_soup"};
+            for (int i = 0; i < soups2.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + soups2[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("11c-hotbar-all-soups");
             String[] oven = {"minecraft:cake", "mimcontent:ross_il_forn", "mimcontent:imqarrun_il_forn", "mimcontent:timpana", "mimcontent:torta_lampuki", "minecraft:pumpkin_pie", "mimcontent:stuffat_fenek",
                 "mimcontent:ftira_ghawdxija", "mimcontent:hobz_malti"};
             for (int i = 0; i < oven.length; i++) {

@@ -28,10 +28,16 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `imqaret` | Imqaret | sweets |
 | `kannoli` | Kannoli (plain ricotta) | sweets |
 | `qaghaq_ghasel` | Qagħaq tal-Għasel | sweets |
-| `stuffat_fenek` | Stuffat tal-Fenek | bowls (shared terracotta bowl) |
+| `stuffat_fenek` | Stuffat tal-Fenek | bowls (shared terracotta bowl, plain rim) |
 | `aljotta` | Aljotta | bowls |
 | `stuffat_qarnit` | Stuffat tal-Qarnit | bowls |
 | `bigilla` | Bigilla | bowls |
+| `soppa_tal_armla` | Soppa tal-Armla | soups (same bowl; each soup has its own look) |
+| `minestra` | Minestra | soups |
+| `kawlata` | Kawlata | soups |
+| `kusksu` | Kusksu | soups |
+| `brodu_tat_tigieg` | Brodu tat-Tiġieġ (chicken broth) | soups |
+| `brodu_tal_laham` | Brodu tal-Laħam (beef broth) | soups |
 
 ## Placed dishes, eaten in 6 slices like a cake
 | Id | Name | Dish | State |

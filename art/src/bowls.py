@@ -2,8 +2,8 @@
 
 One shared terracotta bowl (the accepted borma's clay colours, textures/block/borma_side.png) so the four read as a set,
 and clearly not vanilla's low dark wooden bowl: orange-red clay, deeper, a pale lip, a small foot.
-Two bowl shapes: "a" deep (3/4 view), "b" a lower, wider dish with a cream glaze line on the lip (†: Maltese
-earthenware is often glazed inside; unchecked).
+Two bowl shapes: "a" deep (3/4 view), "b" a lower, wider dish. Both rims are plain terracotta: bowl b once had a cream
+glaze line inside the lip, removed from every bowl icon (owner 2026-11-17, "remove it everywhere").
 
 Contents (references art/references/stuffat_1-2, aljotta_1, qarnit_1-2, bigilla_1; see SOURCES.tsv):
 - Stuffat tal-fenek: dark red-brown tomato-and-wine sauce, rabbit pieces, potato, carrot, peas†.
@@ -32,7 +32,7 @@ hx, render, outline3 = F.hx, F.render, F.outline3
 PAL = {
     # terracotta bowl (borma family)
     "o": hx("#7e4028"), "O": hx("#62301c"), "H": hx("#d49a72"), "L": hx("#c27a52"), "l": hx("#b06a46"),
-    "m": hx("#a0583a"), "d": hx("#874a33"), "D": hx("#6e3a26"), "g": hx("#efe0b8"),   # g: cream glaze line
+    "m": hx("#a0583a"), "d": hx("#874a33"), "D": hx("#6e3a26"),
     # stuffat tal-fenek
     "1": hx("#96452a"), "2": hx("#7a3420"), "3": hx("#5a2414"),                       # sauce lit / mid / dark
     "r": hx("#a97650"), "R": hx("#7e5434"),                                          # rabbit
@@ -80,17 +80,17 @@ BOWL_A = [
     "................",
     "................",
 ]
-# b: lower and wider, a cream glaze line inside the lip (†), a wider foot.
+# b: lower and wider, a plain terracotta lip (lit left, shaded right, as bowl a), a wider foot.
 BOWL_B = [
     "................",
     "................",
     "................",
     "....oooooooo....",
-    "..ooggggggggOO..",
-    ".oHg????????gLO.",
+    "..ooHHHHLLLLOO..",
+    ".oHH????????LLO.",
     ".oH??????????LO.",
     ".oL??????????lO.",
-    ".OLg????????glO.",
+    ".OLL????????llO.",
     ".OLLLLLlllllldO.",
     "..OOllllmmmdOO..",
     "....ODDDDDDO....",
@@ -165,11 +165,11 @@ FENEK_ACCEPTED = [
     "................",
     "................",
     "....oooooooo....",
-    "..ooggggggggOO..",
-    ".oHg333rR3nngLO.",
+    "..ooHHHHLLLLOO..",
+    ".oHH333rR3nnLLO.",
     ".oH31err2epp3LO.",
     ".oL1c2RR12PPelO.",
-    ".OLu2221ec22GlO.",
+    ".OLL2221ec22llO.",
     ".OLLLLLlllllldO.",
     "..OOllllmmmdOO..",
     "....ODDDDDDO....",
@@ -183,11 +183,11 @@ ALJOTTA_ACCEPTED = [
     "................",
     "................",
     "....oooooooYy...",
-    "..oogggggggyyY..",
-    ".oHg6h66f666yYO.",
+    "..ooHHHHLLLyyY..",
+    ".oHH6h66f666yYO.",
     ".oH6hffhh5i56LO.",
     ".oL4i5Fi4fFi5lO.",
-    ".OLu5h54i5h5GlO.",
+    ".OLL5h54i5h5llO.",
     ".OLLLLLlllllldO.",
     "..OOllllmmmdOO..",
     "....ODDDDDDO....",
@@ -201,11 +201,11 @@ QARNIT_ACCEPTED = [
     "................",
     "................",
     "....oooooooo....",
-    "..ooggggggggOO..",
-    ".oHg9MMM9K99gLO.",
+    "..ooHHHHLLLLOO..",
+    ".oHH9MMM9K99LLO.",
     ".oH9M9SMNepP9LO.",
     ".oLe8S8M78Ke8lO.",
-    ".OLueNM78p88GlO.",
+    ".OLLeNM78p88llO.",
     ".OLLLLLlllllldO.",
     "..OOllllmmmdOO..",
     "....ODDDDDDO....",
@@ -339,11 +339,11 @@ BIGILLA_ACCEPTED = [
     "................",
     "................",
     "....oooooooo....",
-    "..ooggggggggOO..",
-    ".oHg}}}}}x}}gLO.",
+    "..ooHHHHLLLLOO..",
+    ".oHH}}}}}x}}LLO.",
     ".oH}}EJ~zz}z}LO.",
     ".oL{~zE~zxz}~lO.",
-    ".OLu~~zx~~~~GlO.",
+    ".OLL~~zx~~~~llO.",
     ".OLLLLLlllllldO.",
     "..OOllllmmmdOO..",
     "....ODDDDDDO....",
@@ -422,8 +422,7 @@ def main():
 # aljotta orange-red broth, white fish, rice, lots of parsley, lemon; qarnit dark red sauce, dark red-purple curled
 # tentacles with suckers, potato, peas, black olives; bigilla a purple-brown/grey-brown bean paste (not the critic's
 # pinkish-brown), olive oil, plenty of parsley and red chilli, galletti.
-PAL.update({"G": hx("#c9b08a"), "u": hx("#d8c49a"),                       # glaze line in shade (critic)
-            "n": hx("#4a6a30"),                                           # bay leaf
+PAL.update({"n": hx("#4a6a30"),                                           # bay leaf
             "M": hx("#8e2e40"), "N": hx("#5e1a28"), "S": hx("#e2aab0"),   # octopus as in the owner's photos
             "K": hx("#2b2622"),                                           # black olive
             "A": hx("#8a6c66"), "W": hx("#6e5250"), "X": hx("#503c3a"),   # bigilla paste: lit, mid, shade
@@ -434,7 +433,6 @@ def v2(base, pieces, extra=None):
     g = fill("b", base, pieces)
     for (x, y), c in (extra or {}).items():
         g[y][x] = c
-    g[8][12], g[8][3] = "G", "u"
     return g
 
 

@@ -143,7 +143,7 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass"):
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass", "soppa_tal_armla", "minestra", "kawlata", "kusksu", "brodu_tat_tigieg", "brodu_tal_laham"):
         write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
@@ -175,6 +175,12 @@ def main():
         "item.mimcontent.kinnie": "Kinnie",
         "item.mimcontent.kinnie_can": "Kinnie Can",
         "item.mimcontent.kinnie_glass": "Glass of Kinnie",
+        "item.mimcontent.soppa_tal_armla": "Soppa tal-Armla",
+        "item.mimcontent.minestra": "Minestra",
+        "item.mimcontent.kawlata": "Kawlata",
+        "item.mimcontent.kusksu": "Kusksu",
+        "item.mimcontent.brodu_tat_tigieg": "Brodu tat-Tiġieġ",
+        "item.mimcontent.brodu_tal_laham": "Brodu tal-Laħam",
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
         "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
         "block.mimcontent.timpana": "Timpana",

@@ -251,14 +251,14 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 
 ### 7c. Soups (crafted in a bowl, like vanilla stews)
 
-| # | Dish | English | Recipe → where | Food / Sat | Extra | Tier |
-|---|---|---|---|---|---|---|
-| D15 | **Aljotta** ✓ | Fish soup | 2 any fish + garlic + zalza + rice + lemon + ħwawar (marjoram ✓) + bowl → table | 8 / Good | Regeneration I, 5 s. The Lenten soup ✓. | A |
-| D16 | **Soppa tal-armla** ✓ | Widow's soup | kohlrabi + cauliflower + peas + potato + fresh ġbejna + egg + bowl → table | 9 / Good | Regeneration I, 5 s | B |
-| D17 | Minestra ✓ | Vegetable soup | pumpkin + potato + marrow + onion + zalza + pasta + bowl → table | 9 / Good | Regeneration I, 5 s; winter | B |
-| D18 | **Kawlata** ✓ | Cabbage and pork soup | cabbage + porkchop or sausage + potato + kohlrabi + carrot + onion + bowl → table | 10 / Good | Regeneration I, 5 s; winter ✓ | B |
-| D19 | Kusksu ✓ | Kusksu and broad bean soup | kusksu pasta + 2 broad beans + zalza + fresh ġbejna + egg + bowl → table | 8 / Good | Spring (fresh beans ✓) | B |
-| D20 | Brodu † | Chicken broth | (section 5) | 6 / Normal | Regeneration I, 5 s | B |
+| #   | Dish                  | English                    | Recipe → where                                                                    | Food / Sat | Extra                                   | Tier |
+| --- | --------------------- | -------------------------- | --------------------------------------------------------------------------------- | ---------- | --------------------------------------- | ---- |
+| D15 | **Aljotta** ✓         | Fish soup                  | 2 any fish + garlic + zalza + rice + lemon + ħwawar (marjoram ✓) + bowl → table   | 8 / Good   | Regeneration I, 5 s. The Lenten soup ✓. | A    |
+| D16 | **Soppa tal-armla** ✓ | Widow's soup               | kohlrabi + cauliflower + peas + potato + fresh ġbejna + egg + bowl → table        | 9 / Good   | Regeneration I, 5 s                     | B    |
+| D17 | Minestra ✓            | Vegetable soup             | pumpkin + potato + marrow + onion + zalza + pasta + bowl → table                  | 9 / Good   | Regeneration I, 5 s; winter             | B    |
+| D18 | **Kawlata** ✓         | Cabbage and pork soup      | cabbage + porkchop or sausage + potato + kohlrabi + carrot + onion + bowl → table | 10 / Good  | Regeneration I, 5 s; winter ✓           | B    |
+| D19 | Kusksu ✓              | Kusksu and broad bean soup | kusksu pasta + 2 broad beans + zalza + fresh ġbejna + egg + bowl → table          | 8 / Good   | Spring (fresh beans ✓)                  | B    |
+| D20 | Brodu †               | Chicken broth              | (section 5)                                                                       | 6 / Normal | Regeneration I, 5 s                     | B    |
 
 ### 7d. Meat
 
