@@ -26,6 +26,7 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `gbejna_tal_bzar` | Ġbejna tal-Bżar (peppered) | cheese |
 | `lampuka` | Lampuka (the caught fish) | fish |
 | `lampuka_moqlija` | Lampuka Moqlija (fried, on a plate) | fish |
+| `fenek_moqli` | Fenek Moqli (fried rabbit, on a plate) | meat |
 | `kinnie` | Kinnie (bottle) | drinks (real label; plain fallback in `drinks.py`) |
 | `kinnie_can` | Kinnie Can | drinks |
 | `kinnie_glass` | Glass of Kinnie | drinks |

@@ -6,6 +6,7 @@
 - **Maltese food in the game.** ħobż tal-Malti, ftira, ħobż biż-żejt, ftira Għawdxija, galletti, pastizzi tal-irkotta, tal-piżelli and the two tax-xema' kinds, ġbejna (fresh, dried and peppered), imqaret, kannoli and qagħaq tal-għasel, each with its own icon.
 - **Qassatat and bread rings.** Qassata tal-irkotta and tal-piżelli, round pleated pastries with the filling showing on top, and two sesame bread rings: the everyday qagħqa tal-ħmira and the big Holy Week qagħqa tal-appostli with almonds.
 - **Ġelat Malti.** Grandma's ice cream: cream scoops with toasted almonds and glacé cherries in a cream fluted bowl.
+- **Fenek moqli.** Fried rabbit with garlic and fried potatoes, on the same plate as the lampuka moqlija.
 - **Kinnie.** A bottle, a can and a glass of Malta's bittersweet orange soft drink.
 - **Lampuka.** The caught fish, beside vanilla cod and salmon, and lampuka moqlija, a whole fried lampuka on a plate with lemon. They have no recipes or food values yet.
 - **Stews and soups in a terracotta bowl.** Stuffat tal-fenek, aljotta, stuffat tal-qarnit, soppa tal-armla, minestra, kawlata, kusksu, brodu tat-tiġieġ, brodu tal-laħam and stuffat tal-bebbux (snail stew). Each soup has its own look so they're easy to tell apart, and the bowls have a plain terracotta rim.

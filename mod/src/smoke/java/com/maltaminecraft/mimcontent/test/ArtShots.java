@@ -228,6 +228,14 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("23-hotbar-bebbux");
+            // fenek moqli beside vanilla rabbit and cooked meats, the fried lampuka plate and the rabbit stew
+            String[] fenek = {"minecraft:rabbit", "minecraft:cooked_rabbit", "mimcontent:fenek_moqli", "minecraft:cooked_chicken", "minecraft:cooked_porkchop",
+                "mimcontent:lampuka_moqlija", "mimcontent:stuffat_fenek", "minecraft:rabbit_stew", "minecraft:baked_potato"};
+            for (int i = 0; i < fenek.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + fenek[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("24-hotbar-fenek");
             System.out.println("[smoke] art screenshots written");
         }
     }

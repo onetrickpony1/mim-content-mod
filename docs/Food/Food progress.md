@@ -12,12 +12,12 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 
 | | In the mod | Not yet |
 |---|---|---|
-| Items | 39 | |
+| Items | 40 | |
 | Placed dishes (eaten in slices) | 4 | |
 | Kitchen blocks | 3 (kenur, borma, borma with stuffat) | |
 | Crops, trees, wild food, animal and sea products | 1 (the lampuka) | 47 |
 | Base ingredients and imports | the 3 ġbejniet and the broth (as 2 soups) | 31 |
-| Catalogue dishes | 32 | 39 |
+| Catalogue dishes | 33 | 38 |
 | Drinks | Kinnie (3 items) | 5 |
 
 ## In the mod
@@ -56,6 +56,7 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 |---|---|---|---|
 | ![Lampuka (the caught fish)](images/lampuka.png) | **Lampuka (the caught fish)** (4d) | `lampuka` | beside vanilla cod and salmon |
 | ![Lampuka Moqlija](images/lampuka_moqlija.png) | **Lampuka Moqlija** (D33) | `lampuka_moqlija` | whole fried lampuka on a plate with lemon |
+| ![Fenek Moqli](images/fenek_moqli.png) | **Fenek Moqli** (D22) | `fenek_moqli` | fried rabbit leg with garlic and fried potatoes, on the same plate |
 
 ### Bowls and soups
 
@@ -277,7 +278,6 @@ I'd appreciate if you could mail me (Kolforn@gmail.com) if you](https://commons.
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Arjoli** (D11)                                      |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Patata il-forn (roast potatoes)** (D13)             |                                                                                                                                                                                            |
-| ![Fenek moqli (fried rabbit)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Malta_Rabbit_fried_with_wine_and_garlic.JPG/330px-Malta_Rabbit_fried_with_wine_and_garlic.JPG)                                                                                  | **Fenek moqli (fried rabbit)** (D22)                  | [CC BY 3.0, Chattacha](https://commons.wikimedia.org/wiki/File:Malta_Rabbit_fried_with_wine_and_garlic.JPG)                                                                                |
 | ![Zalzett tal-Malti (Maltese sausage)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Maltese_Platter_Supernova_Heights_Kalkara.jpg/330px-Maltese_Platter_Supernova_Heights_Kalkara.jpg)                                                                     | **Zalzett tal-Malti (Maltese sausage)** (D23)         | [CC BY 3.0, Benreis](https://commons.wikimedia.org/wiki/File:Maltese_Platter_Supernova_Heights_Kalkara.jpg)<br>a Maltese platter with the sausage; a similar dish, not the Maltese version |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Laħam fuq il-fwar (steamed beef)** (D24)            |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Braġjoli (beef olives)** (D25)                      |                                                                                                                                                                                            |
