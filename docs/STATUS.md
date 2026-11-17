@@ -4,13 +4,12 @@ type: "topic"
 # Status (2026-11-17)
 
 ## Now
-- **Food art phase.** Phase 1's food is being drawn and checked in the game: 17 items and 3 dishes placed on a table and eaten in slices, all accepted by the owner except the timpana (in review). The full list is in [[Food in the mod]]. **No gameplay is built:** no recipes, cooking or food values. That waits for the owner's go-ahead.
+- **Food art phase.** Phase 1's food is being drawn and checked in the game: 17 items and 3 dishes placed on a table and eaten in slices, all accepted by the owner. The full list is in [[Food in the mod]]. **No gameplay is built:** no recipes, cooking or food values. That waits for the owner's go-ahead.
 - **Food, draft 3** (2026-11-17): [[Food systems]] holds six Maltese food systems in five phases. They give **bonuses only**, and vanilla farming is untouched. [[Food design]] (draft 1) is the catalogue of crops and dishes. Food is one part of the mod, not all of it.
 
 - **How art is made:** a maker draws from the owner's photos, a separate critic judges it, and the owner has the final say ([[Art pipeline]]). The owner's photos come first: **wait for them before each batch**.
 
 ## Waiting on the owner
-- **The timpana:** the owner's look after the fixes (warm pastry behind the glass, a blotchy crust lid, a less uniform icon).
 - **Photos for the next batch:** torta tal-lampuki, lampuka moqlija, or the dried and peppered ġbejniet.
 - **Decided 2026-11-17:** calendar both; start with phase 1 and its art ([[2026-11-17 Calendar both, start with phase 1 and its art]]). Earlier answers: rennet both, Maltese dishes only on Maltese blocks, freshness off, no dry-island system, no other-mod links ([[2026-11-17 Food – bonuses not penalties, food is one part of the mod, no other-mod links|decision]]).
 - The 8 draft 1 food questions: [[Food design#12. Questions for the owner]] (some overlap with the systems questions).

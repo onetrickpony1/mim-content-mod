@@ -31,7 +31,7 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 |---|---|---|---|
 | `ross_il_forn` | Ross il-Forn | foil tray | placed dish "tentatively works"; icon v6 |
 | `imqarrun_il_forn` | Imqarrun il-Forn | white ceramic dish with grip lips, 3D penne top | done; icon v5a |
-| `timpana` | Timpana | clear glass dish, pastry lid and walls | in review |
+| `timpana` | Timpana | clear glass dish, pastry lid and walls | done |
 
 These use one block class, `SliceDishBlock`. Its food values are placeholders.
 
