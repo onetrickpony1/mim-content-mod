@@ -782,7 +782,7 @@ def main():
     save_png(side_tex(), "block/ross_il_forn_side.png")
     save_png(inside_tex(), "block/ross_il_forn_inside.png")
     save_png(bottom_tex(), "block/ross_il_forn_bottom.png")
-    F.render(relight(ROSS_V5), ICON3_PAL).save(os.path.join(TEX, "item", "ross_il_forn.png"))   # accepted: ross_icon_v5
+    F.render(relight(ROSS_V6), ICON3_PAL).save(os.path.join(TEX, "item", "ross_il_forn.png"))   # accepted: ross_icon_v6
     models()
     compare()
     icon_compare()
