@@ -18,113 +18,121 @@ os.makedirs(os.path.join(TEX, "item"), exist_ok=True)
 
 # --- palettes (dark -> light), from the reference photos, kept inside vanilla's ranges (art/STYLE.md) ---
 # review r1: crust golden-tan not red; outlines ~0.25-0.3 luminance; brightest pixel <= ~0.85
-CRUST = ramp("#5e3416", "#7a4620", "#8e5524", "#a86a2e", "#c88a40", "#d9a457")
-CRACK = hexrgb("#6a3a14")
-FLOUR = hexrgb("#e2cf9f")
-BREAD_EDGE = hexrgb("#4a2a12")
-PASTRY = ramp("#7c4615", "#9a5a1c", "#b87426", "#d08e36", "#e0a64e", "#e8b860")
+CRUST = ramp("#7a4a22", "#9a6430", "#b47c3c", "#c99a52", "#d8ad60", "#e0b870")
+CRACK = hexrgb("#7a4a22")
+FLOUR = hexrgb("#ead9b0")
+BREAD_EDGE = hexrgb("#6b4420")
+PASTRY = ramp("#8a5019", "#a86624", "#c4802e", "#dca050", "#e4ae5c", "#eabb6a")
 LAYER = hexrgb("#9a561a")
 PASTRY_EDGE = hexrgb("#55300e")
 RICOTTA = ramp("#d4c7a6", "#e8dcc0")
-CHEESE = ramp("#8f8566", "#a89d78", "#c2b68e", "#d6cba2", "#ddd2a9", "#e4d9b0")
-CHEESE_EDGE = hexrgb("#6e6548")
+CHEESE = ramp("#a39a7e", "#b8b094", "#cfc6a6", "#ddd6bc", "#e6e0c8", "#ece6cf")
+BASKET_DOT = hexrgb("#c2b68e")
+GROOVE = hexrgb("#b0a684")
+CHEESE_SHADOW = hexrgb("#6e6650")
+CHEESE_EDGE = hexrgb("#8a8166")
 # limestone: greyer honey, few colours, so it stands apart from sandstone
-LIMESTONE = ramp("#a59a80", "#bdb08f", "#cbbd98", "#d6c69c", "#ddd0aa")
+LIMESTONE = ramp("#8f8772", "#a39a82", "#b2a88f", "#bdb39a", "#cfc6ad")
+PIT = hexrgb("#9d947c")
+INNER = ramp("#5e574a", "#6f675a", "#7f776a")
 SOOT = ramp("#1f1b17", "#2f2822", "#433930")
 ASH = ramp("#3a3631", "#57524b", "#77726a")
 EMBER = ramp("#a12a0a", "#e0651a", "#ffb43a")
-CLAY = ramp("#6b3423", "#7c3d29", "#8a452e", "#985034")
-CLAY_LINE = hexrgb("#55291b")
-LIME = hexrgb("#b99a80")
-SAUCE = ramp("#50200f", "#6e2a1a", "#7d321e")
-MEAT = ramp("#5c3420", "#7a4a30")
-PEA = hexrgb("#5f7f2c")
+CLAY = ramp("#874a33", "#94523a", "#a0583a", "#ab6446")
+CLAY_LINE = hexrgb("#6e3a26")
+LIME = hexrgb("#b07a5c")
+SAUCE = ramp("#4a1f12", "#5c2a18")
+TOMATO = hexrgb("#8e3a22")
+POT_INSIDE = ramp("#4a2a1e", "#5a3424")
+MEAT = ramp("#7a4a32", "#93604a")
+PEA = hexrgb("#6f8f3a")
 
 
 def bread():
-    """Ħobż tal-Malti: a tall round dome loaf, flat underneath, golden crust with dark crackle lines."""
+    """Ħobż tal-Malti: a round dome loaf 13 wide x 11 tall, flat underneath, golden-tan, thin crackle lines."""
     c = Canvas()
-    cx, base, rx, ry = 8.0, 13.0, 6.2, 9.0
+    cx, base, rx, ry = 8.0, 13.0, 7.0, 10.0
     m = np.zeros((N, N), dtype=bool)
     for y in range(N):
         for x in range(N):
             u, v = (x + 0.5 - cx) / rx, (y + 0.5 - base) / ry
-            m[y, x] = (u * u + v * v <= 1.0 and y < base) or (abs(x + 0.5 - cx) <= rx - 0.8 and base <= y < base + 1)
-    light = shade_dome(m, cx, base - 3.5, rx, 6.5, height=1.0)
+            m[y, x] = (u * u + v * v <= 1.0 and y < base) or (y == base and abs(x + 0.5 - cx) <= rx - 1.0)
+    light = shade_dome(m, cx, base - 4.0, rx, 7.0, height=1.0)
     for y in range(N):
         for x in range(N):
             if m[y, x]:
-                t = 0.35 + light[y, x] * 0.6 + (hash01(x, y, 3) - 0.5) * 0.14
-                if y >= base - 1:
-                    t -= 0.3  # the darker bottom crust
-                c.set(x, y, pick(CRUST, t))
-    # crackle lines, 1 px, with flour only along their upper edge
-    cracks = [((4, 8), (6, 7), (7, 7)), ((8, 6), (9, 7), (10, 7), (11, 8)), ((6, 10), (7, 10), (8, 11)), ((10, 10), (11, 11))]
-    for line in cracks:
+                c.set(x, y, pick(CRUST, 0.3 + light[y, x] * 0.7 + (hash01(x, y, 3) - 0.5) * 0.12))
+    # three single-pixel diagonal crackle lines, each with one flour pixel on its upper edge
+    for line in (((5, 7), (6, 6)), ((11, 9), (12, 8)), ((8, 10), (9, 9))):
         for (x, y) in line:
             if m[y, x]:
                 c.set(x, y, CRACK)
-                if m[y - 1, x] and (x + y) % 2 == 0:
-                    c.set(x, y - 1, FLOUR)
+    c.set(6, 5, CRUST[5])  # one flour-dust highlight above the first crack
+    outline(c, BREAD_EDGE)
+    # rounded base: drop the corner pixels of the bottom row, a one-shade shadow row above it
+    xs = [x for x in range(N) if c.opaque(x, int(base))]
+    if xs:
+        c.set(xs[0], int(base), (0, 0, 0), a=0)
+        c.set(xs[-1], int(base), (0, 0, 0), a=0)
+        for x in range(xs[0] + 2, xs[-1] - 1):
+            c.set(x, int(base) - 1, CRUST[1])
     outline(c, BREAD_EDGE)
     return c
 
 
 def pastizz():
-    """Pastizz tal-irkotta: flaky diamond, one tip curling up, layer arcs from the tips, ricotta along the top seam."""
+    """Pastizz tal-irkotta: a fat shell with blunt tips, the right one curling up, a spiral from the left tip,
+    a continuous ricotta seam along the top ridge."""
     c = Canvas()
     m = np.zeros((N, N), dtype=bool)
+    mid = lambda x: 9.4 - max(0.0, x - 7) * 0.42
     for y in range(N):
-        for x in range(N):
-            # centre line rises towards the right tip (the curl)
-            mid = 9.6 - max(0.0, x - 8) * 0.45
-            half = 4.6 * (1 - abs(x + 0.5 - 8) / 7.2) ** 0.75 if abs(x + 0.5 - 8) < 7.2 else 0
-            m[y, x] = abs(y + 0.5 - mid) <= half
-    light = shade_dome(m, 8, 9, 6.5, 4.5, height=0.8)
+        for x in range(1, 15):
+            d = abs(x + 0.5 - 8) / 7.5
+            half = max(1.0, 4.6 * max(0.0, 1 - d) ** 0.6)
+            m[y, x] = abs(y + 0.5 - mid(x)) <= half and y <= 12
+    light = shade_dome(m, 8, 8.5, 6.5, 4.5, height=0.8)
     for y in range(N):
         for x in range(N):
             if m[y, x]:
                 c.set(x, y, pick(PASTRY, 0.3 + light[y, x] * 0.6 + (hash01(x, y, 11) - 0.5) * 0.1))
-    # layer arcs: 1 px darker curves around each tip
-    for tip, radii in (((1.0, 9.6), (3.5, 6.0)), ((15.0, 6.0), (3.5, 6.0))):
-        for r in radii:
-            for y in range(N):
-                for x in range(N):
-                    if m[y, x]:
-                        d = math.hypot(x + 0.5 - tip[0], (y + 0.5 - tip[1]) * 1.5)
-                        if abs(d - r) < 0.5:
-                            c.set(x, y, LAYER)
-    # the ricotta seam along the top ridge, 2-3 px, near the middle
-    for x in range(6, 10):
+    for (x, y) in ((3, 10), (4, 9), (5, 8), (4, 11), (5, 10), (6, 9), (7, 8)):  # layer arcs curling from the left tip
+        if m[y, x]:
+            c.set(x, y, LAYER)
+    for x in range(3, 13):  # the seam: one pixel under the top edge, all along the ridge
         ys = [y for y in range(N) if m[y, x]]
         if ys:
-            c.set(x, ys[0] + 1, RICOTTA[1] if x % 2 else RICOTTA[0])
+            c.set(x, ys[0] + 1, RICOTTA[1])
     outline(c, PASTRY_EDGE)
     return c
 
 
 def gbejna():
-    """Ġbejna in 3/4 view: cream-yellow top with the basket ring, side with alternating basket ridges."""
+    """Ġbejna in 3/4 view: a real top (rows 3-7) with a ring of basket dots, a short side (rows 8-11) with ridges."""
     c = Canvas()
-    cx, rx, ry = 8.0, 5.6, 2.5
-    top_y, bot_y = 5.0, 11.0
-    top = ellipse_mask(cx, top_y, rx, ry)
-    bottom = ellipse_mask(cx, bot_y, rx, ry)
-    body = np.zeros((N, N), dtype=bool)
+    cx, rx = 8.0, 5.6
+    top_cy, top_ry, bot_cy = 5.0, 2.5, 9.5
+    top = ellipse_mask(cx, top_cy, rx, top_ry)
+    bottom = ellipse_mask(cx, bot_cy, rx, top_ry)
     for y in range(N):
         for x in range(N):
-            body[y, x] = bottom[y, x] or (abs(x + 0.5 - cx) <= rx and top_y <= y + 0.5 <= bot_y)
-    for y in range(N):
-        for x in range(N):
-            if body[y, x] and not top[y, x]:
-                t = 0.7 - (x + 0.5 - (cx - rx)) / (2 * rx) * 0.45
-                t += 0.14 if x % 2 == 0 else -0.08  # ridges: >= 0.1 luminance apart
-                c.set(x, y, pick(CHEESE, t))
+            inside_side = abs(x + 0.5 - cx) <= rx and top_cy <= y + 0.5 <= bot_cy
+            if (bottom[y, x] or inside_side) and not top[y, x]:
+                t = 0.65 - (x + 0.5 - (cx - rx)) / (2 * rx) * 0.45
+                c.set(x, y, pick(CHEESE, t + 0.1) if x % 2 == 0 else GROOVE)
             elif top[y, x]:
-                d = math.hypot((x + 0.5 - cx) / rx, (y + 0.5 - top_y) / ry)
-                t = 1.0 - d * 0.2 - (0.25 if 0.55 < d < 0.8 else 0)
-                c.set(x, y, pick(CHEESE, t))
+                d = math.hypot((x + 0.5 - cx) / rx, (y + 0.5 - top_cy) / top_ry)
+                c.set(x, y, pick(CHEESE, 0.95 - d * 0.25))
+                if 0.6 < d < 0.85 and (x + y) % 2 == 0 and y >= top_cy:
+                    c.set(x, y, BASKET_DOT)
+    for (x, y) in ((5, 5), (8, 5), (10, 5)):
+        if top[y, x]:
+            c.set(x, y, CHEESE[2])
     outline(c, CHEESE_EDGE)
+    for y in range(N):  # a darker edge on the shadow side (bottom and right) for contrast at hotbar size
+        for x in range(N):
+            if c.opaque(x, y) and (not c.opaque(x, y + 1) or not c.opaque(x + 1, y)) and y >= 8:
+                c.set(x, y, CHEESE_SHADOW)
     return c
 
 
@@ -135,6 +143,8 @@ def limestone(seed, flecks=True):
         for x in range(N):
             t = 0.62 + (tile_noise(x, y, 4, seed) - 0.5) * 0.7 + (hash01(x, y, seed) - 0.5) * 0.2
             c.set(x, y, pick(LIMESTONE, t))
+    for i in range(5):  # a few darker pits
+        c.set(int(hash01(i, 9, seed) * 16), int(hash01(i, 10, seed) * 16), PIT)
     if flecks:
         for i in range(5):
             x0, y0 = int(hash01(i, 1, seed) * 14), int(hash01(i, 2, seed) * 15)
@@ -152,15 +162,30 @@ def kenur_top():
 
 
 def kenur_front():
-    """The front: limestone, with hard-edged soot around the mouth (model x 5..11, y 1..6 -> u 5..11, v 10..15)."""
+    """Front face: limestone with a symmetric soot rim around the arched mouth (model x 5..11, y 3..7 ->
+    u 5..11, v 9..13), darkest at the mouth and fading upwards; a little ash spill under it."""
     c = limestone(23)
     for y in range(N):
         for x in range(N):
-            d = max(abs(x + 0.5 - 8) / 4.5, (15.5 - (y + 0.5)) / 7.0)
-            if d < 0.75:
+            in_mouth = 5 <= x < 11 and 9 <= y < 13
+            if in_mouth:
+                c.set(x, y, SOOT[1])
+                continue
+            if 4 <= x < 12 and 8 <= y < 14:
                 c.set(x, y, SOOT[2])
-            elif d < 0.95 and (x + y) % 3:
-                c.set(x, y, SOOT[2] if d < 0.85 else LIMESTONE[0])
+            elif y == 7 and 4 <= x < 12:
+                c.set(x, y, INNER[1])
+            elif y == 6 and 5 <= x < 11:
+                c.set(x, y, LIMESTONE[0])
+    return c
+
+
+def kenur_inner():
+    """Inside walls: smoke-stained limestone, darker but not black, so the cradle reads from above."""
+    c = Canvas()
+    for y in range(N):
+        for x in range(N):
+            c.set(x, y, pick(INNER, tile_noise(x, y, 4, 33) + (hash01(x, y, 34) - 0.5) * 0.4))
     return c
 
 
@@ -187,15 +212,14 @@ def ash(lit):
 
 
 def clay_side():
-    """The borma: plain mottled terracotta, one incised line under the rim, a couple of lime flecks."""
+    """The borma: plain mottled terracotta, one incised line under the rim, two clay-toned flecks."""
     c = Canvas()
     for y in range(N):
         for x in range(N):
-            t = 0.5 + (tile_noise(x, y, 4, 51) - 0.5) * 0.8 + (hash01(x, y, 52) - 0.5) * 0.2
-            c.set(x, y, pick(CLAY, t))
+            c.set(x, y, pick(CLAY, 0.5 + (tile_noise(x, y, 4, 51) - 0.5) * 0.8 + (hash01(x, y, 52) - 0.5) * 0.2))
     for x in range(N):
-        c.set(x, 7, CLAY_LINE)  # model y 8..9: just under the rim
-    for (x, y) in ((4, 11), (11, 13), (13, 10)):
+        c.set(x, 7, CLAY_LINE)  # model y 8..9, just under the shoulder
+    for (x, y) in ((4, 11), (12, 13)):
         c.set(x, y, LIME)
     return c
 
@@ -206,17 +230,17 @@ def borma_top(contents):
     for y in range(4, 12):
         for x in range(4, 12):
             if contents == "empty":
-                d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
-                c.set(x, y, pick(SOOT, 1.0 - d * 0.2))
+                c.set(x, y, POT_INSIDE[0] if math.hypot(x + 0.5 - 8, y + 0.5 - 8) < 2.5 else POT_INSIDE[1])
             else:
-                c.set(x, y, pick(SAUCE, 0.5 + (hash01(x, y, 61) - 0.5) * 0.9))
+                c.set(x, y, SAUCE[1] if hash01(x, y, 61) > 0.4 else SAUCE[0])
     if contents == "stuffat":
-        for (x0, y0) in ((5, 5), (9, 6), (6, 9), (9, 9)):  # rabbit pieces, 2x2
+        for (x0, y0) in ((5, 5), (9, 7), (5, 9)):  # rabbit pieces, 2x2 with a highlight
             for dx in (0, 1):
                 for dy in (0, 1):
-                    c.set(x0 + dx, y0 + dy, MEAT[1] if dx == 0 and dy == 0 else MEAT[0])
-        for (x, y) in ((8, 5), (5, 8)):  # peas
-            c.set(x, y, PEA)
+                    c.set(x0 + dx, y0 + dy, MEAT[1] if (dx, dy) == (0, 0) else MEAT[0])
+        c.set(8, 5, TOMATO)
+        c.set(9, 10, PEA)
+        c.set(7, 8, PEA)
     return c
 
 
@@ -228,6 +252,7 @@ def main():
         "block/kenur_side": kenur_side(),
         "block/kenur_top": kenur_top(),
         "block/kenur_front": kenur_front(),
+        "block/kenur_inner": kenur_inner(),
         "block/kenur_soot": soot(),
         "block/kenur_ash": ash(False),
         "block/kenur_ash_lit": ash(True),

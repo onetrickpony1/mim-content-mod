@@ -41,30 +41,28 @@ ALL = ("north", "south", "east", "west")
 
 
 def kenur_elements():
-    """Review r1: wide prongs front and back (5 px), a deep U notch between them, thin in z so the pot clears them;
-    walls inset 1 px at the bottom (y 1..3) instead of a floating plinth; an arched mouth."""
-    S, T, I, F = "side", "top", "soot", "front"
+    """r1: wide prongs, U notch, tapered foot, arched mouth. r2: taller mouth (y 3..7), lighter smoke-stained
+    inside walls (not black), prongs 3 tall so the pot's belly clears them."""
+    S, T, I, F, N_ = "side", "top", "soot", "front", "inner"
     e = []
-    e.append(box([2, 0, 2], [14, 3, 14], {"north": F, "south": S, "east": S, "west": S, "down": T}))  # tapered foot
-    e.append(box([1, 3, 1], [5, 9, 15], {"west": S, "north": F, "south": S, "east": I, "up": T}))    # left wall
-    e.append(box([11, 3, 1], [15, 9, 15], {"east": S, "north": F, "south": S, "west": I, "up": T}))  # right wall
-    e.append(box([5, 3, 11], [11, 9, 15], {"south": S, "north": I, "up": T}))                        # back wall
-    e.append(box([5, 6, 1], [11, 9, 5], {"north": F, "down": I, "south": I, "up": T}))               # lintel
-    e.append(box([5, 5, 1], [6, 6, 5], {"north": F, "down": I, "east": I}))                          # arch corners
-    e.append(box([10, 5, 1], [11, 6, 5], {"north": F, "down": I, "west": I}))
-    e.append(box([5, 2, 2], [11, 3, 11], {"up": "ash"}))                                             # ash bed
-    # the rim (y 9..10) with the hole for the pot, and no rim in the notches at front and back
-    e.append(box([1, 9, 1], [6, 10, 4], {"up": T, "north": F, "west": S, "east": S, "south": I}))
-    e.append(box([10, 9, 1], [15, 10, 4], {"up": T, "north": F, "east": S, "west": S, "south": I}))
-    e.append(box([1, 9, 12], [6, 10, 15], {"up": T, "south": S, "west": S, "east": S, "north": I}))
-    e.append(box([10, 9, 12], [15, 10, 15], {"up": T, "south": S, "east": S, "west": S, "north": I}))
-    e.append(box([1, 9, 4], [3, 10, 12], {"up": T, "west": S, "east": I}))
-    e.append(box([13, 9, 4], [15, 10, 12], {"up": T, "east": S, "west": I}))
-    # the four prongs: 5 px along the front and back, 2 px deep
-    for x in ((1, 6), (10, 15)):
-        for z, face in (((1, 3), F), ((13, 15), S)):
-            e.append(box([x[0], 10, z[0]], [x[1], 14, z[1]],
-                         {"north": face if z[0] == 1 else S, "south": S, "east": S, "west": S, "up": T}))
+    e.append(box([2, 0, 2], [14, 3, 14], {"north": F, "south": S, "east": S, "west": S, "down": T}))   # tapered foot
+    e.append(box([1, 3, 1], [5, 9, 15], {"west": S, "north": F, "south": S, "east": N_, "up": T}))     # left wall
+    e.append(box([11, 3, 1], [15, 9, 15], {"east": S, "north": F, "south": S, "west": N_, "up": T}))   # right wall
+    e.append(box([5, 3, 11], [11, 9, 15], {"south": S, "north": N_, "up": T}))                        # back wall
+    e.append(box([5, 7, 1], [11, 9, 5], {"north": F, "down": I, "south": N_, "up": T}))               # lintel
+    e.append(box([5, 6, 1], [6, 7, 5], {"north": F, "down": I, "east": I}))                           # arch corners
+    e.append(box([10, 6, 1], [11, 7, 5], {"north": F, "down": I, "west": I}))
+    e.append(box([5, 2, 2], [11, 3, 11], {"up": "ash"}))                                              # ash bed
+    e.append(box([1, 9, 1], [6, 10, 4], {"up": T, "north": F, "west": S, "east": S, "south": N_}))   # rim
+    e.append(box([10, 9, 1], [15, 10, 4], {"up": T, "north": F, "east": S, "west": S, "south": N_}))
+    e.append(box([1, 9, 12], [6, 10, 15], {"up": T, "south": S, "west": S, "east": S, "north": N_}))
+    e.append(box([10, 9, 12], [15, 10, 15], {"up": T, "south": S, "east": S, "west": S, "north": N_}))
+    e.append(box([1, 9, 4], [3, 10, 12], {"up": T, "west": S, "east": N_}))
+    e.append(box([13, 9, 4], [15, 10, 12], {"up": T, "east": S, "west": N_}))
+    for x in ((1, 6), (10, 15)):                                                                       # prongs
+        for z in ((1, 3), (13, 15)):
+            e.append(box([x[0], 10, z[0]], [x[1], 13, z[1]],
+                         {"north": F if z[0] == 1 else S, "south": S, "east": S, "west": S, "up": T}))
     return e
 
 
@@ -72,28 +70,32 @@ def fire_elements():
     out = []
     for angle in (45, -45):
         out.append({
-            "from": [5, 2, 4], "to": [11, 8, 4], "shade": False,
-            "rotation": {"origin": [8, 4, 4], "axis": "y", "angle": angle},
+            "from": [5, 3, 3.5], "to": [11, 9, 3.5], "shade": False,
+            "rotation": {"origin": [8, 5, 3.5], "axis": "y", "angle": angle},
             "faces": {"north": {"uv": [2, 4, 14, 16], "texture": "#fire"}, "south": {"uv": [2, 4, 14, 16], "texture": "#fire"}},
         })
     return out
 
 
-def borma_elements(dy, top):
-    """Review r1: a wide barrel, mouth nearly as wide as the belly, a 1 px lip, hollow 3 px deep,
-    loop handles from the rim down to the shoulder, 1 px thin."""
+def borma_elements(dy, top, on_kenur=False):
+    """r2: a real belly (2..14) over a narrower base, a 2-px lip ring covering the wall tops, hollow 3 px deep,
+    loop handles from the lip down to the belly. On a kenur the foot is wider, so it rests on the stove's ledges."""
     C = "clay"
     allc = {**{k: C for k in ALL}, "up": C, "down": C}
+    sides = {k: C for k in ALL}
     e = []
-    e.append(box([4, 0, 4], [12, 1, 12], {**{k: C for k in ALL}, "down": C}, dy))                  # foot
-    e.append(box([3, 1, 3], [13, 8, 13], {**{k: C for k in ALL}, "down": C, "up": top}, dy))        # body; inside floor at y 8
+    foot = ([3, 0, 3], [13, 1, 13]) if on_kenur else ([4, 0, 4], [12, 1, 12])
+    e.append(box(foot[0], foot[1], {**sides, "down": C}, dy))                                         # foot
+    e.append(box([3, 1, 3], [13, 3, 13], {**sides, "down": C}, dy))                                   # lower body
+    e.append(box([2, 3, 2], [14, 8, 14], {**sides, "down": C, "up": top}, dy))                        # belly; inside floor y 8
+    e.append(box([1, 4, 1], [15, 7, 15], {**sides, "up": C, "down": C}, dy))                          # r3: the belly bulge
     for f, t in (([3, 8, 3], [13, 10, 4]), ([3, 8, 12], [13, 10, 13]), ([3, 8, 4], [4, 10, 12]), ([12, 8, 4], [13, 10, 12])):
-        e.append(box(f, t, allc, dy))                                                                 # walls of the mouth
-    for f, t in (([2, 10, 2], [14, 11, 3]), ([2, 10, 13], [14, 11, 14]), ([2, 10, 3], [3, 11, 13]), ([13, 10, 3], [14, 11, 13])):
-        e.append(box(f, t, allc, dy))                                                                 # the lip
-    for f, t in (([1, 9, 8], [2, 10, 9]), ([0, 6, 8], [1, 10, 9]), ([1, 6, 8], [3, 7, 9]),
-                 ([14, 9, 8], [15, 10, 9]), ([15, 6, 8], [16, 10, 9]), ([13, 6, 8], [15, 7, 9])):
-        e.append(box(f, t, allc, dy))                                                                 # handles
+        e.append(box(f, t, sides, dy))                                                                 # shoulder walls
+    for f, t in (([2, 10, 2], [14, 11, 4]), ([2, 10, 12], [14, 11, 14]), ([2, 10, 4], [4, 11, 12]), ([12, 10, 4], [14, 11, 12])):
+        e.append(box(f, t, allc, dy))                                                                  # lip ring
+    for f, t in (([0, 9, 7.5], [3, 10, 8.5]), ([0, 6, 7.5], [1, 10, 8.5]), ([0, 6, 7.5], [2, 7, 8.5]),
+                 ([13, 9, 7.5], [16, 10, 8.5]), ([15, 6, 7.5], [16, 10, 8.5]), ([14, 6, 7.5], [16, 7, 8.5])):
+        e.append(box(f, t, allc, dy))                                                                  # handles
     return e
 
 
@@ -116,7 +118,7 @@ def write(rel, data):
 def main():
     k_tex = {"particle": f"{NS}:block/kenur_side", "side": f"{NS}:block/kenur_side", "top": f"{NS}:block/kenur_top",
              "soot": f"{NS}:block/kenur_soot", "ash": f"{NS}:block/kenur_ash",
-             "front": f"{NS}:block/kenur_front"}
+             "front": f"{NS}:block/kenur_front", "inner": f"{NS}:block/kenur_inner"}
     write("models/block/kenur.json", model(kenur_elements(), k_tex))
     write("models/block/kenur_lit.json", model(kenur_elements() + fire_elements(),
                                                {**k_tex, "ash": f"{NS}:block/kenur_ash_lit", "fire": "minecraft:block/campfire_fire"}))
@@ -125,7 +127,7 @@ def main():
         tex = {**clay, "inside": f"{NS}:block/borma_top_{contents}"}
         name = "borma" if contents == "empty" else "borma_stuffat"
         write(f"models/block/{name}.json", model(borma_elements(0, "inside"), tex))
-        write(f"models/block/kenur_pot_{contents}.json", {"textures": tex, "elements": borma_elements(10, "inside")})
+        write(f"models/block/kenur_pot_{contents}.json", {"textures": tex, "elements": borma_elements(10, "inside", on_kenur=True)})
 
     rot = {"north": 0, "east": 90, "south": 180, "west": 270}
     parts = []
