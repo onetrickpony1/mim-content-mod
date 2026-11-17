@@ -93,6 +93,14 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("09-hotbar-bread");
+            // the sweets
+            String[] sweets = {"minecraft:cookie", "mimcontent:imqaret", "mimcontent:kannoli", "mimcontent:qaghaq_ghasel",
+                "minecraft:pumpkin_pie", "mimcontent:pastizz_irkotta", "mimcontent:ftira", "minecraft:bread", "minecraft:cake"};
+            for (int i = 0; i < sweets.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + sweets[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("10-hotbar-sweets");
             System.out.println("[smoke] art screenshots written");
         }
     }

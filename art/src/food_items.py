@@ -1611,10 +1611,51 @@ FINAL = ("hobz_bizzejt_v6a", "ftira_ghawdxija_v5b", "ftira_ghawdxija_v9")   # cr
 COMPARE = ("hobz_bizzejt_v6a", "hobz_bizzejt_v6b", "ftira_ghawdxija_v5b", "ftira_ghawdxija_v8")  # owner r6
 
 
+# ---- Accepted (owner 2026-11-17), frozen and installed: ħobż biż-żejt v6a, ftira għawdxija v5b (the original) ----
+HOBZ_BIZZEJT_ACCEPTED = [
+    "................",
+    "................",
+    "................",
+    ".....oooooo.....",
+    "...oolllllmoo...",
+    "..olltTrrBbmmO..",
+    ".olnqrtrCrrtrdO.",
+    ".olrCrrGGrRTtdO.",
+    ".omrrMNRrtTRRdO.",
+    ".omrrrrrRRRRRdO.",
+    "..ODDDDDDDDDDO..",
+    "...cccccccccc...",
+    "................",
+    "................",
+    "................",
+    "................",
+]
+FTIRA_GHAWDXIJA_ACCEPTED = [
+    "................",
+    "................",
+    "....oooooooo....",
+    "..ooldddddddoo..",
+    "..ohdSSsSSSdmO..",
+    "..odgssRrssBlO..",
+    ".ohdSsSuSsSSldO.",
+    ".OldsRgssRrsldO.",
+    "..OldgSsSvSlDDO.",
+    ".OdlmlllllldDDO.",
+    "..OdddmdDDDDDO..",
+    "...OOdddDDDOO...",
+    ".....OOOOOO.....",
+    "................",
+    "................",
+    "................",
+]
+
+
 def round5():
     """Install the frozen ftira; write the round-5 candidates (NOT installed) and bread_compare.png."""
     fi = render(FTIRA_ACCEPTED, BR)
     fi.save(os.path.join(MOD_ITEMS, "ftira.png"))
+    render(HOBZ_BIZZEJT_ACCEPTED, V6).save(os.path.join(MOD_ITEMS, "hobz_bizzejt.png"))
+    render(FTIRA_GHAWDXIJA_ACCEPTED, FG).save(os.path.join(MOD_ITEMS, "ftira_ghawdxija.png"))
     ims = [("Ħobż", Image.open(os.path.join(MOD_ITEMS, "hobz_malti.png")).convert("RGBA")), ("Ftira", fi)]
     picked = {}
     for name, make, pal in V5_CANDIDATES:

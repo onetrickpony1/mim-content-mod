@@ -143,7 +143,7 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "gbejna"):
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "gbejna"):
         write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
@@ -159,6 +159,9 @@ def main():
         "item.mimcontent.ftira": "Ftira",
         "item.mimcontent.hobz_bizzejt": "Ħobż biż-Żejt",
         "item.mimcontent.ftira_ghawdxija": "Ftira Għawdxija",
+        "item.mimcontent.imqaret": "Imqaret",
+        "item.mimcontent.kannoli": "Kannoli",
+        "item.mimcontent.qaghaq_ghasel": "Qagħaq tal-Għasel",
         "item.mimcontent.gbejna": "Ġbejna",
     })
 

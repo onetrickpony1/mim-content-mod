@@ -37,6 +37,9 @@ public class MimContent implements ModInitializer {
     public static final Item FTIRA = item("ftira", Item::new, new Item.Properties());
     public static final Item HOBZ_BIZZEJT = item("hobz_bizzejt", Item::new, new Item.Properties());
     public static final Item FTIRA_GHAWDXIJA = item("ftira_ghawdxija", Item::new, new Item.Properties());
+    public static final Item IMQARET = item("imqaret", Item::new, new Item.Properties());
+    public static final Item KANNOLI = item("kannoli", Item::new, new Item.Properties());
+    public static final Item QAGHAQ_GHASEL = item("qaghaq_ghasel", Item::new, new Item.Properties());
     public static final Item GBEJNA = item("gbejna", Item::new, new Item.Properties());
 
     @Override
