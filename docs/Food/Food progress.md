@@ -80,12 +80,12 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 
 ### Dips (in a low terracotta dish, so they can't be mistaken for soups)
 
-| Picture | Food | Id (`mimcontent:`) | Notes |
-|---|---|---|---|
-| ![Bigilla](images/bigilla.png) | **Bigilla** (D10) | `bigilla` | broad bean dip |
-| ![Dip tal-Ġbejna](images/dip_gbejna.png) | **Dip tal-Ġbejna** (D69) | `dip_gbejna` | cream, black pepper, olive oil, ġbejna cubes |
-| ![Dip tat-Tonn](images/dip_tonn.png) | **Dip tat-Tonn** (D70) | `dip_tonn` | pink creamy tuna dip with a kunserva swirl |
-| ![Dip tat-Tewm](images/dip_tewm.png) | **Dip tat-Tewm** (D71) | `dip_tewm` | thick grey-cream garlic dip with a clove |
+| Picture                                  | Food                     | Id (`mimcontent:`) | Notes                                        |
+| ---------------------------------------- | ------------------------ | ------------------ | -------------------------------------------- |
+| ![Bigilla](images/bigilla.png)           | **Bigilla** (D10)        | `bigilla`          | broad bean dip                               |
+| ![Dip tal-Ġbejna](images/dip_gbejna.png) | **Dip tal-Ġbejna** (D69) | `dip_gbejna`       | cream, black pepper, olive oil, ġbejna cubes |
+| ![Dip tat-Tonn](images/dip_tonn.png)     | **Dip tat-Tonn** (D70)   | `dip_tonn`         | pink creamy tuna dip with a kunserva swirl   |
+| ![Dip tat-Tewm](images/dip_tewm.png)     | **Dip tat-Tewm** (D71)   | `dip_tewm`         | thick grey-cream garlic dip with a clove     |
 
 ### Sweets
 

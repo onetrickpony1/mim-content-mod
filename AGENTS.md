@@ -17,7 +17,7 @@ An optional **Fabric 26.3 add-on mod** for the Malta in Minecraft world. It adds
 | `docs/Decisions/` | **every owner decision, one dated note with the owner's exact words; never edited, never re-opened unasked** |
 | `docs/Templates/`, `docs/Bases/` | note templates (Decision, Item, List) and the Obsidian tables |
 | `docs/Tools and Process/` | **`Keeping the vault up to date.md`**: follow it after every change |
-| `mod/` | the Fabric 26.3 project (mod id `mimcontent`, a working name). It holds **art only, no gameplay yet**: the phase 1 food art (`docs/Food/Food in the mod.md`; with pictures beside what isn't drawn yet in `docs/Food/Food progress.md`), the kenur and borma, and the in-game screenshot test (`src/smoke`) |
+| `mod/` | the Fabric 26.3 project (mod id `mimcontent`, a working name). It holds the phase 1 food art (**art only, no food gameplay yet**) and the luzzu, a rideable boat (`docs/Maltese Life/Luzzu.md`): the food art (`docs/Food/Food in the mod.md`; with pictures beside what isn't drawn yet in `docs/Food/Food progress.md`), the kenur and borma, and the in-game screenshot test (`src/smoke`) |
 | `art/` | the art: scripts that make every texture and model (`art/src`), the style rules measured from vanilla (`art/STYLE.md`), reference photos with licences; see `docs/Tools and Process/Art pipeline.md` |
 | `tools/run-art.sh` | builds the mod and takes in-game screenshots on an invisible desktop (`mod/build/smoke-run/screenshots`); needs `env.sh` (Java 25 + the Gradle cache shared with the Malta project) |
 

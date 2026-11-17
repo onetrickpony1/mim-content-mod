@@ -448,6 +448,7 @@ A foraging and work calendar, tied to real seasons (uses the plants and crops al
 
 ### 60. Luzzu fishing *(art: low to medium)*
 - **You get:** a painted boat with eyes on the bow, and the fishing year: lampuki under floating palm fronds in autumn, octopus pots, traps for bogue, lamp fishing on dark summer nights, swordfish and tuna far out in early summer.
+- **Update 2026-11-17:** the owner chose a real luzzu model, not a recolour; see [[Luzzu]].
 - **How:** a recoloured vanilla boat in luzzu colours (yellow, red, green, blue) with the eye of Osiris painted on (low art; a new boat model would be medium). Kannizzati: place rafts of palm fronds on the open sea from 15 August; fish gather in their shade over days; come back and net around them. The eyes give a small luck bonus. Lamp fishing: a lantern on the boat on moonless nights draws fish and squid.
 - **Where/when:** Marsaxlokk, Mġarr, Marsalforn, St Paul's Bay; by season.
 - **Why Maltese:** the lampuki season and the luzzu are the Maltese sea.
