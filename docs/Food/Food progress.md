@@ -56,6 +56,11 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 |---|---|---|---|
 | ![Lampuka (the caught fish)](images/lampuka.png) | **Lampuka (the caught fish)** (4d) | `lampuka` | beside vanilla cod and salmon |
 | ![Lampuka Moqlija](images/lampuka_moqlija.png) | **Lampuka Moqlija** (D33) | `lampuka_moqlija` | whole fried lampuka on a plate with lemon |
+
+### Meat
+
+| Picture | Food | Id (`mimcontent:`) | Notes |
+|---|---|---|---|
 | ![Fenek Moqli](images/fenek_moqli.png) | **Fenek Moqli** (D22) | `fenek_moqli` | fried rabbit leg with garlic and fried potatoes, on the same plate |
 
 ### Bowls and soups

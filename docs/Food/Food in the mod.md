@@ -26,7 +26,6 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `gbejna_tal_bzar` | Ġbejna tal-Bżar (peppered) | cheese |
 | `lampuka` | Lampuka (the caught fish) | fish |
 | `lampuka_moqlija` | Lampuka Moqlija (fried, on a plate) | fish |
-| `fenek_moqli` | Fenek Moqli (fried rabbit, on a plate) | meat |
 | `kinnie` | Kinnie (bottle) | drinks (real label; plain fallback in `drinks.py`) |
 | `kinnie_can` | Kinnie Can | drinks |
 | `kinnie_glass` | Glass of Kinnie | drinks |
@@ -34,6 +33,7 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `kannoli` | Kannoli (plain ricotta) | sweets |
 | `qaghaq_ghasel` | Qagħaq tal-Għasel | sweets |
 | `gelat_malti` | Ġelat Malti (ġelat tan-nanna) | sweets |
+| `fenek_moqli` | Fenek Moqli (fried rabbit, on a plate) | meat |
 | `stuffat_fenek` | Stuffat tal-Fenek | bowls (shared terracotta bowl, plain rim) |
 | `aljotta` | Aljotta | bowls |
 | `stuffat_qarnit` | Stuffat tal-Qarnit | bowls |
