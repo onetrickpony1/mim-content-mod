@@ -24,7 +24,7 @@ An optional **Fabric 26.3 add-on mod** for the Malta in Minecraft world. It adds
 2. **Every owner decision** gets a note in `docs/Decisions/` (template `docs/Templates/Decision.md`).
 3. **Keep ways back:** gameplay changes to vanilla behaviour (e.g. milkable sheep) go behind a config option, with vanilla behaviour restorable.
 4. **Real Malta first.** Use sourced facts; mark unchecked Maltese names or claims with †. Vanilla items are used only where Malta really uses them.
-5. **Git:** stage files by name, never `git add -A docs`. Commits carry **no Co-Authored-By lines and no mention of Claude**; they are the owner's alone. Commit identity for this repo: `MiM <maltainminecraft@gmail.com>`.
+5. **Git:** stage files by name, never `git add -A docs`. Commits carry **no Co-Authored-By lines and no mention of Claude**; they are the owner's alone. Commit identity for this repo: `onetrickpony1 <311002920+onetrickpony1@users.noreply.github.com>` (the owner's GitHub account, same as their other repos).
 6. **Contact details to outside services:** only `https://maltaminecraft.com` or `maltainminecraft@gmail.com`; never the owner's personal details.
 7. **The owner** is a Minecraft player, not a developer. Keep updates short, lead with what changes in-game, and use "they/them".
 8. **The Malta project** (`~/Apps/Minecraft World`) has its own rules and another session may be working in it. Don't edit it from here unless asked.
