@@ -103,7 +103,7 @@ public class ArtShots implements FabricClientGameTest {
             context.takeScreenshot("10-hotbar-sweets");
             // the bowls
             String[] bowls = {"minecraft:bowl", "mimcontent:stuffat_fenek", "mimcontent:aljotta", "mimcontent:stuffat_qarnit",
-                "minecraft:mushroom_stew", "minecraft:rabbit_stew", "minecraft:beetroot_soup", "minecraft:suspicious_stew", "mimcontent:hobz_malti"};
+                "minecraft:mushroom_stew", "minecraft:rabbit_stew", "minecraft:beetroot_soup", "mimcontent:bigilla", "mimcontent:galletti"};
             for (int i = 0; i < bowls.length; i++) {
                 server.runCommand("item replace entity @a hotbar." + i + " with " + bowls[i]);
             }
