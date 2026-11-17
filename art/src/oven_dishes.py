@@ -655,28 +655,65 @@ PENNE = [
 ]
 
 
-def penne(eaten):
+def penne(eaten, per=8):
+    """About 8 small tubes per portion (owner: "there arent enough penne"): 1 x 1 across, about 3 long, lying along x
+    or z, some stacked half a pixel higher, at varied yaws and lifts; the same layout every eaten state."""
     gone = set(ORDER[:eaten])
+    rs = np.random.RandomState(41)
+    rots = [("y", 22.5), ("y", -22.5), ("y", 45), ("y", -45), ("x", 22.5), ("x", -22.5), ("z", 22.5), ("z", -22.5)]
     e = []
     for i, (c, r) in enumerate(ORDER):
-        if (c, r) in gone:
-            continue
         x0, z0 = XS[c], ZS[r]
-        for j, (f, t, along, rotn) in enumerate(PENNE):
-            if (i + j) % 5 == 4 and i % 2:
-                continue                              # 4 or 5 per portion
-            fr = [x0 + f[0], f[1], z0 + f[2]]
-            to = [x0 + t[0], t[1], z0 + t[2]]
-            if i % 2:                                 # mirror every other portion
-                fr[0], to[0] = x0 + 6 - t[0], x0 + 6 - f[0]
+        for j in range(per):
+            along = "x" if rs.rand() < 0.6 else "z"
+            L = 2.6 + rs.rand() * 0.6
+            y = 5 + (0.6 if j >= per - 3 else 0)                 # the last few stacked on the others
+            if along == "x":
+                fx, fz = x0 + 0.3 + rs.rand() * (6 - L - 0.6), z0 + 0.2 + rs.rand() * 2.6
+                fr, to = [fx, y, fz], [fx + L, y + 1, fz + 1]
+            else:
+                fx, fz = x0 + 0.2 + rs.rand() * 4.6, z0 + 0.2 + rs.rand() * (4 - L - 0.4)
+                fr, to = [fx, y, fz], [fx + 1, y + 1, fz + L]
+            axis, angle = rots[rs.randint(0, len(rots))]
+            if (c, r) in gone:
+                continue
+            fr, to = [round(v, 2) for v in fr], [round(v, 2) for v in to]
             ends = ("east", "west") if along == "x" else ("north", "south")
             faces = {k: {"uv": END_UV if k in ends else TOP_UV if k == "up" else SIDE_UV, "texture": "#penne"}
                      for k in ("north", "south", "east", "west", "up", "down")}
-            angle = rotn["angle"] * (-1 if i % 2 else 1)
             e.append({"from": fr, "to": to, "faces": faces,
-                      "rotation": {"origin": [(fr[0] + to[0]) / 2, 5, (fr[2] + to[2]) / 2],
-                                   "axis": rotn["axis"], "angle": angle}})
+                      "rotation": {"origin": [round((fr[0] + to[0]) / 2, 2), y, round((fr[2] + to[2]) / 2, 2)],
+                                   "axis": axis, "angle": angle}})
     return e
+
+
+def penne_top_v4():
+    """A dense layer of flat-lying penne (owner: "the top orange is quite terribly flat"): many small tubes, light on
+    top and dark underneath so they read round, in gold, orange and red-orange, dark sauce between, charred patches
+    and blackened tube edges; colours from the owner's close-up."""
+    rs = np.random.RandomState(42)
+    a = noise_tex("#8a3a1c", [("#a84a24", 0.4), ("#6a2c14", 0.2)], 43)      # sauce between
+    tones = (("#f4c87e", "#d89048", "#a85a24"), ("#eaa058", "#c06a30", "#8a4018"),
+             ("#dc7c40", "#a85028", "#6e2c14"))
+    dirs = ((1, 0, 0, 1), (0, 1, 1, 0), (1, 1, 1, -1), (1, -1, 1, 1))     # step, and the "underside" offset
+    for _ in range(30):
+        x, y = rs.randint(0, 16), rs.randint(0, 16)
+        dx, dy, ox, oy = dirs[rs.randint(0, 4)]
+        hi, mid, lo = tones[rs.randint(0, 3)]
+        n = rs.randint(3, 6)
+        for i in range(n):
+            px, py = (x + dx * i) % 16, (y + dy * i) % 16
+            qx, qy = (px + ox) % 16, (py + oy) % 16
+            a[py, px, :3] = hx(hi if i < n - 1 else mid)
+            a[qy, qx, :3] = hx(lo)
+            if i == n - 1 and rs.rand() < 0.5:
+                a[py, px, :3] = hx("#2e160c")                         # a blackened tube edge
+    for _ in range(9):                                                   # charred patches
+        x, y = rs.randint(0, 16), rs.randint(0, 16)
+        for ddx, ddy in ((0, 0), (1, 0), (0, 1), (1, 1)):
+            if rs.rand() < 0.7:
+                a[(y + ddy) % 16, (x + ddx) % 16, :3] = hx("#2e160c" if rs.rand() < 0.5 else "#5a2a12")
+    return a
 
 
 def penne_inside_v4():
@@ -710,7 +747,7 @@ IMQ_ICON4 = [r.replace("mwwWwwWwwWwk", "mwwwwwwwwwwk") for r in ROSS_V5]   # smo
 
 
 def imqarrun():
-    save_png(penne_top_v3(), "block/imqarrun_il_forn_top.png")
+    save_png(penne_top_v4(), "block/imqarrun_il_forn_top.png")
     save_png(dish_side(), "block/imqarrun_il_forn_side.png")
     save_png(penne_inside_v4(), "block/imqarrun_il_forn_inside.png")
     save_png(dish_bottom(), "block/imqarrun_il_forn_bottom.png")
@@ -727,7 +764,7 @@ def imqarrun_compare():
     for v in ("cake", "pumpkin_pie"):
         ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
     sheet = F.compare(ims)
-    shots = os.path.join(F.OUT, "ingame_imqarrun_v5")
+    shots = os.path.join(F.OUT, "ingame_imqarrun_v6")
     crops = []
     if os.path.isdir(shots):
         for key in ("14-imqarrun-table", "14b-imqarrun-above"):
