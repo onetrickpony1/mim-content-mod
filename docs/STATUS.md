@@ -5,10 +5,11 @@ type: "topic"
 
 ## Now
 - **Design phase. Nothing is built.** Building waits for the owner's go-ahead.
-- **Food design draft 1** is written: [[Food design]]. Its 8 questions (section 12) wait on the owner.
+- **Food, draft 2** (2026-11-17, after the owner's "go bigger" decision): [[Food systems]] holds ten Maltese food systems in six phases. [[Food design]] (draft 1) is now the catalogue of crops and dishes.
 
 ## Waiting on the owner
-- The 8 food questions: [[Food design#12. Questions for the owner]].
+- The 8 food systems questions: [[Food systems#Questions for the owner]]. The calendar question comes first.
+- The 8 draft 1 food questions: [[Food design#12. Questions for the owner]] (some overlap with the systems questions).
 - The 8 Maltese life questions: [[Maltese life ideas#Questions for the owner]]. The calendar question (real date or a faster year) also decides how seasonal food works.
 
 ## Decided

@@ -7,6 +7,8 @@ status: "open"
 
 **State:** design only. Nothing is built. Building waits for the owner's go-ahead.
 
+> **2026-11-17, draft 2:** the owner asked to go bigger ([[2026-11-17 Food – go bigger, new art and systems, a materially Maltese change]]). This note is now **the catalogue** (crops, ingredients, dishes, values). The "no new machines" and low-art rules below are **dropped**, and the "made in" columns now point to the Maltese stations in **[[Food systems]]**, which explains how each one changes.
+
 This is the food part of the **layer 2 add-on mod** ([[2026-11-15 Three layers – vanilla world, add-on mod, overhaul later|the owner's three layers]]). It refines and replaces section 10 ("Food") and section 8c ("Crops") of [[Content mod list]]. The animals, wild plants and trees stay in that list; here they appear only as food sources.
 
 Marks used below:
