@@ -4,13 +4,14 @@ type: "topic"
 # Status (2026-11-17)
 
 ## Now
-- **Design phase. Nothing is built.** Building waits for the owner's go-ahead.
+- **Food art phase.** Phase 1's food is being drawn and checked in the game: 17 items and 3 dishes placed on a table and eaten in slices, all accepted by the owner except the timpana (in review). The full list is in [[Food in the mod]]. **No gameplay is built:** no recipes, cooking or food values. That waits for the owner's go-ahead.
 - **Food, draft 3** (2026-11-17): [[Food systems]] holds six Maltese food systems in five phases. They give **bonuses only**, and vanilla farming is untouched. [[Food design]] (draft 1) is the catalogue of crops and dishes. Food is one part of the mod, not all of it.
 
-- **Art pilot done (2026-11-17):** the kenur, the borma (empty and with stuffat), ħobż tal-Malti, pastizz tal-irkotta and ġbejna. All six passed independent review after 4 rounds; method in [[Art pipeline]]. Report picture: `art/preview/r4/pilot-report.png` (not in git).
+- **How art is made:** a maker agent draws from the owner's photos, a fresh critic agent judges it, and the owner has the final say ([[Art pipeline]]). The owner's photos come first: **wait for them before each batch**.
 
 ## Waiting on the owner
-- **The art pilot:** the owner's look at the six pieces before phase 1's art goes ahead.
+- **The timpana:** the owner's look after the fixes (warm pastry behind the glass, a blotchy crust lid, a less uniform icon).
+- **Photos for the next batch:** torta tal-lampuki, lampuka moqlija, or the dried and peppered ġbejniet.
 - **Decided 2026-11-17:** calendar both; start with phase 1 and its art ([[2026-11-17 Calendar both, start with phase 1 and its art]]). Earlier answers: rennet both, Maltese dishes only on Maltese blocks, freshness off, no dry-island system, no other-mod links ([[2026-11-17 Food – bonuses not penalties, food is one part of the mod, no other-mod links|decision]]).
 - The 8 draft 1 food questions: [[Food design#12. Questions for the owner]] (some overlap with the systems questions).
 - The 8 Maltese life questions: [[Maltese life ideas#Questions for the owner]]. The calendar question (real date or a faster year) also decides how seasonal food works.
@@ -22,4 +23,4 @@ type: "topic"
 - **Layer 3**, the full overhaul at generation: long-term, don't start ([[2026-11-15 Three layers – vanilla world, add-on mod, overhaul later|decision]]).
 
 ## Set up
-- The Fabric project (`mod/`, id `mimcontent`, a working name) holds only the art pilot and its screenshot test.
+- The Fabric project (`mod/`, id `mimcontent`, a working name) holds the food art ([[Food in the mod]]), the kitchen blocks and the in-game screenshot test (`src/smoke`, run by `tools/run-art.sh`).
