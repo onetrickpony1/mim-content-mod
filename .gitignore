@@ -33,3 +33,4 @@ art/references/bowls_owner/
 art/references/oven_owner/
 art/.vanilla/
 .art-runs/
+art/references/**/*_owner*
