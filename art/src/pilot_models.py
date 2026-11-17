@@ -171,6 +171,7 @@ def main():
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
         "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
         "block.mimcontent.timpana": "Timpana",
+        "block.mimcontent.torta_lampuki": "Torta tal-Lampuki",
     })
 
 

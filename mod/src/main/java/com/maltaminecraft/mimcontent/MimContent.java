@@ -39,6 +39,9 @@ public class MimContent implements ModInitializer {
     public static final Block TIMPANA = block("timpana", p -> new SliceDishBlock(p, 5, 0.7F), BlockBehaviour.Properties.of()
         .mapColor(MapColor.SAND).strength(0.5F).sound(SoundType.WOOL).noOcclusion());
 
+    public static final Block TORTA_LAMPUKI = block("torta_lampuki", p -> new SliceDishBlock(p, 5, 0.8F), BlockBehaviour.Properties.of()
+        .mapColor(MapColor.SAND).strength(0.5F).sound(SoundType.WOOL).noOcclusion());
+
     public static final Item HOBZ_MALTI = item("hobz_malti", Item::new, new Item.Properties());
     public static final Item PASTIZZ_IRKOTTA = item("pastizz_irkotta", Item::new, new Item.Properties());
     public static final Item PASTIZZ_PIZELLI = item("pastizz_pizelli", Item::new, new Item.Properties());

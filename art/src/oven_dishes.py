@@ -13,6 +13,8 @@ Writes, into the mod's resources:
 - art/candidates/ross_compare.png (with the in-game screenshots, if present in art/candidates/ingame_ross/)
 Run:  art/.venv/bin/python art/src/oven_dishes.py
 """
+import json
+import math
 import os
 import sys
 
@@ -1049,6 +1051,205 @@ def timpana_compare():
     out.save(os.path.join(F.OUT, "timpana_compare.png"))
 
 
+# ---- Torta tal-lampuki (owner's photos and recipe, art/references/oven_owner/torta_lampuki/, reference only): a round
+# double-crusted pie, golden egg-washed shortcrust lid (sometimes sesame), crimped edge, on a plate or in a round pan;
+# the cut face: dark-green spinach, white flaked fish, cauliflower, black olives, peas, capers, a little carrot,
+# between a top and a bottom crust. Placed: a round pie (a stepped circle) on a round white plate, eaten in six
+# wedges, each a sector made of boxes. ----
+CX, CZ, PIE_R, PIE_Y0, PIE_Y1 = 8.0, 8.0, 5.8, 0.5, 4.5
+
+
+def torta_cells():
+    """{(x, z): sector} for the 1x1 cells of the pie; sector 0 faces north (the side facing the player), then
+    clockwise."""
+    cells = {}
+    for z in range(16):
+        for x in range(16):
+            dx, dz = x + .5 - CX, z + .5 - CZ
+            if dx * dx + dz * dz <= PIE_R * PIE_R:
+                ang = (math.degrees(math.atan2(dx, -dz)) + 30) % 360
+                cells[(x, z)] = int(ang // 60)
+    return cells
+
+
+def torta_dish():
+    """A round terracotta pie dish (owner: "can we have the pie in a dish"): a floor and a low octagonal rim (four
+    straight walls plus the north and south walls turned 45 degrees about the centre for the diagonals) = 10 elements."""
+    D = {k: "plate" for k in ("north", "south", "east", "west", "up", "down")}
+    e = [P.box([2, 0, 4], [14, 0.5, 12], D), P.box([4, 0, 2], [12, 0.5, 14], D)]
+    n = P.box([5.1, 0, 1], [10.9, 2, 2], D)
+    s_ = P.box([5.1, 0, 14], [10.9, 2, 15], D)
+    e += [n, s_, P.box([1, 0, 5.1], [2, 2, 10.9], D), P.box([14, 0, 5.1], [15, 2, 10.9], D)]
+    for b in (n, s_):
+        for ang in (45, -45):
+            r = json.loads(json.dumps(b))
+            r["rotation"] = {"origin": [8, 1, 8], "axis": "y", "angle": ang}
+            e.append(r)
+    return e
+
+
+def torta_elements(eaten):
+    cells = torta_cells()
+    gone = set(range(eaten))
+    keep = {c: k for c, k in cells.items() if k not in gone}
+    e = torta_dish()
+
+    def face(nb):
+        if nb in keep:
+            return None
+        return "inside" if nb in cells else "side"
+    for k in sorted(set(keep.values())):
+        for z in range(16):
+            xs = sorted(x for (x, zz), kk in keep.items() if zz == z and kk == k)
+            runs, run = [], []
+            for x in xs:
+                if run and x != run[-1] + 1:
+                    runs.append(run)
+                    run = []
+                run.append(x)
+            if run:
+                runs.append(run)
+            for run in runs:
+                x0, x1 = run[0], run[-1] + 1
+                faces = {"up": "top"}
+                for d, nbs in (("north", [(x, z - 1) for x in run]), ("south", [(x, z + 1) for x in run]),
+                               ("west", [(x0 - 1, z)]), ("east", [(x1, z)])):
+                    kinds = [face(nb) for nb in nbs]
+                    if "inside" in kinds:
+                        faces[d] = "inside"
+                    elif "side" in kinds:
+                        faces[d] = "side"
+                b = P.box([x0, PIE_Y0, z], [x1, PIE_Y1, z + 1], faces)
+                for d, f in b["faces"].items():
+                    if d != "up":
+                        f["uv"] = [f["uv"][0], f["uv"][1] - .5, f["uv"][2], f["uv"][3] - .5]
+                e.append(b)
+    return e
+
+
+def torta_top():
+    """Even, warm golden egg-washed shortcrust (critic v2): a few sesame specks, two short steam slits, a darker
+    crimped ring at the edge."""
+    rs = np.random.RandomState(81)
+    a = noise_tex("#dca044", [("#e4ac52", 0.18), ("#d09238", 0.12)], 82)
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x + .5 - CX, y + .5 - CZ)
+            if PIE_R - 1.2 < d <= PIE_R + .5:
+                ang = math.degrees(math.atan2(x + .5 - CX, y + .5 - CZ))
+                a[y, x, :3] = hx("#c08030" if int((ang + 360) // 24) % 2 else "#a4682a")   # crimped folds
+    for x, y in ((8, 6), (8, 7), (6, 9), (10, 9)):                                         # steam slits
+        a[y, x, :3] = hx("#8a5424")
+    n = 0
+    while n < 7:                                                                            # sesame
+        x, y = rs.randint(3, 13), rs.randint(3, 13)
+        if math.hypot(x + .5 - CX, y + .5 - CZ) < PIE_R - 1.5 and tuple(a[y, x, :3]) != tuple(hx("#8a5424")):
+            a[y, x, :3] = hx("#f6e2b0")
+            n += 1
+    return a
+
+
+def torta_side():
+    """The pie's outer crust (rows 11-15 used): golden-brown, the lid's crimped edge on top, darker at the base."""
+    a = noise_tex("#c88a3c", [("#d4984a", 0.2), ("#b87a32", 0.15)], 85)
+    for x in range(16):
+        a[11, x, :3] = hx("#dca044" if x % 2 else "#a4682a")
+    a[15, :, :3] = hx("#9e6428")
+    return a
+
+
+def torta_inside():
+    """The cut face (rows 11-15 used): a 2 px golden top crust, 2 px of filling (dark spinach with tan flaked lampuki,
+    a black olive, a pea, a fleck of carrot), a 1 px bottom crust."""
+    a = noise_tex("#3a5222", [("#b8946a", 0.22), ("#c4a878", 0.3), ("#a88c60", 0.14), ("#2a3c18", 0.12), ("#22201c", 0.05),
+                              ("#78a040", 0.04), ("#d0742a", 0.02)], 83)
+    a[11, :, :3] = hx("#e4ac52")
+    a[12, :, :3] = hx("#c88a3c")
+    a[15, :, :3] = hx("#b07434")
+    return a
+
+
+def plate_tex():
+    """The terracotta pie dish (the borma's clay family): a glazed, slightly lighter top edge."""
+    a = noise_tex("#9c5c40", [("#a46646", 0.3), ("#885036", 0.15)], 84)
+    a[14, :, :3] = hx("#ae704a")
+    return a
+
+
+TORTA_PAL = {"O": hx("#5e3c1c"), "o": hx("#74502a"), "L": hx("#f0c470"), "l": hx("#e0a84e"), "m": hx("#cc9040"),
+             "d": hx("#a86c2c"), "D": hx("#8c5824"), "x": hx("#6e4220"), "s": hx("#f8e8c0"),
+             "P": hx("#ae704a"), "p": hx("#9c5c40"), "q": hx("#824834"), "Q": hx("#6a3a26"), "r": hx("#8a4c32")}
+
+# critic v2: a shallow pie (lid 5 px, 14 px wide) in the terracotta dish (2 px rim), a closed lid with three sesame
+# seeds and one 2 px steam slit, the crimp only along the front edge
+TORTA_ICON2 = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "...oooooooooo...",
+    "..oLlLsLLllllO..",
+    ".oLlLLlxxllslmO.",
+    ".oLsllllllllmmO.",
+    "oLdLdldldldmdmmO",
+    "oPmdmdmdmdmdmdDO",
+    "oPpppppppppppppO",
+    ".oPppppppppppqO.",
+    "..oqqqqqqqqqqO..",
+    "....OOOOOOOO....",
+    "................",
+]
+
+
+def torta_icon():
+    return TORTA_ICON2[2:] + TORTA_ICON2[:2]
+
+
+def torta():
+    save_png(torta_top(), "block/torta_lampuki_top.png")
+    save_png(torta_side(), "block/torta_lampuki_side.png")
+    save_png(torta_inside(), "block/torta_lampuki_inside.png")
+    save_png(plate_tex(), "block/torta_lampuki_plate.png")
+    F.render(torta_icon(), TORTA_PAL).save(os.path.join(TEX, "item", "torta_lampuki.png"))
+    name = "torta_lampuki"
+    tex = {"particle": f"{NS}:block/{name}_top", "top": f"{NS}:block/{name}_top", "side": f"{NS}:block/{name}_side",
+           "inside": f"{NS}:block/{name}_inside", "plate": f"{NS}:block/{name}_plate"}
+    for n in range(6):
+        P.write(f"models/block/{name}_eaten{n}.json", P.model(torta_elements(n), tex))
+    rot = {"north": 0, "east": 90, "south": 180, "west": 270}
+    P.write(f"blockstates/{name}.json", {"variants": {
+        f"eaten={n},facing={f}": ({"model": f"{NS}:block/{name}_eaten{n}", "y": y} if y else
+                                  {"model": f"{NS}:block/{name}_eaten{n}"}) for f, y in rot.items() for n in range(6)}})
+    P.write(f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{name}"}})
+    P.write(f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{name}"}})
+
+
+def torta_compare():
+    ims = [("Torta tal-lampuki", Image.open(os.path.join(TEX, "item", "torta_lampuki.png")).convert("RGBA")),
+           ("Timpana", Image.open(os.path.join(TEX, "item", "timpana.png")).convert("RGBA"))]
+    for v in ("pumpkin_pie", "cake"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
+    sheet = F.compare(ims)
+    shots = os.path.join(F.OUT, "ingame_torta_v3")
+    crops = []
+    if os.path.isdir(shots):
+        for key in ("16-torta-table", "16b-torta-above"):
+            fs = [f for f in sorted(os.listdir(shots)) if key + ".png" in f]
+            if fs:
+                im = Image.open(os.path.join(shots, fs[0])).convert("RGBA")
+                w, h = im.size
+                crops.append(im.crop((0, int(h * 0.25), w, int(h * 0.62))))
+    out = Image.new("RGBA", (max([sheet.width] + [c.width for c in crops]),
+                             sheet.height + sum(c.height + 8 for c in crops)), (198, 198, 198, 255))
+    out.alpha_composite(sheet, (0, 0))
+    y = sheet.height + 8
+    for c in crops:
+        out.alpha_composite(c, (0, y))
+        y += c.height + 8
+    out.save(os.path.join(F.OUT, "torta_compare.png"))
+
+
 def save_png(a, rel):
     p = os.path.join(TEX, rel)
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -1092,6 +1293,8 @@ def main():
     imqarrun_icon_compare()
     timpana()
     timpana_compare()
+    torta()
+    torta_compare()
 
 
 if __name__ == "__main__":
