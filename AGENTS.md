@@ -26,9 +26,10 @@ An optional **Fabric 26.3 add-on mod** for the Malta in Minecraft world. It adds
 2. **Every owner decision** gets a note in `docs/Decisions/` (template `docs/Templates/Decision.md`).
 3. **Keep ways back:** gameplay changes to vanilla behaviour (e.g. milkable sheep) go behind a config option, with vanilla behaviour restorable.
 4. **Real Malta first.** Use sourced facts; mark unchecked Maltese names or claims with †. Vanilla items are used only where Malta really uses them.
-5. **Git:** stage files by name, never `git add -A docs`. Commits carry **no Co-Authored-By lines and no mention of Claude**; they are the owner's alone. Commit identity for this repo: `onetrickpony1 <311002920+onetrickpony1@users.noreply.github.com>` (the owner's GitHub account, same as their other repos).
+5. **Git:** stage files by name, never `git add -A docs`. Commits carry no co-author or tool attribution lines. They are the owner's alone. The owner's general rules (writing style, commits, changelog) are in the `onetrickpony1/dev-conventions` repo. Commit identity for this repo: `onetrickpony1 <311002920+onetrickpony1@users.noreply.github.com>` (the owner's GitHub account, same as their other repos).
 6. **Contact details to outside services:** only `https://maltaminecraft.com` or `maltainminecraft@gmail.com`; never the owner's personal details.
 7. **The owner** is a Minecraft player, not a developer. Keep updates short, lead with what changes in-game, and use "they/them".
-8. **Art is judged by an independent reviewer (a sub-agent), never by whoever made it** (owner 2026-11-17). Check it in-game beside vanilla before review.
+8. **Art is judged by an independent reviewer, never by whoever made it** (owner 2026-11-17). A maker draws from the owner's photos, a separate critic judges it in the game beside vanilla, and the owner decides. Wait for the owner's photos before each batch.
+11. **Changelog:** every change goes under `## Unreleased` in `CHANGELOG.md`. There are no versions until the owner asks for a release.
 9. **Dependencies stay private:** Python tools use `art/.venv`, not system packages; no `pacman -S`.
 10. **The Malta project** (`~/Apps/Minecraft World`) has its own rules and another session may be working in it. Don't edit it from here unless asked.
