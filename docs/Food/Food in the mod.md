@@ -13,6 +13,10 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `hobz_bizzejt` | Ħobż biż-Żejt | bread |
 | `ftira_ghawdxija` | Ftira Għawdxija | bread |
 | `galletti` | Galletti | bread |
+| `qassata_irkotta` | Qassata tal-Irkotta | pastries |
+| `qassata_pizelli` | Qassata tal-Piżelli | pastries |
+| `qaghaq_hmira` | Qagħqa tal-Ħmira (sesame bread ring) | bread rings |
+| `qaghqa_appostli` | Qagħqa tal-Appostli (Holy Week ring with almonds) | bread rings |
 | `pastizz_irkotta` | Pastizz tal-Irkotta | pastizzi (the flagship) |
 | `pastizz_pizelli` | Pastizz tal-Piżelli | pastizzi |
 | `pastizz_xema_irkotta` | Pastizz tax-Xema' tal-Irkotta (round) | pastizzi |

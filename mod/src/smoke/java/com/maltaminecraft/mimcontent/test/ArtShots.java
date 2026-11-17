@@ -196,6 +196,22 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("19-hotbar-drinks");
+            // the new bakes: qassatat and the two bread rings beside vanilla bread and the accepted pastries
+            String[] bakes = {"minecraft:bread", "mimcontent:pastizz_irkotta", "mimcontent:pastizz_pizelli",
+                "mimcontent:qassata_irkotta", "mimcontent:qassata_pizelli", "mimcontent:qaghaq_hmira", "mimcontent:qaghqa_appostli", "mimcontent:qaghaq_ghasel", "mimcontent:hobz_malti"};
+            for (int i = 0; i < bakes.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + bakes[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("20-hotbar-bakes");
+            // the dips: bigilla and the three new dips side by side with galletti, beside vanilla bowls
+            String[] dips = {"mimcontent:bigilla", "mimcontent:dip_gbejna", "mimcontent:dip_tonn", "mimcontent:dip_tewm", "mimcontent:galletti",
+                "mimcontent:aljotta", "minecraft:beetroot_soup", "minecraft:mushroom_stew", "minecraft:bowl"};
+            for (int i = 0; i < dips.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + dips[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("21-hotbar-dips");
             System.out.println("[smoke] art screenshots written");
         }
     }

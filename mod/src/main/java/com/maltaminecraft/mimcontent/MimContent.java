@@ -66,6 +66,13 @@ public class MimContent implements ModInitializer {
     public static final Item KUSKSU = item("kusksu", Item::new, new Item.Properties());
     public static final Item BRODU_TAT_TIGIEG = item("brodu_tat_tigieg", Item::new, new Item.Properties());
     public static final Item BRODU_TAL_LAHAM = item("brodu_tal_laham", Item::new, new Item.Properties());
+    public static final Item QASSATA_IRKOTTA = item("qassata_irkotta", Item::new, new Item.Properties());
+    public static final Item QASSATA_PIZELLI = item("qassata_pizelli", Item::new, new Item.Properties());
+    public static final Item QAGHAQ_HMIRA = item("qaghaq_hmira", Item::new, new Item.Properties());
+    public static final Item QAGHQA_APPOSTLI = item("qaghqa_appostli", Item::new, new Item.Properties());
+    public static final Item DIP_GBEJNA = item("dip_gbejna", Item::new, new Item.Properties());
+    public static final Item DIP_TONN = item("dip_tonn", Item::new, new Item.Properties());
+    public static final Item DIP_TEWM = item("dip_tewm", Item::new, new Item.Properties());
     public static final Item KINNIE = item("kinnie", Item::new, new Item.Properties());
     public static final Item KINNIE_CAN = item("kinnie_can", Item::new, new Item.Properties());
     public static final Item KINNIE_GLASS = item("kinnie_glass", Item::new, new Item.Properties());

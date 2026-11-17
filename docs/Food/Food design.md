@@ -333,6 +333,9 @@ The owner pasted a list of Maltese dishes and asked to add the ones not yet here
 | D66 | Ftira tar-Randan | Lenten fried pastry squares with honey | sweet | **Lent** | - |
 | D67 | Ħobża ta' San Martin | St Martin's sweet bread roll | sweet | sweetened with mastic; **St Martin's Day** (11 November) | - |
 | D68 | Ġelat Malti (ġelat tan-nanna) | Maltese ice cream | sweet | condensed milk, cinnamon, nuts and candied peel | - |
+| D69 | Dip tal-ġbejna | Ġbejna dip | dip | peppered dried ġbejna blended with cream cheese, olive oil, garlic and parsley; with galletti (a modern recipe) | - |
+| D70 | Dip tat-tonn † | Tuna dip | dip | named as a Maltese classic with no recipe found; tuna also goes into arjoli and żebbuġ mimli | - |
+| D71 | Dip tat-tewm † | Garlic dip | dip | named as a Maltese classic with no recipe found | - |
 
 ## 8. Drinks
 
@@ -371,7 +374,7 @@ The owner pasted a list of Maltese dishes and asked to add the ones not yet here
 | Base ingredients | ~16 | ~6 | ~4 | ~26 |
 | Imported goods | - | - | - | 8 |
 | Dishes | 17 | 21 | 13 | **51** |
-| Dishes added 2026-11-17 (7g, not tiered) | - | - | - | 17 |
+| Dishes added 2026-11-17 (7g, not tiered) | - | - | - | 20 |
 | Drinks | 0 | 3 | 2 | 5 (+ Kinnie, not tiered) |
 
 - **Tier A alone:**

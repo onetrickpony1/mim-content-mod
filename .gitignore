@@ -34,3 +34,5 @@ art/references/oven_owner/
 art/.vanilla/
 .art-runs/
 art/references/**/*_owner*
+# web photos for reference only (no licence): never committed
+art/references/**/*_refonly*
