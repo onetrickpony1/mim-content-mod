@@ -1,0 +1,14 @@
+filters:
+  and:
+    - 'note.type == "decision"'
+views:
+  - type: table
+    name: Newest first
+    order:
+      - note.date
+      - file.name
+      - note.topic
+      - note.quote
+    sort:
+      - property: note.date
+        direction: DESC

@@ -1,0 +1,12 @@
+filters:
+  or:
+    - 'note.status == "open"'
+    - 'note.status == "planned"'
+views:
+  - type: table
+    name: Open or planned
+    order:
+      - file.name
+      - note.type
+      - note.status
+      - note.date

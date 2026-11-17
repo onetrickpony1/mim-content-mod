@@ -1,0 +1,39 @@
+filters:
+  and:
+    - 'note.type == "item"'
+views:
+  - type: table
+    name: All items
+    order:
+      - file.name
+      - note.maltese
+      - note.kind
+      - note.subject
+      - note.tier
+      - note.status
+      - note.id
+    sort:
+      - property: note.tier
+        direction: ASC
+  - type: table
+    name: Food
+    filters:
+      and:
+        - 'note.subject == "Food"'
+    order:
+      - file.name
+      - note.maltese
+      - note.kind
+      - note.tier
+      - note.status
+  - type: table
+    name: Creatures and plants
+    filters:
+      and:
+        - 'note.subject == "Creatures and Plants"'
+    order:
+      - file.name
+      - note.maltese
+      - note.kind
+      - note.tier
+      - note.status

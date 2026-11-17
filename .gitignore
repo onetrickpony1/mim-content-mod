@@ -1,0 +1,19 @@
+# Obsidian: keep the shared settings, not the per-machine window layout
+docs/.obsidian/workspace*.json
+docs/.obsidian/cache
+docs/.trash/
+
+# Gradle / Fabric (for when mod/ exists)
+.gradle/
+build/
+run/
+out/
+*.class
+.idea/
+*.iml
+.vscode/
+
+# OS and editor leftovers
+.DS_Store
+*~
+*.swp
