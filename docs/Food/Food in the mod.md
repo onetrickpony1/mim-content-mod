@@ -46,6 +46,7 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `kusksu` | Kusksu | soups |
 | `brodu_tat_tigieg` | Brodu tat-Tiġieġ (chicken broth) | soups |
 | `brodu_tal_laham` | Brodu tal-Laħam (beef broth) | soups |
+| `stuffat_bebbux` | Stuffat tal-Bebbux (snail stew) | soups |
 
 ## Placed dishes, eaten in 6 slices like a cake
 | Id | Name | Dish | State |

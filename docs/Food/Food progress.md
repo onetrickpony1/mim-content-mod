@@ -12,12 +12,12 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 
 | | In the mod | Not yet |
 |---|---|---|
-| Items | 38 | |
+| Items | 39 | |
 | Placed dishes (eaten in slices) | 4 | |
 | Kitchen blocks | 3 (kenur, borma, borma with stuffat) | |
 | Crops, trees, wild food, animal and sea products | 1 (the lampuka) | 47 |
 | Base ingredients and imports | the 3 ġbejniet and the broth (as 2 soups) | 31 |
-| Catalogue dishes | 31 | 40 |
+| Catalogue dishes | 32 | 39 |
 | Drinks | Kinnie (3 items) | 5 |
 
 ## In the mod
@@ -70,6 +70,7 @@ What is in the mod now and what isn't yet, with a picture of each (2026-11-17).
 | ![Kusksu](images/kusksu.png) | **Kusksu** (D19) | `kusksu` | kusksu and broad bean soup |
 | ![Brodu tat-Tiġieġ](images/brodu_tat_tigieg.png) | **Brodu tat-Tiġieġ** (D20) | `brodu_tat_tigieg` | chicken broth |
 | ![Brodu tal-Laħam](images/brodu_tal_laham.png) | **Brodu tal-Laħam** (D20) | `brodu_tal_laham` | beef broth |
+| ![Stuffat tal-Bebbux](images/stuffat_bebbux.png) | **Stuffat tal-Bebbux** (D14) | `stuffat_bebbux` | snail stew |
 
 ### Dips (in a low terracotta dish, so they can't be mistaken for soups)
 
@@ -276,7 +277,6 @@ I'd appreciate if you could mail me (Kolforn@gmail.com) if you](https://commons.
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Arjoli** (D11)                                      |                                                                                                                                                                                            |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Patata il-forn (roast potatoes)** (D13)             |                                                                                                                                                                                            |
-| ![Stuffat tal-bebbux (snail stew)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/09383jfCabalen_restaurants_food_products_buffets_in_Bulacan_Philippinesfvf_27.jpg/330px-09383jfCabalen_restaurants_food_products_buffets_in_Bulacan_Philippinesfvf_27.jpg) | **Stuffat tal-bebbux (snail stew)** (D14)             | [CC0, Judgefloro](https://commons.wikimedia.org/wiki/File:09383jfCabalen_restaurants_food_products_buffets_in_Bulacan_Philippinesfvf_27.jpg)<br>a similar dish, not the Maltese version    |
 | ![Fenek moqli (fried rabbit)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Malta_Rabbit_fried_with_wine_and_garlic.JPG/330px-Malta_Rabbit_fried_with_wine_and_garlic.JPG)                                                                                  | **Fenek moqli (fried rabbit)** (D22)                  | [CC BY 3.0, Chattacha](https://commons.wikimedia.org/wiki/File:Malta_Rabbit_fried_with_wine_and_garlic.JPG)                                                                                |
 | ![Zalzett tal-Malti (Maltese sausage)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Maltese_Platter_Supernova_Heights_Kalkara.jpg/330px-Maltese_Platter_Supernova_Heights_Kalkara.jpg)                                                                     | **Zalzett tal-Malti (Maltese sausage)** (D23)         | [CC BY 3.0, Benreis](https://commons.wikimedia.org/wiki/File:Maltese_Platter_Supernova_Heights_Kalkara.jpg)<br>a Maltese platter with the sausage; a similar dish, not the Maltese version |
 | (no free photo found)                                                                                                                                                                                                                                                        | **Laħam fuq il-fwar (steamed beef)** (D24)            |                                                                                                                                                                                            |
@@ -317,13 +317,13 @@ I'd appreciate if you could mail me (Kolforn@gmail.com) if you](https://commons.
 
 ### Drinks
 
-| Picture | Food | Photo |
-|---|---|---|
+| Picture                                                                                                                                                                   | Food                                        | Photo                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Inbid (wine: Ġellewża, Girgentina)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Vino_Medina_Girgentina_DOC.jpg/330px-Vino_Medina_Girgentina_DOC.jpg) | **Inbid (wine: Ġellewża, Girgentina)** (X1) | [CC BY-SA 4.0, Marcuscalabresus](https://commons.wikimedia.org/wiki/File:Vino_Medina_Girgentina_DOC.jpg)<br>Girgentina, one of the two Maltese grapes |
-| ![Ġulepp tal-ħarrub (carob syrup)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Carob_syrup_spoon.jpg/330px-Carob_syrup_spoon.jpg) | **Ġulepp tal-ħarrub (carob syrup)** (X2) | [CC BY-SA 4.0, Silassouille](https://commons.wikimedia.org/wiki/File:Carob_syrup_spoon.jpg)<br>the same photo as carob syrup |
-| ![Imbuljuta tal-qastan\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/IMBULJUTA._%284235897347%29.jpg/330px-IMBULJUTA._%284235897347%29.jpg) | **Imbuljuta tal-qastan** (X3) | [CC BY-SA 2.0, KNOW MALTA by Peter Grima](https://commons.wikimedia.org/wiki/File:IMBULJUTA._(4235897347).jpg) |
-| (no free photo found) | **Likur tal-bajtar** (X4) | |
-| ![Te (tea in a glass)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Glass_of_tea_05119.jpg/330px-Glass_of_tea_05119.jpg) | **Te (tea in a glass)** (X5) | [CC BY-SA 3.0, Nevit Dilmen](https://commons.wikimedia.org/wiki/File:Glass_of_tea_05119.jpg) |
+| ![Ġulepp tal-ħarrub (carob syrup)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Carob_syrup_spoon.jpg/330px-Carob_syrup_spoon.jpg)                      | **Ġulepp tal-ħarrub (carob syrup)** (X2)    | [CC BY-SA 4.0, Silassouille](https://commons.wikimedia.org/wiki/File:Carob_syrup_spoon.jpg)<br>the same photo as carob syrup                          |
+| ![Imbuljuta tal-qastan\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/IMBULJUTA._%284235897347%29.jpg/330px-IMBULJUTA._%284235897347%29.jpg)             | **Imbuljuta tal-qastan** (X3)               | [CC BY-SA 2.0, KNOW MALTA by Peter Grima](https://commons.wikimedia.org/wiki/File:IMBULJUTA._(4235897347).jpg)                                        |
+| (no free photo found)                                                                                                                                                     | **Likur tal-bajtar** (X4)                   |                                                                                                                                                       |
+| ![Te (tea in a glass)\|120](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Glass_of_tea_05119.jpg/330px-Glass_of_tea_05119.jpg)                                | **Te (tea in a glass)** (X5)                | [CC BY-SA 3.0, Nevit Dilmen](https://commons.wikimedia.org/wiki/File:Glass_of_tea_05119.jpg)                                                          |
 
 
 ## Keeping this page right

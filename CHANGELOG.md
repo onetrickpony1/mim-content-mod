@@ -8,7 +8,7 @@
 - **Ġelat Malti.** Grandma's ice cream: cream scoops with toasted almonds and glacé cherries in a cream fluted bowl.
 - **Kinnie.** A bottle, a can and a glass of Malta's bittersweet orange soft drink.
 - **Lampuka.** The caught fish, beside vanilla cod and salmon, and lampuka moqlija, a whole fried lampuka on a plate with lemon. They have no recipes or food values yet.
-- **Stews and soups in a terracotta bowl.** Stuffat tal-fenek, aljotta, stuffat tal-qarnit, soppa tal-armla, minestra, kawlata, kusksu, brodu tat-tiġieġ and brodu tal-laħam. Each soup has its own look so they're easy to tell apart, and the bowls have a plain terracotta rim.
+- **Stews and soups in a terracotta bowl.** Stuffat tal-fenek, aljotta, stuffat tal-qarnit, soppa tal-armla, minestra, kawlata, kusksu, brodu tat-tiġieġ, brodu tal-laħam and stuffat tal-bebbux (snail stew). Each soup has its own look so they're easy to tell apart, and the bowls have a plain terracotta rim.
 - **Dips in a low terracotta dish.** Bigilla, dip tal-ġbejna, a pink creamy tuna dip and a thick garlic dip, each a rough spooned heap, so dips and soups can't be confused.
 - **Oven dishes you eat in slices.** Ross il-forn in a foil tray, imqarrun il-forn in a white ceramic dish with baked penne on top, timpana in a foil tray with a pastry lid, and torta tal-lampuki, a round fish pie in a terracotta dish that you eat in wedges. Place one on a table and use it to eat a slice. Six slices per dish.
 - **A Maltese kitchen.** The kenur, a limestone stove that can be lit and hold a pot, and the borma, a clay stew pot, empty or full of stuffat.

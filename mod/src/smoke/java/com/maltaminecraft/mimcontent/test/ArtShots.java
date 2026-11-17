@@ -220,6 +220,14 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("22-hotbar-gelat");
+            // stuffat tal-bebbux beside the other stews and soups in the same bowl, and a dip
+            String[] bebbux = {"mimcontent:stuffat_bebbux", "mimcontent:stuffat_fenek", "mimcontent:stuffat_qarnit", "mimcontent:aljotta",
+                "mimcontent:minestra", "mimcontent:kawlata", "mimcontent:brodu_tal_laham", "mimcontent:bigilla", "minecraft:rabbit_stew"};
+            for (int i = 0; i < bebbux.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + bebbux[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("23-hotbar-bebbux");
             System.out.println("[smoke] art screenshots written");
         }
     }
