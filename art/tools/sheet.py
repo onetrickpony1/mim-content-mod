@@ -7,6 +7,8 @@ Block textures are tiled 2x2 so seams show.
 import os
 import sys
 from PIL import Image, ImageDraw
+sys.path.insert(0, os.path.dirname(__file__))
+from font import label_font
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MOD = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
@@ -40,9 +42,10 @@ def main(vanilla, out):
     H = sum(CELL + 30 for _ in ROWS) + 10
     sheet = Image.new("RGBA", (W, H), (139, 139, 139, 255))  # the inventory slot grey
     d = ImageDraw.Draw(sheet)
+    f = label_font(14)
     y = 10
     for label, specs in ROWS:
-        d.text((16, y), label, fill=(20, 20, 20, 255))
+        d.text((16, y), label, fill=(20, 20, 20, 255), font=f)
         y += 18
         for i, s in enumerate(specs):
             im = load(s, vanilla)
@@ -60,7 +63,7 @@ def main(vanilla, out):
                 big = im.resize((CELL - 16, CELL - 16), Image.NEAREST)
             x = 16 + i * CELL
             sheet.alpha_composite(big, (x, y))
-            d.text((x, y + CELL - 14), s, fill=(10, 10, 10, 255))
+            d.text((x, y + CELL - 14), s, fill=(10, 10, 10, 255), font=f)
         y += CELL + 12
     sheet.save(out)
     print("wrote", out)
