@@ -14,10 +14,13 @@ import sys
 import time
 from pathlib import Path
 
-SOCKET = "mimcontent-test-wl"
-RUN = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "mimcontent-test"
+# ART_RUN (set by run-art.sh) gives each parallel run its own desktop, socket and state.
+_RUN_ID = os.environ.get("ART_RUN", "")
+_SUFFIX = ("-" + _RUN_ID) if _RUN_ID else ""
+SOCKET = "mimcontent-test-wl" + _SUFFIX
+RUN = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / ("mimcontent-test" + _SUFFIX)
 STATE = RUN / "state.json"
-LOG = Path(__file__).resolve().parent.parent / "mod" / "build" / "test_display.log"
+LOG = Path(__file__).resolve().parent.parent / "mod" / "build" / f"test_display{_SUFFIX}.log"
 
 
 def _alive(pid):

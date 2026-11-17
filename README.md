@@ -30,7 +30,7 @@ On Windows, run `gradlew.bat build` instead. The jar is in `mod/build/libs/`. Pu
 
 Start a world with the mod and look for the items in the creative inventory. The design docs are an Obsidian vault: open the `docs/` folder in Obsidian and start at `Home.md`.
 
-To see the art in the game, `tools/run-art.sh` builds the mod and takes screenshots on an invisible desktop (Linux, needs `env.sh`; see `env.sh.example`). The art itself is made by the scripts in `art/src/` (see [art/README.md](art/README.md)).
+To see the art in the game, `tools/run-art.sh` builds the mod and takes screenshots on an invisible desktop (Linux, needs `env.sh`; see `env.sh.example`). Several can run at once: give each a name with `ART_RUN=<name> tools/run-art.sh`, and its screenshots go to `.art-runs/<name>/build/smoke-run/screenshots`. The art itself is made by the scripts in `art/src/` (see [art/README.md](art/README.md)).
 
 ## Notes
 
