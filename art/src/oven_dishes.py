@@ -1072,6 +1072,32 @@ def torta_cells():
     return cells
 
 
+def check_torta_faces():
+    """Test: in every eaten state, a wedge face uses the filling ("inside") only where every cell it faces belongs to
+    an eaten wedge, and the crust ("side") only where every cell it faces is outside the pie."""
+    cells = torta_cells()
+    step = {"north": (0, -1), "south": (0, 1), "west": (-1, 0), "east": (1, 0)}
+    bad = []
+    for n in range(6):
+        for b in torta_elements(n):
+            if b["from"][1] != PIE_Y0:
+                continue
+            (x0, _, z0), (x1, _, z1) = b["from"], b["to"]
+            for d, f in b["faces"].items():
+                if d not in step:
+                    continue
+                dx, dz = step[d]
+                nbs = ([(x, z0 - 1 if dz < 0 else z1) for x in range(int(x0), int(x1))] if dz else
+                       [(x0 - 1 if dx < 0 else x1, z) for z in range(int(z0), int(z1))])
+                t = f["texture"]
+                ok = (all(c in cells for c in nbs) and any(cells[c] < n for c in nbs) if t == "#inside" else
+                      not any(c in cells and cells[c] < n for c in nbs))
+                if not ok:
+                    bad.append((n, b["from"], d, t))
+    assert not bad, bad
+    return True
+
+
 def torta_dish():
     """A round terracotta pie dish (owner: "can we have the pie in a dish"): a floor and a low octagonal rim (four
     straight walls plus the north and south walls turned 45 degrees about the centre for the diagonals) = 10 elements."""
@@ -1102,8 +1128,10 @@ def torta_elements(eaten):
         for z in range(16):
             xs = sorted(x for (x, zz), kk in keep.items() if zz == z and kk == k)
             runs, run = [], []
-            for x in xs:
-                if run and x != run[-1] + 1:
+            for x in xs:   # a run also breaks where its north or south face changes kind (owner: green seen from
+                # outside, when one box's face ran along both a cut and the outer crust)
+                if run and (x != run[-1] + 1 or any({face((xx, z + dz)) for xx in run + [x]} >= {"inside", "side"}
+                                                    for dz in (-1, 1))):
                     runs.append(run)
                     run = []
                 run.append(x)
@@ -1114,7 +1142,8 @@ def torta_elements(eaten):
                 faces = {"up": "top"}
                 for d, nbs in (("north", [(x, z - 1) for x in run]), ("south", [(x, z + 1) for x in run]),
                                ("west", [(x0 - 1, z)]), ("east", [(x1, z)])):
-                    kinds = [face(nb) for nb in nbs]
+                    kinds = {face(nb) for nb in nbs}   # a kept neighbour hides its part of the face
+                    assert not kinds >= {"inside", "side"}, (eaten, z, run, d)
                     if "inside" in kinds:
                         faces[d] = "inside"
                     elif "side" in kinds:
@@ -1231,12 +1260,76 @@ TORTA_ICON3 = [
 ]
 
 
+# owner: "looks like a soup in the dish in the icon": the lid now rises as a low dome above the dish rim, a dry
+# blistered pastry (light blisters top-left, baked patches), crimped all round over the rim, short dark slits,
+# sesame; no darker ring inside the rim. Two variants for the owner.
+TORTA_PAL4 = dict(TORTA_PAL3, **{"B": hx("#f8d890"), "L": hx("#ecc06a"), "r": hx("#dca44c"), "R": hx("#bc8236"),
+                                 "M": hx("#a06a2c"), "x": hx("#5a3418"), "g": hx("#fbefcc"), "Y": hx("#6e4422")})
+TORTA_ICON_PICK = "a"
+
+
+def torta_icon4(variant):
+    """The pie (narrower than the dish, so the rim shows each side) domes 1-2 px above the dish's back rim."""
+    rs = np.random.RandomState(91 if variant == "a" else 92)
+    g = [list(r) for r in TORTA_ICON3]
+    for y in range(16):                                                # the template's lid becomes the rim's top
+        for x in range(16):
+            if g[y][x] in "LrRMgx":
+                g[y][x] = "m"
+    cy, ry = (5.0, 4.7) if variant == "a" else (5.3, 4.4)
+    lid = {}
+    for y in range(16):
+        for x in range(16):
+            u, v = (x + .5 - 8) / 5.7, (y + .5 - cy) / ry
+            if u * u + v * v <= 1:
+                lid[(x, y)] = (u, v)
+    for (x, y), (u, v) in lid.items():
+        r = math.hypot(u, v)
+        k = -0.6 * u - 0.6 * v
+        if r > 0.74 and v > -0.3:                                      # crimp over the rim, alternating
+            c = ("B" if k > 0 else "L") if x % 2 else ("R" if k > -0.2 else "M")
+        else:
+            c = "B" if k > 0.8 else "L" if k > 0.35 else "r" if k > -0.5 else "R"
+            n = rs.rand()
+            if n < 0.18:
+                c = {"B": "L", "L": "r", "r": "R", "R": "M"}[c]          # baked patches
+            elif n > 0.9 and k > -0.2:
+                c = "B"                                                # blisters
+        g[y][x] = c
+    for (x, y), (u, v) in lid.items():                                 # outline where the dome stands free
+        if v < 0 and any((x + dx, y + dy) not in lid and g[y + dy][x + dx] in ".O"
+                         for dx, dy in ((0, -1), (-1, 0), (1, 0))):
+            g[y][x] = "O"
+    for y in range(16):                                                # a dish outline pixel next to the dome's top
+        for x in range(16):
+            if g[y][x] == "." and any((x + dx, y + dy) in lid and g[y + dy][x + dx] != "O"
+                                      for dx, dy in ((0, 1), (1, 0), (-1, 0))):
+                g[y][x] = "O"
+    slits = [(7, 3), (8, 3)] if variant == "a" else [(6, 4), (6, 5), (10, 4), (10, 5)]
+    seeds = [(5, 5), (10, 2), (11, 6), (8, 6)] if variant == "a" else [(8, 2), (4, 6), (12, 4)]
+    for x, y in slits:
+        g[y][x] = "x"
+    for x, y in seeds:
+        g[y][x] = "g"
+    return ["".join(r) for r in g]
+
+
+def torta_icons():
+    ims = {}
+    for v in ("a", "b"):
+        im = F.render(relight(torta_icon4(v)), TORTA_PAL4)
+        im.save(os.path.join(F.OUT, f"torta_icon_{v}.png"))
+        ims[v] = im
+    return ims
+
+
 def torta():
+    check_torta_faces()
     save_png(torta_top(), "block/torta_lampuki_top.png")
     save_png(torta_side(), "block/torta_lampuki_side.png")
     save_png(torta_inside(), "block/torta_lampuki_inside.png")
     save_png(plate_tex(), "block/torta_lampuki_plate.png")
-    F.render(relight(TORTA_ICON3), TORTA_PAL3).save(os.path.join(TEX, "item", "torta_lampuki.png"))
+    torta_icons()[TORTA_ICON_PICK].save(os.path.join(TEX, "item", "torta_lampuki.png"))
     name = "torta_lampuki"
     tex = {"particle": f"{NS}:block/{name}_top", "top": f"{NS}:block/{name}_top", "side": f"{NS}:block/{name}_side",
            "inside": f"{NS}:block/{name}_inside", "plate": f"{NS}:block/{name}_plate"}
@@ -1251,14 +1344,23 @@ def torta():
 
 
 def torta_compare():
-    ims = [(t, Image.open(os.path.join(TEX, "item", n + ".png")).convert("RGBA")) for t, n in (
-        ("Torta tal-lampuki", "torta_lampuki"), ("Timpana", "timpana"), ("Ross il-forn", "ross_il_forn"),
+    tv = torta_icons()
+    ims = [("Torta v5a", tv["a"]), ("Torta v5b", tv["b"])] + [
+        (t, Image.open(os.path.join(TEX, "item", n + ".png")).convert("RGBA")) for t, n in (("Timpana", "timpana"), ("Ross il-forn", "ross_il_forn"),
         ("Imqarrun il-forn", "imqarrun_il_forn"))]
     for v in ("pumpkin_pie", "cake"):
         ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
     sheet = F.compare(ims)
-    shots = os.path.join(F.OUT, "ingame_torta_v4")
+    shots = os.path.join(F.OUT, "ingame_torta_v5_fix")
     crops = []
+    for v in ("a", "b"):                                               # the hotbar with each variant
+        d = os.path.join(F.OUT, f"ingame_torta_v5{v}")
+        fs = [f for f in sorted(os.listdir(d)) if "13-hotbar-oven" in f] if os.path.isdir(d) else []
+        if fs:
+            im = Image.open(os.path.join(d, fs[0])).convert("RGBA")
+            w, h = im.size
+            c = im.crop((w // 2 - 92, h - 46, w // 2 + 92, h))
+            crops.append(c.resize((c.width * 3, c.height * 3), Image.NEAREST))
     if os.path.isdir(shots):
         for key in ("16-torta-table", "16b-torta-above"):
             fs = [f for f in sorted(os.listdir(shots)) if key + ".png" in f]
