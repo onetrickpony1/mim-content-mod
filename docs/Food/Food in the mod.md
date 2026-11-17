@@ -18,6 +18,10 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `pastizz_xema_irkotta` | Pastizz tax-Xema' tal-Irkotta (round) | pastizzi |
 | `pastizz_xema_pizelli` | Pastizz tax-Xema' tal-Piżelli (half-moon) | pastizzi |
 | `gbejna` | Ġbejna (fresh) | cheese |
+| `gbejna_niexfa` | Ġbejna Niexfa (dried) | cheese |
+| `gbejna_tal_bzar` | Ġbejna tal-Bżar (peppered) | cheese |
+| `lampuka` | Lampuka (the caught fish) | fish |
+| `lampuka_moqlija` | Lampuka Moqlija (fried, on a plate) | fish |
 | `imqaret` | Imqaret | sweets |
 | `kannoli` | Kannoli (plain ricotta) | sweets |
 | `qaghaq_ghasel` | Qagħaq tal-Għasel | sweets |
@@ -40,6 +44,6 @@ These use one block class, `SliceDishBlock`. Its food values are placeholders.
 `kenur` (the stone stove, with a pot on it), `borma` and `borma_stuffat`. The owner said these "can pass for now".
 
 ## Still to draw for phase 1
-- **Dishes:** lampuka moqlija, dried and peppered ġbejniet.
+- **Kinnie** (in progress). Phase 1 dishes are all drawn.
 - **Then:** ingredients, crops with growth stages, fruit, and the station blocks (forn, quern, taġen).
 - **Before each batch, wait for the owner's photos** ([[2026-11-17 Bigilla v6b and galletti accepted; wait for photos before each batch]]).

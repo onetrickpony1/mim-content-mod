@@ -143,7 +143,7 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna"):
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie"):
         write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
@@ -168,6 +168,11 @@ def main():
         "item.mimcontent.bigilla": "Bigilla",
         "item.mimcontent.galletti": "Galletti",
         "item.mimcontent.gbejna": "Ġbejna",
+        "item.mimcontent.lampuka": "Lampuka",
+        "item.mimcontent.lampuka_moqlija": "Lampuka Moqlija",
+        "item.mimcontent.gbejna_niexfa": "Ġbejna Niexfa",
+        "item.mimcontent.gbejna_tal_bzar": "Ġbejna tal-Bżar",
+        "item.mimcontent.kinnie": "Kinnie",
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
         "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
         "block.mimcontent.timpana": "Timpana",
