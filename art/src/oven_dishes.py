@@ -97,13 +97,15 @@ ZS = (2, 6, 10, 14)                                   # 3 rows, front (north) fi
 ORDER = [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]   # (column, row) eaten in this order
 
 
-def tray():
+def tray(handles=False):
+    """The dish: floor and four walls. handles: the two short end walls (east and west, outer faces) use the
+    'handle' texture (a moulded grip lip painted on)."""
     S, B = "side", "bottom"
     e = [P.box([1, 0, 1], [15, 1, 15], {"down": B, "up": B, **{k: S for k in P.ALL}})]       # floor
     for f, t, inner in (([1, 1, 1], [15, 5, 2], "south"), ([1, 1, 14], [15, 5, 15], "north"),
                         ([1, 1, 2], [2, 5, 14], "east"), ([14, 1, 2], [15, 5, 14], "west")):
         outer = {"south": "north", "north": "south", "east": "west", "west": "east"}[inner]
-        e.append(P.box(f, t, {outer: S, inner: S, "up": B}))
+        e.append(P.box(f, t, {outer: ("handle" if handles and outer in ("east", "west") else S), inner: S, "up": B}))
     return e
 
 
@@ -126,7 +128,7 @@ def rice(eaten):
     return e
 
 
-def models(name="ross_il_forn", extra=None):
+def models(name="ross_il_forn", extra=None, handles=False):
     """The six eaten models, the blockstate and the item JSONs of one slice dish (same geometry for every dish).
     extra(eaten) adds elements on top of the remaining portions (the imqarrun's raised penne)."""
     tex = {"particle": f"{NS}:block/{name}_top", "top": f"{NS}:block/{name}_top",
@@ -134,8 +136,10 @@ def models(name="ross_il_forn", extra=None):
            "bottom": f"{NS}:block/{name}_bottom"}
     if extra:
         tex["penne"] = f"{NS}:block/{name}_penne"
+    if handles:
+        tex["handle"] = f"{NS}:block/{name}_handle"
     for n in range(6):
-        P.write(f"models/block/{name}_eaten{n}.json", P.model(tray() + rice(n) + (extra(n) if extra else []), tex))
+        P.write(f"models/block/{name}_eaten{n}.json", P.model(tray(handles) + rice(n) + (extra(n) if extra else []), tex))
     rot = {"north": 0, "east": 90, "south": 180, "west": 270}
     variants = {f"eaten={n},facing={f}": ({"model": f"{NS}:block/{name}_eaten{n}", "y": y} if y else
                                           {"model": f"{NS}:block/{name}_eaten{n}"})
@@ -323,6 +327,18 @@ def dish_side():
     a[15, :, :3] = hx(DISH["lo"])
     for x in (3, 9, 14):
         a[13, x, :3] = hx(DISH["hi"])       # a little glaze shine
+    return a
+
+
+def dish_handle():
+    """The end walls with a moulded grip lip (owner: "add shading on the side implying handles"): the wall face uses
+    x 2-14, rows 11-15 (row 11 the rim); a light ledge on row 12, shadow beneath, 7 px wide and centred."""
+    a = dish_side()
+    for x in range(5, 12):
+        a[12, x, :3] = hx("#f8f6f0")
+        a[13, x, :3] = hx("#c8c4ba")
+    for x in range(6, 11):
+        a[14, x, :3] = hx("#a8a49a")
     return a
 
 
@@ -746,15 +762,72 @@ ICON_V4_PAL = dict(ICON3_PAL, **{
 IMQ_ICON4 = [r.replace("mwwWwwWwwWwk", "mwwwwwwwwwwk") for r in ROSS_V5]   # smooth glazed wall, no foil pleats
 
 
+# ---- Icon v5 (owner: "too exact to the original ross il-forn ... definitely should look more burnt") ----
+ICON_V5_PAL = dict(ICON_V4_PAL, **{"T": hx("#f4c87e"), "t": hx("#d89048"), "q": hx("#a85a24"), "S": hx("#8a3a1c"),
+                                   "z": hx("#2e160c"), "Z": hx("#5a2a12")})
+
+
+def penne_food(w, h, seed, lift=0):
+    """w x h of jumbled little penne seen from above: diagonal 3-px tubes (lit top T, body t, dark underside q), a
+    blackened end, dark-brown crust patches; more char towards the bottom right (light from the top left)."""
+    rs = np.random.RandomState(seed)
+    g = [["S"] * w for _ in range(h)]
+    for _ in range(w * h // 4):
+        x, y = rs.randint(-1, w), rs.randint(-1, h)
+        d = 1 if rs.rand() < 0.6 else -1
+        for i in range(3):
+            px, py = x + i, y + i * d
+            if 0 <= px < w and 0 <= py < h:
+                g[py][px] = "z" if i == 2 and rs.rand() < 0.7 else ("T" if i == 0 else "t")
+            if 0 <= px < w and 0 <= py + 1 < h and i < 2 and g[py + 1][px] == "S":
+                g[py + 1][px] = "q"
+    cells = [(x, y) for y in range(h) for x in range(w)]
+    dark = lambda: sum(g[y][x] in "zZS" for x, y in cells) / len(cells)
+    while dark() < 0.36:
+        x, y = rs.randint(0, w), rs.randint(0, h)
+        if rs.rand() < 0.35 + 0.5 * (x / w + y / h) / 2:        # crust patches lean to the bottom right
+            g[y][x] = "Z" if rs.rand() < 0.5 else "z"
+    for x, y in ((0, 0), (1, 0), (0, 1)):                       # the lit corner keeps pale pasta
+        g[y][x] = "T"
+    return ["".join(r) for r in g]
+
+
+def with_food(base, food, top):
+    rows = [list(r) for r in base]
+    for j, fr in enumerate(food):
+        for i, c in enumerate(fr):
+            rows[top + j][3 + i] = c
+    return ["".join(r) for r in rows]
+
+
+IMQ_V5A = with_food(IMQ_ICON4, penne_food(10, 6, 51), 3)
+IMQ_V5B = with_food(IMQ_ICON4, penne_food(10, 7, 103), 2)      # heaped: the middle rises over the back rim
+IMQ_V5B[1] = ".OOOOOOOOOOOOOO."
+IMQ_V5B[2] = IMQ_ICON4[2][:5] + IMQ_V5B[2][5:11] + IMQ_ICON4[2][11:]
+
+
+def imqarrun_icon_compare():
+    ims = []
+    for n, rows in (("v5a", IMQ_V5A), ("v5b", IMQ_V5B)):
+        im = F.render(relight(rows), ICON_V5_PAL)
+        im.save(os.path.join(F.OUT, f"imqarrun_icon_{n}.png"))
+        ims.append(("Imqarrun il-forn " + n, im))
+    ims.append(("Ross il-forn (installed)", Image.open(os.path.join(TEX, "item", "ross_il_forn.png")).convert("RGBA")))
+    for v in ("cake", "pumpkin_pie"):
+        ims.append(("vanilla " + v, Image.open(os.path.join(F.VANILLA, v + ".png")).convert("RGBA")))
+    F.compare(ims).save(os.path.join(F.OUT, "imqarrun_icon_compare.png"))
+
+
 def imqarrun():
     save_png(penne_top_v4(), "block/imqarrun_il_forn_top.png")
     save_png(dish_side(), "block/imqarrun_il_forn_side.png")
     save_png(penne_inside_v4(), "block/imqarrun_il_forn_inside.png")
     save_png(dish_bottom(), "block/imqarrun_il_forn_bottom.png")
     save_png(penne_tex(), "block/imqarrun_il_forn_penne.png")
-    F.render(relight(IMQ_ICON2, front=True), IMQ_PAL2).save(os.path.join(TEX, "item", "imqarrun_il_forn.png"))
+    F.render(relight(IMQ_V5A), ICON_V5_PAL).save(os.path.join(TEX, "item", "imqarrun_il_forn.png"))  # accepted: v5a
     F.render(relight(IMQ_ICON4), ICON_V4_PAL).save(os.path.join(F.OUT, "imqarrun_icon_v4.png"))
-    models("imqarrun_il_forn", extra=penne)
+    save_png(dish_handle(), "block/imqarrun_il_forn_handle.png")
+    models("imqarrun_il_forn", extra=penne, handles=True)
 
 
 def imqarrun_compare():
@@ -826,6 +899,7 @@ def main():
     imqarrun()
     imqarrun_compare()
     ross_icon_compare()
+    imqarrun_icon_compare()
 
 
 if __name__ == "__main__":

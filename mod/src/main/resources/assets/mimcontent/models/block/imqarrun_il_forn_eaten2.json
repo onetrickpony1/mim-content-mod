@@ -6,7 +6,8 @@
   "side": "mimcontent:block/imqarrun_il_forn_side",
   "inside": "mimcontent:block/imqarrun_il_forn_inside",
   "bottom": "mimcontent:block/imqarrun_il_forn_bottom",
-  "penne": "mimcontent:block/imqarrun_il_forn_penne"
+  "penne": "mimcontent:block/imqarrun_il_forn_penne",
+  "handle": "mimcontent:block/imqarrun_il_forn_handle"
  },
  "elements": [
   {
@@ -178,7 +179,7 @@
       14,
       15
      ],
-     "texture": "#side"
+     "texture": "#handle"
     },
     "east": {
      "uv": [
@@ -219,7 +220,7 @@
       14,
       15
      ],
-     "texture": "#side"
+     "texture": "#handle"
     },
     "west": {
      "uv": [
