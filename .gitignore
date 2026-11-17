@@ -26,3 +26,5 @@ mod/.gradle/
 mod/build/
 mod/run/
 __pycache__/
+art/references/*_owner_*
+art/candidates/

@@ -31,6 +31,7 @@ public class MimContent implements ModInitializer {
 
     public static final Item HOBZ_MALTI = item("hobz_malti", Item::new, new Item.Properties());
     public static final Item PASTIZZ_IRKOTTA = item("pastizz_irkotta", Item::new, new Item.Properties());
+    public static final Item PASTIZZ_PIZELLI = item("pastizz_pizelli", Item::new, new Item.Properties());
     public static final Item GBEJNA = item("gbejna", Item::new, new Item.Properties());
 
     @Override

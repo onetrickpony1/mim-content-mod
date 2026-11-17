@@ -28,9 +28,9 @@ PASTRY_EDGE = hexrgb("#55300e")
 RICOTTA = ramp("#d4c7a6", "#e8dcc0")
 CHEESE = ramp("#a39a7e", "#b8b094", "#cfc6a6", "#ddd6bc", "#e6e0c8", "#ece6cf")
 BASKET_DOT = hexrgb("#c2b68e")
-GROOVE = hexrgb("#b0a684")
-CHEESE_SHADOW = hexrgb("#6e6650")
-CHEESE_EDGE = hexrgb("#8a8166")
+GROOVE = hexrgb("#a39670")  # r4: darker rib shadows
+CHEESE_SHADOW = hexrgb("#4a4432")  # r4: bottom/right outline, stands off the slot grey
+CHEESE_EDGE = hexrgb("#59513a")  # r5: top/left outline (8a8166 matched the slot grey)
 # limestone: greyer honey, few colours, so it stands apart from sandstone
 LIMESTONE = ramp("#8f8772", "#a39a82", "#b2a88f", "#bdb39a", "#cfc6ad")
 PIT = hexrgb("#9d947c")
@@ -107,11 +107,11 @@ def pastizz():
     return c
 
 
-def gbejna():
-    """Ġbejna in 3/4 view: a real top (rows 3-7) with a ring of basket dots, a short side (rows 8-11) with ridges."""
+def gbejna(top_cy=5.0, bot_cy=9.5, rx=5.6, top_ry=2.5):
+    """Ġbejna in 3/4 view: a real top with a ring of basket dots, a short side with ridges.
+    v3 (2026-11-17): moved down and widened a little (see GBEJNA_V3) so it sits in the hotbar like vanilla foods."""
     c = Canvas()
-    cx, rx = 8.0, 5.6
-    top_cy, top_ry, bot_cy = 5.0, 2.5, 9.5
+    cx = 8.0
     top = ellipse_mask(cx, top_cy, rx, top_ry)
     bottom = ellipse_mask(cx, bot_cy, rx, top_ry)
     for y in range(N):
@@ -125,13 +125,22 @@ def gbejna():
                 c.set(x, y, pick(CHEESE, 0.95 - d * 0.25))
                 if 0.6 < d < 0.85 and (x + y) % 2 == 0 and y >= top_cy:
                     c.set(x, y, BASKET_DOT)
-    for (x, y) in ((5, 5), (8, 5), (10, 5)):
+    dy = round(top_cy - 5.0)  # the hand-placed details below were set for top_cy = 5
+    for (x, y) in ((5, 5 + dy), (8, 5 + dy), (10, 5 + dy)):
         if top[y, x]:
             c.set(x, y, CHEESE[2])
     outline(c, CHEESE_EDGE)
+    ry0 = int(math.floor(top_cy - top_ry)) + 2  # r4: a lighter row just inside the top rim, so the top reads domed
+    for x in range(4, 12):
+        if c.opaque(x, ry0) and tuple(c.get(x, ry0)) != CHEESE_EDGE and top[ry0, x]:
+            c.set(x, ry0, CHEESE[2])
+    for x in range(6, 10):  # r5: basket imprint on the top: a light ring and a dimple
+        c.set(x, 5 + dy, CHEESE[2])
+    for x in (7, 8):
+        c.set(x, 6 + dy, BASKET_DOT)
     for y in range(N):  # a darker edge on the shadow side (bottom and right) for contrast at hotbar size
         for x in range(N):
-            if c.opaque(x, y) and (not c.opaque(x, y + 1) or not c.opaque(x + 1, y)) and y >= 8:
+            if c.opaque(x, y) and (not c.opaque(x, y + 1) or not c.opaque(x + 1, y)) and y >= 8 + dy:
                 c.set(x, y, CHEESE_SHADOW)
     return c
 
@@ -244,11 +253,16 @@ def borma_top(contents):
     return c
 
 
+# v3 placement: vanilla food bounding boxes centre on rows 7.5-9 (bread 8.0, cookie 7.5, baked potato 8.5,
+# egg 8.0, pumpkin pie 9.0) and end on rows 13-15; v2 sat on rows 3-11 (centre 7.0), too high in the hotbar.
+# r5: one row lower again, rows 5-13, so its bottom lines up with the pastizzi and the ħobż (row 13)
+GBEJNA_V3 = dict(top_cy=7.3, bot_cy=11.6, rx=6.0, top_ry=2.6)
+
+
 def main():
     out = {
-        "item/hobz_malti": bread(),
-        "item/pastizz_irkotta": pastizz(),
-        "item/gbejna": gbejna(),
+        # hobz_malti and pastizz_irkotta are now made by art/src/food_items.py (v3); bread()/pastizz() kept for history
+        # item/gbejna is now made by food_items.gbejna_v6 (r6); gbejna() kept for history
         "block/kenur_side": kenur_side(),
         "block/kenur_top": kenur_top(),
         "block/kenur_front": kenur_front(),
