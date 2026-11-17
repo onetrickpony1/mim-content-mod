@@ -197,7 +197,8 @@ def build():
         g["files"].sort(key=lambda e: -e["mtime"])
         inst = g.get("installed", [])
         if not inst:
-            g["status"] = "in game run" if g["name"].startswith("in-game") else "candidates only"
+            only_shots = g["files"] and all(e["kind"] != "candidate" for e in g["files"])
+            g["status"] = "in-game shots" if (g["name"].startswith("in-game") or only_shots) else "candidates only"
         elif all(i["committed"] for i in inst):
             g["status"] = "accepted (committed)"
         else:
