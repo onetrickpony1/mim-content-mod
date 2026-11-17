@@ -156,6 +156,30 @@ public class ArtShots implements FabricClientGameTest {
             }
             context.waitTicks(10);
             context.takeScreenshot("13-hotbar-oven");
+            // the fish: the caught lampuka beside vanilla fish, then fried lampuka beside the cooked ones
+            String[] fish = {"minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish", "mimcontent:lampuka",
+                "minecraft:cooked_cod", "minecraft:cooked_salmon", "mimcontent:lampuka_moqlija", "mimcontent:aljotta"};
+            for (int i = 0; i < fish.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + fish[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("17-hotbar-fish");
+            // the cheeses: fresh, dried and peppered ġbejniet beside vanilla foods of similar size
+            String[] cheese = {"minecraft:egg", "mimcontent:gbejna", "mimcontent:gbejna_niexfa", "mimcontent:gbejna_tal_bzar",
+                "minecraft:cookie", "minecraft:bread", "mimcontent:hobz_malti", "mimcontent:pastizz_irkotta", "minecraft:milk_bucket"};
+            for (int i = 0; i < cheese.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + cheese[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("18-hotbar-cheese");
+            // the drinks: Kinnie beside vanilla bottles and drinks
+            String[] drinks = {"minecraft:glass_bottle", "minecraft:potion", "mimcontent:kinnie", "minecraft:honey_bottle",
+                "minecraft:milk_bucket", "minecraft:experience_bottle", "minecraft:dragon_breath", "mimcontent:pastizz_irkotta", "minecraft:bread"};
+            for (int i = 0; i < drinks.length; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + drinks[i]);
+            }
+            context.waitTicks(10);
+            context.takeScreenshot("19-hotbar-drinks");
             System.out.println("[smoke] art screenshots written");
         }
     }

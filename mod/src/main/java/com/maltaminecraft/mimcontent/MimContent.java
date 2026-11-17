@@ -58,7 +58,12 @@ public class MimContent implements ModInitializer {
     public static final Item STUFFAT_QARNIT = item("stuffat_qarnit", Item::new, new Item.Properties());
     public static final Item BIGILLA = item("bigilla", Item::new, new Item.Properties());
     public static final Item GALLETTI = item("galletti", Item::new, new Item.Properties());
+    public static final Item LAMPUKA = item("lampuka", Item::new, new Item.Properties());
+    public static final Item LAMPUKA_MOQLIJA = item("lampuka_moqlija", Item::new, new Item.Properties());
+    public static final Item KINNIE = item("kinnie", Item::new, new Item.Properties());
     public static final Item GBEJNA = item("gbejna", Item::new, new Item.Properties());
+    public static final Item GBEJNA_NIEXFA = item("gbejna_niexfa", Item::new, new Item.Properties());
+    public static final Item GBEJNA_TAL_BZAR = item("gbejna_tal_bzar", Item::new, new Item.Properties());
 
     @Override
     public void onInitialize() {
