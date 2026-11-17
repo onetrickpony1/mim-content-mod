@@ -25,3 +25,4 @@ env.sh
 mod/.gradle/
 mod/build/
 mod/run/
+__pycache__/
