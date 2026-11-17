@@ -310,6 +310,30 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 
 ---
 
+### 7g. Added from the owner's list (2026-11-17, ideas only)
+
+The owner pasted a list of Maltese dishes and asked to add the ones not yet here, leaving out the egg dishes, the other ġbejniet and the drinks (except Kinnie, in section 8). Recipes, food values and tiers aren't designed yet. Names are as the owner gave them, from a list of Maltese foods.
+
+| # | Dish | English | Kind | Notes | Tier |
+|---|---|---|---|---|---|
+| D52 | Żebbuġ mimli | Stuffed olives | small plate | green olives stuffed with a tuna mixture | - |
+| D53 | Fażola bajda bit-tewm u t-tursin | White beans with garlic and parsley | small plate | dressed with olive oil | - |
+| D54 | Għaġin grieg | "Greek pasta" | pasta | small pasta beads with minced pork and cheese | - |
+| D55 | Spagetti biz-zalza tal-fenek | Spaghetti with rabbit sauce | pasta | the fenkata's first course, before the stuffat | - |
+| D56 | Falda mimlija | Stuffed flank of pork | meat | | - |
+| D57 | Mazzit | Maltese blood sausage | meat | | - |
+| D58 | Qarnit bit-tewm | Octopus with garlic | fish and sea | | - |
+| D59 | Bżar mimli | Stuffed peppers | vegetables | | - |
+| D60 | Tadam mimli | Stuffed tomatoes | vegetables | a cold summer dish: tomatoes filled with rice salad, mayonnaise, olives and capers | - |
+| D61 | Torta tal-irkotta | Ricotta pie | savoury pastry | could be a placed dish eaten in wedges, like the torta tal-lampuki | - |
+| D62 | Sfineġ | Fritters | savoury pastry | vegetable, fish or cheese | - |
+| D63 | Torta tar-ross u l-qargħa ħamra | Rice and pumpkin pie | savoury pastry | | - |
+| D64 | Ravjul moqli | Sweet fried ravioli | sweet | | - |
+| D65 | Torta tal-marmorat | Almond and chocolate pie | sweet | | - |
+| D66 | Ftira tar-Randan | Lenten fried pastry squares with honey | sweet | **Lent** | - |
+| D67 | Ħobża ta' San Martin | St Martin's sweet bread roll | sweet | sweetened with mastic; **St Martin's Day** (11 November) | - |
+| D68 | Ġelat Malti (ġelat tan-nanna) | Maltese ice cream | sweet | condensed milk, cinnamon, nuts and candied peel | - |
+
 ## 8. Drinks
 
 | # | Drink | English | Recipe → where | Effect | Tier |
@@ -319,6 +343,7 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 | X3 | **Imbuljuta tal-qastan** ✓ | Chestnut and cocoa drink | dried chestnuts + cocoa + sugar + cloves + orange peel + bowl → table | Regeneration I 10 s, and **clears freezing** (Ta' Dmejrek's snowfields). **Christmas Eve** ✓ | B |
 | X4 | Likur tal-bajtar ✓ | Prickly pear liqueur | 2 peeled prickly pears + sugar + glass bottle → table | 1 food; a gift item | C |
 | X5 | Te † | Tea in a glass | tea + sugar + water bottle → furnace | 1 food; **doubles the food of a qagħqa tal-ħmira or galletti eaten within 10 s** (dunking ✓) | C |
+| X6 | Kinnie | Maltese bittersweet soft drink | (added 2026-11-17 from the owner's list; recipe not designed) | to design | - |
 
 ---
 
@@ -346,7 +371,8 @@ The best vanilla meal is rabbit stew (10, Normal). Big Maltese dishes go a littl
 | Base ingredients | ~16 | ~6 | ~4 | ~26 |
 | Imported goods | - | - | - | 8 |
 | Dishes | 17 | 21 | 13 | **51** |
-| Drinks | 0 | 3 | 2 | 5 |
+| Dishes added 2026-11-17 (7g, not tiered) | - | - | - | 17 |
+| Drinks | 0 | 3 | 2 | 5 (+ Kinnie, not tiered) |
 
 - **Tier A alone:**
   - 6 crops, 6 trees and 4 wild foods;
