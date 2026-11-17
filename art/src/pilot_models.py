@@ -169,6 +169,7 @@ def main():
         "item.mimcontent.galletti": "Galletti",
         "item.mimcontent.gbejna": "Ġbejna",
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
+        "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
     })
 
 
