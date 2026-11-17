@@ -28,3 +28,4 @@ mod/run/
 __pycache__/
 art/references/*_owner_*
 art/candidates/
+art/references/sweets_owner/
