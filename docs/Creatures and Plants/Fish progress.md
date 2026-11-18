@@ -52,7 +52,7 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 |         | Lingwata         | Sole        | Sand bottom             | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
 |         | Ħmar             | Triggerfish | Rocks                   | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
 |         | Gallinella       | Gurnard     | Sand; walks on its fins | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
-|         | Pixxiluna (also qamar, pixxitanbur) | Ocean sunfish (mola mola) | Deep sea, basks at the surface; extremely rare, caught with jellyfish meat once fishing is overhauled ([[Mola mola]]) | building: 3D model accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]); item icon drawn (three poses, upright side view A installed; `art/src/fish_mola_icon.py`), waiting for the owner; placeholder bucket and egg |
+|         | Pixxiluna (also qamar, pixxitanbur) | Ocean sunfish (mola mola) | Deep sea, basks at the surface; extremely rare, caught with jellyfish meat once fishing is overhauled ([[Mola mola]]) | building: 3D model accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]); item icon drawn (three poses, upright side view A installed; `art/src/fish_mola_icon.py`), waiting for the owner; bucket drawn on the night job (`art/src/fish_mola_bucket.py`, candidate E, critic PASS in round 5; [[Night log/mola_mola]]), not owner-accepted; placeholder egg |
 
 ## Other sea life
 
