@@ -24,3 +24,68 @@ The owner rejected art that reviewers had passed, and asked for the work to be o
    - a dish's icon shows the whole uncut dish;
    - a dish's container must match its placed block (a square pan).
 
+## Fish art: lessons learnt (2026-11-18)
+Each lesson came from an owner correction; the decision notes hold their exact words.
+
+**How the work is organised**
+- **One maker per piece.** Makers asked for several pieces at once did worse work ([[2026-11-18 Fish art - one maker per piece, three at a time]]).
+- **One fish's pieces in series, different fish in parallel**, at most 4 makers at once ([[2026-11-18 Fish art - one fish in series, fish in parallel]]):
+  - The **item icon comes first** and sets the fish's look and palette.
+  - The bucket, spawn egg and 3D model follow one at a time, each after the owner accepts the one before. They reuse the icon's exact colours.
+  - When pieces of one fish ran in parallel, a rejected icon forced its bucket and egg to be redone too.
+- **Makers find their own reference photos.** Any photo is fine for reference, not only Creative Commons.
+- **For true colour, use photos of the fish out of water**: caught, on a boat, at the market. Water tints colour, and the moray turned out violet-brown, not olive ([[2026-11-18 Murina icon - clearer head, check colour out of water]]).
+
+**What the owner looks for**
+- **Rounded edges, including the mouth.** Outlines step in 1-3 px runs like vanilla cod and salmon, with no long straight walls and no blocky jaws ([[2026-11-18 Cerna icon - rework, hard edges and flat colours]]).
+- **Real shading, not flat fills.** Use a light ramp from the lit top-left back to the shaded belly, with 4-6 mixed body tones. Fins and tail are shaded too. Body tones that sit too close together still read as flat.
+- **Changes must show at 1x.** A rework that looks the same at normal size is a failed rework. Show the rejected and new versions side by side, at 1x, 2x and 8x.
+- **Builds are compared against each other.** "As fat as the tuna" sent the sardina back. The ċerna is the bulky one, and the awrata must not share its silhouette. Report proportions against the accepted fish.
+- **Sizes need not be life-size.** The tonn comes in mixed sizes, 2 to 4 blocks. The seahorse is bigger than life so its detail shows.
+- **No second eye, no face.**
+  - No dark spot, bright spot, tooth or coloured dot near the eye or in the eye's row.
+  - No row of 1 px dark dots on a model that reads as extra eyes.
+  - No lone bright specks.
+  - Gold or yellow beside the eye reads as a beak.
+- **Spawn eggs are stylised eggs.** Keep the egg outline in its own pool and paint the fish's features on it, the vanilla 26.x way: a cap, one eye, a pale belly patch, side fin flaps, and one or two signature parts breaking the outline. A whole fish squeezed into the egg read as "a fat version of the fish" ([[2026-11-18 Sardina egg - a representation, not a fat fish]]).
+- **Buckets show the head**, rising out of the water, the vanilla way, and never the tail: a whole fish looked "snapped in half" ([[2026-11-18 Cerna bucket - head showing, not the whole fish]]).
+  - The bucket is a layered model: the player's own vanilla `cod_bucket` with our fish-only layer on top.
+  - The layer must cover every cod pixel, using our own water where the fish doesn't reach (`check_cover()` in the bucket scripts).
+  - The layer must copy no vanilla pixel.
+  - The lampuka, tonn and sardina buckets still show the whole fish. Check them before publishing.
+
+**3D models**
+- **Water greys every colour.** Use a palette a step lighter than the photos, and judge under water beside vanilla cod, which greys the same way.
+- **Every fin touches the body**, with solid edges.
+- **Upright animals need their own animation.** The seahorse should hover and bob, not wag like a fish.
+
+**Small things**
+- **Never copy vanilla pixels** (STYLE rule 3). Spawn eggs are checked with a copy-check script.
+- **In Obsidian tables, escape the size pipe** in a picture link: `![[x.png\|48]]`. Without the backslash, the pipe splits the table cell.
+
+## When the game is needed (2026-11-18)
+Owner decision: [[2026-11-18 Icons previewed offline; in-game tests for models and per category]].
+- **Flat icons** (item icons, buckets, spawn eggs) are judged offline in the real hotbar with `art/tools/hotbar_preview.py`. It pastes them into the vanilla hotbar sprite at the game's GUI scale, over a light and a dark backdrop, next to vanilla items. The game draws a flat item as its 16x16 texture scaled up with no filtering, so the preview matches the in-game hotbar. Layered buckets are composited over the vanilla `cod_bucket`, as the game does. Example: `art/.venv/bin/python art/tools/hotbar_preview.py out.png mc:cod mod:lampuka bucket:cerna_bucket --select 1` (add `--scale 4` for a closer look).
+- **Anything that benefits from the game** still gets an in-game run (`tools/run-art.sh`) every time: 3D models, entities, blocks, animation, anything lit or seen in water.
+- **When a category is finished** (for example all tier A fish), one in-game run checks all its icons together, to prove they load and work.
+
+
+## Fish models (contract for the art makers, 2026-11-17)
+The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, made by `art/src/fish_placeholders.py`) so the mobs could be tested first. Real art replaces these files at the same paths:
+
+| What | Path (under `mod/src/main/`) |
+|---|---|
+| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`) |
+| Mob texture | `resources/assets/mimcontent/textures/entity/fish/<id>.png` |
+| Caught fish icon | `resources/assets/mimcontent/textures/item/<id>.png` (none for the żiemel; the lampuka's is accepted art) |
+| Bucket icon | `resources/assets/mimcontent/textures/item/<id>_bucket.png` |
+| Spawn egg icon | `resources/assets/mimcontent/textures/item/<id>_spawn_egg.png` |
+
+A model class must:
+- be `public class <Name>Model extends FishModel` with a constructor `public <Name>Model(ModelPart root) { super(root); }` and `public static LayerDefinition createBodyLayer()` (texture size of your choice);
+- have a root child named **`body`** (required);
+- optionally have **`tail_fin`**, a child of the root (or of `tail`): it sways like vanilla cod's tail fin;
+- optionally have **`tail`**, a child of the root: the back half of a long fish (the murina), swaying more gently, like vanilla salmon's back; put `tail_fin` inside it so the fin follows;
+- face **-z** (head toward -z), with y 24 at the ground, like vanilla's `CodModel`. Any other parts (fins, head) are free.
+
+The swimming animation lives in `FishModel` and the body wiggle and flopping on land in `FishRenderer`, so a model only names its parts. Sizes: keep the model about the size of the hitbox (see [[Fish]]). Test with `SMOKE_ONLY=fish ART_RUN=<name> tools/run-art.sh`: the `fish-*` shots show all seven in a glass tank beside vanilla cod and salmon, on land, and the items, buckets and eggs in the hotbar.

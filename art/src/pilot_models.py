@@ -115,6 +115,20 @@ def write(rel, data):
     print("wrote", rel)
 
 
+# The tier A fish (2026-11-17): the caught fish (the lampuka's item is above), a bucket and a spawn egg for each.
+FISH = {"lampuka": "Lampuka", "tonn": "Tonn", "sardina": "Sardina", "cerna": "Ċerna", "awrata": "Awrata",
+        "murina": "Murina", "ziemel": "Żiemel tal-Baħar"}
+FISH_ITEMS = tuple(f for f in FISH if f not in ("lampuka", "ziemel")) + tuple(
+    f"{f}_{kind}" for f in FISH for kind in ("bucket", "spawn_egg"))
+FISH_LANG = {}
+for _id, _name in FISH.items():
+    if _id not in ("lampuka", "ziemel"):
+        FISH_LANG[f"item.{NS}.{_id}"] = _name
+    FISH_LANG[f"entity.{NS}.{_id}"] = _name
+    FISH_LANG[f"item.{NS}.{_id}_bucket"] = f"Bucket of {_name}"
+    FISH_LANG[f"item.{NS}.{_id}_spawn_egg"] = f"{_name} Spawn Egg"
+
+
 def main():
     k_tex = {"particle": f"{NS}:block/kenur_side", "side": f"{NS}:block/kenur_side", "top": f"{NS}:block/kenur_top",
              "soot": f"{NS}:block/kenur_soot", "ash": f"{NS}:block/kenur_ash",
@@ -143,8 +157,15 @@ def main():
 
     for b in ("kenur", "borma", "borma_stuffat"):
         write(f"items/{b}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{b}"}})
-    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass", "soppa_tal_armla", "minestra", "kawlata", "kusksu", "brodu_tat_tigieg", "brodu_tal_laham", "qassata_irkotta", "qassata_pizelli", "qaghaq_hmira", "qaghqa_appostli", "dip_gbejna", "dip_tonn", "dip_tewm", "gelat_malti", "stuffat_bebbux", "fenek_moqli", "luzzu", "luzzu_red", "luzzu_brown"):
-        write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{i}"}})
+    for i in ("hobz_malti", "pastizz_irkotta", "pastizz_pizelli", "pastizz_xema_irkotta", "pastizz_xema_pizelli", "ftira", "hobz_bizzejt", "ftira_ghawdxija", "imqaret", "kannoli", "qaghaq_ghasel", "stuffat_fenek", "aljotta", "stuffat_qarnit", "bigilla", "galletti", "gbejna", "gbejna_niexfa", "gbejna_tal_bzar", "lampuka", "lampuka_moqlija", "kinnie", "kinnie_can", "kinnie_glass", "soppa_tal_armla", "minestra", "kawlata", "kusksu", "brodu_tat_tigieg", "brodu_tal_laham", "qassata_irkotta", "qassata_pizelli", "qaghaq_hmira", "qaghqa_appostli", "dip_gbejna", "dip_tonn", "dip_tewm", "gelat_malti", "stuffat_bebbux", "fenek_moqli", "luzzu", "luzzu_red", "luzzu_brown") + FISH_ITEMS:
+        if i.endswith("_bucket"):
+            # A fish bucket: the player's own vanilla cod bucket underneath, our fish layer on top, so the mod
+            # ships no Mojang pixels (STYLE rule 3) and the bucket matches any resource pack's fish buckets.
+            # Our layer must cover every opaque pixel of the cod in the bucket's top rows.
+            textures = {"layer0": "minecraft:item/cod_bucket", "layer1": f"{NS}:item/{i}"}
+        else:
+            textures = {"layer0": f"{NS}:item/{i}"}
+        write(f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": textures})
         write(f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{i}"}})
 
     write("lang/en_us.json", {
@@ -197,10 +218,12 @@ def main():
         "entity.mimcontent.luzzu_red": "Luzzu (Red)",
         "item.mimcontent.luzzu_brown": "Luzzu (Brown)",
         "entity.mimcontent.luzzu_brown": "Luzzu (Brown)",
+        "itemGroup.mimcontent": "Malta in Minecraft",
         "block.mimcontent.ross_il_forn": "Ross il-Forn",
         "block.mimcontent.imqarrun_il_forn": "Imqarrun il-Forn",
         "block.mimcontent.timpana": "Timpana",
         "block.mimcontent.torta_lampuki": "Torta tal-Lampuki",
+        **FISH_LANG,
     })
 
 

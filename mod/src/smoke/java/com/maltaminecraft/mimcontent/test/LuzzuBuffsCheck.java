@@ -25,7 +25,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 
 /**
- * Checks the luzzu's buffs in a real game: the config file, 4 seats (vanilla boats still 2), the fish hold (opens,
+ * Checks the luzzu's buffs in a real game: the config file, 3 seats (vanilla boats still 2), the fish hold (opens,
  * keeps an item through save and reload, drops it when the boat breaks), and the speeds (engine on open sea, normal
  * in a narrow channel, the way home), each measured against a vanilla oak boat driven the same way. Fails the run
  * with an AssertionError if anything is off; the numbers are printed as [smoke] lines.
@@ -33,6 +33,9 @@ import net.minecraft.world.phys.AABB;
 public class LuzzuBuffsCheck implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
+        if (!Smoke.runs("luzzu")) {
+            return;
+        }
         // 1. the config file, written with every switch on
         try {
             var file = MimConfig.path();
@@ -70,11 +73,11 @@ public class LuzzuBuffsCheck implements FabricClientGameTest {
             world.getConnection().waitForChunksRender();
             context.waitTicks(20);
 
-            // 2. seats: 4 in a luzzu, still 2 in an oak boat
+            // 2. seats: 3 in a luzzu (a 4th is refused), still 2 in an oak boat
             int luzzuSeats = seatCount(context, server, "mimcontent:luzzu", x + 40, y, z);
             int oakSeats = seatCount(context, server, "minecraft:oak_boat", x + 40, y, z);
             log("seats: luzzu took " + luzzuSeats + " villagers, oak boat " + oakSeats);
-            check(luzzuSeats == 4, "luzzu should seat 4, took " + luzzuSeats);
+            check(luzzuSeats == 3, "luzzu should seat 3, took " + luzzuSeats);
             check(oakSeats == 2, "oak boat should seat 2, took " + oakSeats);
 
             // 3. speeds, driven by the player holding forward for 90 ticks; distance over ticks 40 to 90
@@ -120,26 +123,68 @@ public class LuzzuBuffsCheck implements FabricClientGameTest {
             check(stored == 7, "hold didn't take the cod: " + stored);
             log("hold opens by sneak-use and from the seat, and stored 7 cod");
 
-            // the ridden shot: the player at the helm and three villagers, to check the seat height
-            seatVillagers(server, holdBoat, 3);
+            // how they sit: three mannequins (drawn like players), then three villagers, seen from outside the boat;
+            // then the real player at the helm with three mannequins, seen from behind
+            double[] b = server.computeOnServer(s -> {
+                Entity e = s.overworld().getEntity(holdBoat);
+                return new double[] {e.getX(), e.getY(), e.getZ()};
+            });
             context.runOnClient(mc -> {
                 if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+            });
+            String[] riders = {"mannequin", "villager"};
+            for (int r = 0; r < riders.length; r++) {
+                fillSeats(server, holdBoat, -1, riders[r]);
+                context.waitTicks(10);
+                String n = "sit-" + (r + 1) + riders[r];
+                look(context, server, b[0], y, b[2] + 3.5, b[0], b[1] + 0.3, b[2], n + "-a-side");
+                look(context, server, b[0] + 3.0, y, b[2] + 0.5, b[0], b[1] + 0.3, b[2], n + "-b-bow");
+                look(context, server, b[0] - 2.4, y + 0.5, b[2] + 2.4, b[0], b[1] + 0.3, b[2], n + "-c-quarter");
+                look(context, server, b[0], y + 4, b[2] + 0.01, b[0], b[1], b[2], n + "-d-above");
+            }
+            // the real player: a lone player always takes the helm (vanilla puts players first), with mannequins in
+            // the other seats; third person from behind, then side on
+            fillSeats(server, holdBoat, 0, "mannequin");
+            context.waitTicks(10);
+            context.runOnClient(mc -> {
+                mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
                 mc.player.setYRot(-50.0F);
                 mc.player.setXRot(25.0F);
-                mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
             });
-            context.waitTicks(30);
-            context.takeScreenshot("buffs-01-four-aboard");
-            // side on: the player looks across the beam, so the third-person camera sits off the boat's side
+            context.waitTicks(20);
+            context.takeScreenshot("sit-3player-helm-a-behind");
             context.runOnClient(mc -> {
+                mc.player.setYRot(0.0F);
+                mc.player.setXRot(15.0F);
+            });
+            context.waitTicks(20);
+            context.takeScreenshot("sit-3player-helm-b-side");
+            fillSeats(server, holdBoat, -1, null);
+            context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+            context.waitTicks(5);
+
+            // the oars: hidden while the boat lies still, out while rowing
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:luzzu %.1f %d %.1f {Rotation:[-90f,0f]}", x + 5.5, y, z + 0.5));
+            context.waitTicks(10);
+            server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %d %.1f", x + 5.5, y + 1, z + 0.5));
+            server.runCommand(String.format(Locale.ROOT, "ride @p mount @e[type=mimcontent:luzzu,limit=1,sort=nearest,x=%.1f,y=%d,z=%.1f]", x + 5.5, y, z + 0.5));
+            context.waitFor(mc -> mc.player.getVehicle() != null);
+            context.runOnClient(mc -> {
+                mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
                 mc.player.setYRot(0.0F);
                 mc.player.setXRot(12.0F);
             });
             context.waitTicks(20);
-            context.takeScreenshot("buffs-02-four-aboard-side");
+            boolean idleOars = context.computeOnClient(mc -> ((LuzzuBoat) mc.player.getVehicle()).getPaddleState(0));
+            context.takeScreenshot("sit-4-idle-oars-hidden");
+            context.getInput().holdKey(o -> o.keyUp);
+            context.waitTicks(25);
+            boolean rowingOars = context.computeOnClient(mc -> ((LuzzuBoat) mc.player.getVehicle()).getPaddleState(0));
+            context.takeScreenshot("sit-5-rowing-oars-out");
+            context.getInput().releaseKey(o -> o.keyUp);
+            check(!idleOars && rowingOars, "paddle state should be off when idle and on while rowing");
             context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
             server.runCommand("ride @p dismount");
-            server.runCommand("kill @e[type=minecraft:villager]");
             context.waitTicks(5);
         }
 
@@ -155,12 +200,19 @@ public class LuzzuBuffsCheck implements FabricClientGameTest {
                 return e instanceof LuzzuBoat boat ? boat.getItem(4).getCount() : -1;
             });
             check(kept == 7, "hold lost its cod over save and reload: " + kept);
+            // the player steps well away first, so they can't pick the cod up before it is counted (on a busy
+            // machine the few ticks' wait can outlast the drops' pickup delay)
+            server.runCommand(String.format("tp @a %d %d %d", at[0] + 60, at[1] + 1, at[2]));
+            server.runCommand("clear @a minecraft:cod");
+            context.waitTicks(2);
             server.runCommand("kill @e[type=mimcontent:luzzu]");
             context.waitTicks(5);
             int dropped = server.computeOnServer(s -> s.overworld().getEntitiesOfClass(ItemEntity.class,
-                    new AABB(at[0] - 5, at[1] - 10, at[2] - 20, at[0] + 90, at[1] + 10, at[2] + 20))
+                    new AABB(at[0] - 5, at[1] - 10, at[2] - 20, at[0] + 50, at[1] + 10, at[2] + 20))
                 .stream().filter(i -> i.getItem().is(Items.COD)).mapToInt(i -> i.getItem().getCount()).sum());
-            check(dropped == 7, "breaking the luzzu should drop the 7 cod, dropped " + dropped);
+            int pickedUp = server.computeOnServer(s -> s.getPlayerList().getPlayers().getFirst().getInventory()
+                .countItem(Items.COD));
+            check(dropped == 7, "breaking the luzzu should drop the 7 cod, dropped " + dropped + " (player holds " + pickedUp + ")");
             log("hold kept 7 cod over save and reload, and dropped them when the boat broke");
         }
         System.out.println("[smoke] luzzu buffs: all checks passed");
@@ -188,19 +240,55 @@ public class LuzzuBuffsCheck implements FabricClientGameTest {
         });
     }
 
-    /** Boards villagers into a luzzu (by UUID) until it holds n more. */
-    private static void seatVillagers(TestServerContext server, UUID boatId, int n) {
+    /** Empties the luzzu and, unless riderType is null, boards it full: riderType in every seat but the player's
+     *  (playerSeat -1: no player aboard). */
+    private static void fillSeats(TestServerContext server, UUID boatId, int playerSeat, String riderType) {
         server.runOnServer(s -> {
             ServerLevel level = s.overworld();
             Entity boat = level.getEntity(boatId);
-            for (int i = 0; i < n; i++) {
-                Villager v = net.minecraft.world.entity.EntityTypes.VILLAGER.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-                v.setNoAi(true);
-                v.setPos(boat.getX(), boat.getY() + 1, boat.getZ());
-                level.addFreshEntity(v);
-                v.startRiding(boat);
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            for (Entity rider : java.util.List.copyOf(boat.getPassengers())) {
+                rider.stopRiding();
+                if (rider != player) {
+                    rider.discard();
+                }
+            }
+            if (riderType == null) {
+                return;
+            }
+            for (int seat = 0; seat < 3; seat++) {
+                if (seat == playerSeat) {
+                    check(player.startRiding(boat, true, false), "player couldn't take seat " + (seat + 1));
+                    continue;
+                }
+                net.minecraft.world.entity.LivingEntity rider = riderType.equals("villager")
+                    ? net.minecraft.world.entity.EntityTypes.VILLAGER.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND)
+                    : net.minecraft.world.entity.EntityTypes.MANNEQUIN.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+                if (rider instanceof net.minecraft.world.entity.Mob mob) {
+                    mob.setNoAi(true);
+                }
+                rider.setPos(boat.getX(), boat.getY() + 1, boat.getZ());
+                // facing the bow, as every seat does (a mannequin otherwise keeps looking where it was made)
+                float facing = boat.getYRot();
+                rider.setYRot(facing);
+                rider.setYHeadRot(facing);
+                rider.setYBodyRot(facing);
+                level.addFreshEntity(rider);
+                check(rider.startRiding(boat, true, false), riderType + " couldn't take seat " + (seat + 1));
             }
         });
+    }
+
+    /** A first-person shot from feet position (fx, fy, fz) looking at (tx, ty, tz), standing on an invisible barrier. */
+    private static void look(ClientGameTestContext context, TestServerContext server,
+                             double fx, double fy, double fz, double tx, double ty, double tz, String name) {
+        double dx = tx - fx, dy = ty - (fy + 1.62), dz = tz - fz;
+        float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
+        float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+        server.runCommand(String.format("setblock %d %d %d minecraft:barrier", (int) Math.floor(fx), (int) Math.floor(fy) - 1, (int) Math.floor(fz)));
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f %.1f %.1f", fx, fy, fz, yaw, pitch));
+        context.waitTicks(15);
+        context.takeScreenshot(name);
     }
 
     /** The player boards a fresh boat heading east (+x) and holds forward for 90 ticks; blocks run in ticks 40 to 90. */

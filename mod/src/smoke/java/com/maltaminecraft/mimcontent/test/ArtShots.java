@@ -11,6 +11,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 public class ArtShots implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
+        if (!Smoke.runs("art")) {
+            return;
+        }
         try (TestSingleplayerContext world = context.worldBuilder().create()) {
             world.getConnection().waitForChunksRender();
             var server = world.getServer();
@@ -84,6 +87,8 @@ public class ArtShots implements FabricClientGameTest {
             // the camera player falls between shots, so it stands on an invisible barrier for the view from above
             server.runCommand(String.format("setblock %d %d %d minecraft:barrier", x, y + 1, z + 5));
             shot(context, server, x + 0.5, y + 2.0, z + 5.5, 0, 50, "14b-imqarrun-above");
+            // close and low over the whole and the part-eaten imqarrun, to see the penne on top and the cut edge
+            shot(context, server, x + 2.5, y, z + 6.5, 0, 14, "14c-imqarrun-low");
             shot(context, server, x, y + 2.0, z + 8.4, 0, 30, "15-timpana-table");
             server.runCommand(String.format("setblock %d %d %d minecraft:barrier", x, y + 1, z + 8));
             shot(context, server, x + 0.5, y + 2.0, z + 8.5, 0, 50, "15b-timpana-above");
@@ -265,6 +270,18 @@ public class ArtShots implements FabricClientGameTest {
             });
             context.waitTicks(15);
             context.takeScreenshot("25e-luzzu-ridden");
+            // from the rider's eyes, looking down into the hull toward the bow, then the stern: the corners beside
+            // the floorboards, where the end sections begin, must be closed
+            context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+            for (float[] view : new float[][] {{90.0F, 55.0F}, {-90.0F, 55.0F}, {60.0F, 65.0F}, {-120.0F, 65.0F}}) {
+                context.runOnClient(mc -> {
+                    mc.player.setYRot(view[0]);
+                    mc.player.setXRot(view[1]);
+                });
+                context.waitTicks(10);
+                context.takeScreenshot(String.format(java.util.Locale.ROOT, "25%s-luzzu-inside-%s", view[1] < 60 ? (view[0] > 0 ? "j" : "k") : (view[0] > 0 ? "l" : "m"),
+                    view[0] > 0 ? "bow" : "stern"));
+            }
             server.runCommand("ride @p dismount");
             context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
             // ashore, as luzzus are seen on the slipways: the whole hull, keel and bottom paint, beside the oak boat
@@ -275,6 +292,14 @@ public class ArtShots implements FabricClientGameTest {
             context.waitTicks(20);
             look(context, server, x + 1.0, y + 1.0, z + 23.5, x + 1.0, y + 0.4, z + 18.5, "25f-luzzu-ashore-side");
             look(context, server, bx - 3.0, y + 1.0, z + 22.5, bx, y + 0.4, z + 18.5, "25g-luzzu-ashore-bow");
+            // from below at an angle, the luzzu standing on invisible barriers: any hole into the hull shows the sky
+            server.runCommand("kill @e[type=mimcontent:luzzu]");
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:barrier", x - 4, y + 3, z + 18, x, y + 3, z + 19));
+            server.runCommand(String.format(java.util.Locale.ROOT, "summon mimcontent:luzzu %.1f %d %.1f {Rotation:[90f,0f]}", x - 2.0, y + 4, z + 18.5));
+            context.waitTicks(20);
+            look(context, server, x + 1.5, y, z + 22.0, x - 2.0, y + 4.2, z + 18.5, "25n-luzzu-below");
+            look(context, server, x - 5.5, y, z + 21.5, x - 2.0, y + 4.2, z + 18.5, "25o-luzzu-below-bow");
+            server.runCommand(String.format("fill %d %d %d %d %d %d minecraft:air", x - 4, y + 3, z + 18, x, y + 3, z + 19));
             // the colour schemes side by side on the water: green, red, brown
             server.runCommand("kill @e[type=mimcontent:luzzu]");
             String[] schemes = {"mimcontent:luzzu", "mimcontent:luzzu_red", "mimcontent:luzzu_brown"};

@@ -30,13 +30,25 @@ From [[2026-11-17 Luzzu buffs - seats, fish hold, fishing, engine, homing]]. **B
 
 | Buff | Switch | What it does |
 |---|---|---|
-| More seats | `luzzu_more_seats` | **4 seats** (vanilla 2), along the hull: the helmsman at the oars amidships (the first to board, the only one who steers), then one aft, one in the bow, one at the stern. Same hitbox as a vanilla boat. |
+| More seats | `luzzu_more_seats` | **3 seats** (vanilla 2; owner, 2026-11-17: "max 3 people, without someone in front of the rower"), along the hull, all facing the bow: the helmsman at the oars (the first to board, the only one who steers and rows; a player always takes it before mobs), then two behind. Same hitbox as a vanilla boat. |
 | A fish hold | `luzzu_fish_hold` | **27 slots**, like a chest boat, without losing a seat. Use to board; sneak and use (or use a full boat) to open the hold; while riding, the inventory key opens it. Saved with the boat; everything in it drops when the boat breaks (even with the switch off, so nothing is lost). |
 | Fishing bonus | (none yet) | **Not built.** Waits for the fish and season systems; a note marks where it goes. |
 | Engine speed | `luzzu_engine` | **25% faster** than a vanilla boat on open sea: water all round for 4 blocks and at least 3 deep. Near the shore, in a channel or in shallow water it goes at vanilla speed. The speed eases in and out over a couple of seconds, so there's no jolt. |
 | It finds home | `luzzu_finds_home` | Remembers its **harbour**: where it was placed, and where its driver last stepped off at a shore (not at open sea). Steering within **30 degrees** of the harbour, more than 16 blocks away, adds **10%** (on top of the engine). Saved with the boat. |
 
 The seats sit 2 px higher than a vanilla boat's, on the luzzu's raised floor (it rides high in the water).
+
+**How players sit** (owner, [[2026-11-17 Luzzu - fix the gaps, how the player sits, oars only when rowing]]; seating reworked after the critic's full-boat check): in a luzzu a player sits on a thwart, 5 px above the floorboards, with legs down and forward to the floor (60 degrees from straight down, where a vanilla boat's are almost straight out), so their feet stay inside the hull. Only the helmsman reaches forward to row; the others rest their hands on their thighs. Only players (and mannequins) sit this way, only in a luzzu; mobs keep their own pose and sit on the floor, and vanilla boats are unchanged. Visual only, no switch.
+
+| Seat (boarding order) | Where (blocks from the middle) | Faces |
+|---|---|---|
+| 1, the helm | 0.28 forward, the forward-most rider (feet inside the bow end of the open well) | the bow |
+| 2 | 0.32 aft | the bow |
+| 3 | 0.92 aft, clear of the stern deck | the bow |
+
+The seats are 0.6 blocks apart, so heads don't touch seen side on, within the open well (the floor between the end decks, about 1.05 blocks either way of the middle). Each rider's feet go under the thwart ahead. Resting riders' arms hang nearly straight down, hands on their thighs, clear of the rider ahead. Mobs use the same seats.
+
+**Oars:** each oar shows only while it is rowing; a still boat has none out. Visual only, no switch.
 
 ## Art
 - Made by `art/src/luzzu.py`, which writes the texture, the item icon and the model code together, so they can't drift apart.

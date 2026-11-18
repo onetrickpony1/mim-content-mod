@@ -7,6 +7,10 @@ import com.maltaminecraft.mimcontent.entity.LuzzuBoat;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.BoatDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 
-/** Art pilot (2026-11-17): the kenur, the borma and the foods, registered only so they can be seen in-game; and the luzzu, a rideable boat. */
+/** Art pilot (2026-11-17): the kenur, the borma and the foods, registered only so they can be seen in-game; the luzzu, a rideable boat; and the tier A fish (MimFishes). */
 public class MimContent implements ModInitializer {
     public static final String MOD_ID = "mimcontent";
 
@@ -106,9 +110,20 @@ public class MimContent implements ModInitializer {
     @Override
     public void onInitialize() {
         MimConfig.load();
+        MimFishes.init();
         DispenserBlock.registerBehavior(LUZZU_ITEM, new BoatDispenseItemBehavior(LUZZU));
         DispenserBlock.registerBehavior(LUZZU_RED_ITEM, new BoatDispenseItemBehavior(LUZZU_RED));
         DispenserBlock.registerBehavior(LUZZU_BROWN_ITEM, new BoatDispenseItemBehavior(LUZZU_BROWN));
+        // One creative tab with everything the mod adds, in the order it is registered.
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id("main"), FabricCreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.mimcontent"))
+            .icon(() -> new ItemStack(LUZZU_ITEM))
+            .displayItems((params, output) -> BuiltInRegistries.ITEM.forEach(item -> {
+                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(MOD_ID)) {
+                    output.accept(item);
+                }
+            }))
+            .build());
     }
 
     public static Identifier id(String path) {
@@ -131,12 +146,12 @@ public class MimContent implements ModInitializer {
         return item(name, p -> new BoatItem(type, p), new Item.Properties().stacksTo(1));
     }
 
-    private static <T extends Entity> EntityType<T> entity(String name, EntityType.Builder<T> builder) {
+    static <T extends Entity> EntityType<T> entity(String name, EntityType.Builder<T> builder) {
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id(name));
         return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
     }
 
-    private static Item item(String name, Function<Item.Properties, Item> factory, Item.Properties props) {
+    static Item item(String name, Function<Item.Properties, Item> factory, Item.Properties props) {
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id(name));
         return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(props.setId(key)));
     }

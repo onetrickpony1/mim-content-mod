@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -43,7 +44,7 @@ import org.jspecify.annotations.Nullable;
  * The luzzu, the Maltese fishing boat. Placed, ridden and broken like a vanilla boat, with the owner's buffs, each
  * behind its own switch in config/mimcontent.json (off = vanilla boat behaviour for that part):
  * <ul>
- * <li>more seats: 4 instead of 2, along the longer hull; the first to board steers;</li>
+ * <li>more seats: 3 instead of 2, along the longer hull; the first to board rows and steers, the others sit behind;</li>
  * <li>a fish hold: 27 slots like a chest boat, without losing a seat;</li>
  * <li>an engine: about 25% faster than a vanilla boat on open sea, normal speed near the shore;</li>
  * <li>it finds home: about 10% faster when steering toward its harbour.</li>
@@ -61,10 +62,21 @@ public class LuzzuBoat extends Boat implements HasCustomInventoryScreen, Contain
 
     /** The floorboards sit 2 px above a vanilla boat's (the luzzu rides high in the water). */
     private static final double SEAT_RAISE = 2.0 / 16.0;
-    /** Seat positions, in blocks forward of the middle (the bow is forward), in boarding order: the helmsman at the
-     *  oars amidships, then one aft, one in the bow and one at the stern. Kept inside the open part of the hull. */
-    private static final float[] SEAT_OFFSETS = {0.15F, -0.35F, 0.6F, -0.8F};
-    private static final int MAX_SEATS = 4;
+    /** Players (and mannequins, drawn like them) sit on a thwart this far above the floorboards, legs down to the
+     *  floor (the bench pose is drawn by HumanoidModelMixin); other riders sit on the floor as in a vanilla boat. */
+    public static final double THWART_HEIGHT = 5.0 / 16.0;
+    /** Seats, in blocks forward of the middle, in boarding order (players always board first, as in vanilla, so a
+     *  player takes the helm). Everyone faces the bow and nobody sits forward of the rower (owner, 2026-11-17): the
+     *  helmsman forward-most, then two behind, 0.60 apart so heads don't touch side-on. A seated player's legs reach
+     *  about 0.7 blocks forward and down to the floorboards, under the thwart ahead. The open well (the floor
+     *  between the end decks, see the water patch in LuzzuModel) runs about 1.05 blocks either way of the middle:
+     *  the helm's feet stop inside its bow end and the stern rider sits clear of the stern deck. */
+    private static final float[] SEAT_PLACES = {0.28F, -0.32F, -0.92F};
+    private static final int MAX_SEATS = 3;
+    /** Seats further than this from the middle are over the rising hull bottom... */
+    private static final float END_SEAT = 0.8F;
+    /** ...so mobs sitting there are raised this much (3 px); players use THWART_HEIGHT everywhere. */
+    private static final double END_SEAT_RAISE = 3.0 / 16.0;
 
     public static final int HOLD_SIZE = 27;
     /** On open sea the luzzu goes this much further each tick than a vanilla boat would. */
@@ -153,12 +165,28 @@ public class LuzzuBoat extends Boat implements HasCustomInventoryScreen, Contain
 
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
-        if (!hasMoreSeats()) {
-            return super.getPassengerAttachmentPoint(passenger, dimensions, scale);
+        Vec3 seat;
+        if (hasMoreSeats()) {
+            float place = SEAT_PLACES[seatIndex(passenger)];
+            seat = new Vec3(0.0, this.rideHeight(dimensions), place).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+            // the hull bottom rises toward the ends: a mob in the rear seat (sitting on the floor, legs straight
+            // down) would show its legs under the stern, so it sits up on the stern sheets instead
+            if (!(passenger instanceof Avatar) && Math.abs(place) > END_SEAT) {
+                seat = seat.add(0.0, END_SEAT_RAISE, 0.0);
+            }
+        } else {
+            seat = super.getPassengerAttachmentPoint(passenger, dimensions, scale);
         }
-        int index = Math.max(0, this.getPassengers().indexOf(passenger));
-        float offset = SEAT_OFFSETS[Math.min(index, SEAT_OFFSETS.length - 1)];
-        return new Vec3(0.0, this.rideHeight(dimensions), offset).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+        return passenger instanceof Avatar ? seat.add(0.0, THWART_HEIGHT, 0.0) : seat;
+    }
+
+    private int seatIndex(Entity passenger) {
+        return Mth.clamp(this.getPassengers().indexOf(passenger), 0, SEAT_PLACES.length - 1);
+    }
+
+    /** The rider sits at the helm (the first seat, the one that steers and rows). */
+    public boolean isAtHelm(Entity passenger) {
+        return this.getPassengers().indexOf(passenger) == 0;
     }
 
     // ---- speed: the engine and the way home ----

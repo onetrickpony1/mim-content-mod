@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "name": "MiM content mod: art screenshots",
   "environment": "client",
-  "entrypoints": {"fabric-client-gametest": ["com.maltaminecraft.mimcontent.test.LuzzuBuffsCheck", "com.maltaminecraft.mimcontent.test.ArtShots"]},
+  "entrypoints": {"fabric-client-gametest": ["com.maltaminecraft.mimcontent.test.LuzzuBuffsCheck", "com.maltaminecraft.mimcontent.test.ArtShots", "com.maltaminecraft.mimcontent.test.FishCheck"]},
   "depends": {"mimcontent": "*", "fabric-client-gametest-api-v1": "*"}
 }

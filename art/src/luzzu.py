@@ -39,6 +39,7 @@ Run: art/.venv/bin/python art/src/luzzu.py
 """
 import math
 import os
+import sys
 
 import numpy as np
 from PIL import Image
@@ -87,6 +88,8 @@ SEGS = [
 ]
 WALL = 2
 EYE_SEG = 3
+WELL_V = 3   # the eye panel is open too: its V-stepped sides become walls and its bottom step the floor, so the
+             # well runs on into the bow and stern (room for three aboard) while the outside stays the same
 POSTS = {True: (12.0, 26), False: (-8.0, 22)}   # bow / stern: rake in degrees, height of the top (px up)
 TIP_SEGS = 3                                       # the last segments, whose ends and undersides show head-on
 OAR_POSE = (2.0, -5.0 - LIFT, 9.0)
@@ -161,14 +164,37 @@ def parts():
             lap = 1 if deg_of(k) else 0     # one pixel of overlap back into the previous segment, where it tilts
             x0 = -lap if bow else -L
             xs = L + lap
-            info = dict(open=sg["open"], seg=k, bow=bow)
+            info = dict(open=sg["open"] or k == WELL_V, seg=k, bow=bow)
             cubes = []
             if sg["open"]:
                 for zs in (1, -1):
                     cubes.extend(bilge_walls(x0, xs, half, h, zs, info))
                 fb = max(1, half - 3)
                 cubes.append(("floor", x0, h - 1, -fb, xs, 1, 2 * fb, info))
-            else:
+                inner = ((2, h - 2, half - WALL), (h - 2, h - 1, half - 3))
+            elif k == WELL_V:
+                # the V section's steps as walls (the same outside), the bottom step as a raised floor
+                layers = v_section(k, half, h)
+                for y0, y1, hb in layers[:-1]:
+                    for zs in (1, -1):
+                        z0 = hb - WALL if zs > 0 else -hb
+                        cubes.append(("wall", x0, y0, z0, xs, y1 - y0, WALL, dict(info, lower=y0 > 0)))
+                y0, y1, hb = layers[-1]
+                cubes.append(("deck", x0, y0, -hb, xs, y1 - y0, 2 * hb, dict(info, lower=True, well=True)))
+                # the one pixel this part laps back into the last bilge part: there the bilge is a pixel wider
+                # than this floor, so a floor that wide closes the corners beside it
+                pw = SEGS[k - 1][2] - 3
+                cubes.append(("deck", -lap if bow else 0, y0, -pw, lap, 1, 2 * pw, dict(info, lower=True, well=True)))
+                inner = [(max(1, a), b, c - WALL) for a, b, c in layers[:-1]]   # from 1 px down: tucked under the end deck
+            if (sg["open"] or k == WELL_V) and k + 1 < len(SEGS) and not (SEGS[k + 1][4] or k + 1 == WELL_V):
+                # a bulkhead across the last pixel of the well, where the narrower V section of the closed end
+                # begins: it closes the corners beside the floorboards and sits inside this part's hull. It fills
+                # only the space between the inner faces of the walls, so none of its faces lies on an outer face
+                # (two faces in one plane flicker)
+                bx = L - 1 if bow else -L
+                for y0, y1, hb in inner:
+                    cubes.append(("bulkhead", bx, y0, -hb, 1, y1 - y0, 2 * hb, info))
+            if not (sg["open"] or k == WELL_V):
                 # a V section: the full half-beam at the top, narrower below, so head-on the end steps in to the keel
                 for y0, y1, hb in v_section(k, half, h):
                     cubes.append(("deck", x0, y0, -hb, xs, y1 - y0, 2 * hb, dict(info, lower=y0 > 0)))
@@ -206,7 +232,7 @@ def water_patches():
     out = [(-MID_HALF_LEN, MID_HALF_LEN, MID_HALF - WALL)]
     x = MID_HALF_LEN
     for length, deg, half, h, open_ in SEGS:
-        if open_:
+        if open_:   # (the well in the eye panel has its floor above the water: no patch, or it would cut the sea)
             out.append((x, x + length, half - WALL))
             out.append((-x - length, -x, half - WALL))
         x += length
@@ -293,6 +319,10 @@ def paint(sc, role, face, X, Y, Z, row, lx, cube, info):
     _, x0, y0, z0, w, h, d, _ = cube
     if role == "keel":
         return sc["bottom"]
+    if role == "bulkhead" and not (face in ("+x", "-x") and (face == "+x") == (info.get("bow") is True)):
+        return shade(INSIDE, 1.12)   # the same even interior colour as the inward faces of the end
+    if role == "deck" and info.get("well") and face == "top":
+        return FLOOR if int(math.floor(Z)) % 3 else shade(FLOOR, 0.82)   # the floorboards run on into the ends
     if role == "post":
         return shade(sc["post"], 0.7) if face == "top" else sc["post"]
     if role == "strake":
@@ -604,7 +634,61 @@ def icon(sc):
     return outline(c)
 
 
+def seam_check(step=0.125, eps=0.005):
+    """Fill the model's cubes into a fine grid and flood the air inside the hull from just above the floorboards
+    amidships, kept below 9 px up (under every gunwale). If that air reaches past the beam or below the hull,
+    there is a hole through which the sea or the sand shows. Returns the way out of the hull, or None."""
+    xs = np.arange(-32, 32, step)
+    ys = np.arange(TOP - 2, 6.0, step)   # model y: down is +, the boat's base is at 6
+    zs = np.arange(-11, 11, step)
+    X, Y, Z = np.meshgrid(xs, ys, zs, indexing="ij")
+    occ = np.zeros(X.shape, bool)
+    for p in parts():
+        c, s = math.cos(p["zrot"]), math.sin(p["zrot"])
+        dx, dy = X - p["pivot"][0], Y - p["pivot"][1]
+        lx, ly = dx * c + dy * s, -dx * s + dy * c
+        for _, cx, cy, cz, w, h, d, _ in p["cubes"]:
+            occ |= ((lx >= cx - eps) & (lx <= cx + w + eps) & (ly >= cy - eps) & (ly <= cy + h + eps)
+                    & (Z >= cz - eps) & (Z <= cz + d + eps))
+    free = ~occ & (Y > -3.0)
+    seed = (np.abs(xs).argmin(), np.abs(ys - 0.5).argmin(), np.abs(zs).argmin())
+    dist = np.full(free.shape, -1, np.int32)
+    dist[seed] = 0
+    reach, g = dist >= 0, 0
+    while True:
+        g += 1
+        n = reach.copy()
+        n[1:] |= reach[:-1]; n[:-1] |= reach[1:]
+        n[:, 1:] |= reach[:, :-1]; n[:, :-1] |= reach[:, 1:]
+        n[:, :, 1:] |= reach[:, :, :-1]; n[:, :, :-1] |= reach[:, :, 1:]
+        n &= free
+        new = n & ~reach
+        if not new.any():
+            break
+        dist[new] = g
+        reach = n
+    leak = reach & ((np.abs(Z) > 10) | (Y > 2.2) | (np.abs(X) > 30))
+    if not leak.any():
+        return None
+    i = np.unravel_index(np.where(leak, dist, 1 << 30).argmin(), dist.shape)
+    path = [i]
+    while dist[i] > 0:   # walk back to the seed, to say where the air leaves
+        for a in range(3):
+            j = next((j for j in (i[:a] + (i[a] + e,) + i[a + 1:] for e in (-1, 1))
+                      if 0 <= j[a] < dist.shape[a] and dist[j] == dist[i] - 1), None)
+            if j:
+                i = j
+                break
+        path.append(i)
+    return [(float(xs[a]), float(6 - ys[b]), float(zs[c])) for a, b, c in path[::-1]]
+
+
 def main():
+    way_out = seam_check()
+    if way_out:
+        sys.exit("the hull has a hole: from amidships the air gets out by " +
+                 ", ".join("x %.1f height %.1f z %.1f" % p for p in way_out[-12::3]))
+    print("hull sealed: no gap from inside the boat to the outside")
     ps, cubes, oars, pos, tex_h = layout()
     for name, sc in SCHEMES.items():
         p = os.path.join(RES, "textures", "entity", "boat", name + ".png")

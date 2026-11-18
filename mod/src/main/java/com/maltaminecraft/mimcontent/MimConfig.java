@@ -23,7 +23,7 @@ public final class MimConfig {
     private static final Logger LOG = LoggerFactory.getLogger("mimcontent");
     public static final String FILE_NAME = "mimcontent.json";
 
-    /** Luzzu: room for 4 (vanilla boats carry 2). */
+    /** Luzzu: room for 3 (vanilla boats carry 2). */
     public static boolean luzzuMoreSeats = true;
     /** Luzzu: a fish hold with 27 slots, like a chest boat, without losing a seat. */
     public static boolean luzzuFishHold = true;
@@ -31,6 +31,9 @@ public final class MimConfig {
     public static boolean luzzuEngine = true;
     /** Luzzu: a little faster (about 10%) when steering toward its harbour. */
     public static boolean luzzuFindsHome = true;
+    /** Fish: the tier A fish also live in vanilla's warm and lukewarm oceans, so they turn up in normal worlds.
+     *  false: only in the Malta world's sea biomes. */
+    public static boolean fishInVanillaOceans = true;
 
     private MimConfig() {
     }
@@ -57,6 +60,7 @@ public final class MimConfig {
         luzzuFishHold = read(json, "luzzu_fish_hold", true);
         luzzuEngine = read(json, "luzzu_engine", true);
         luzzuFindsHome = read(json, "luzzu_finds_home", true);
+        fishInVanillaOceans = read(json, "fish_in_vanilla_oceans", true);
 
         JsonObject out = new JsonObject();
         out.addProperty("_about", "Malta in Minecraft content mod. true = on, false = vanilla behaviour. Restart after editing.");
@@ -64,6 +68,7 @@ public final class MimConfig {
         out.addProperty("luzzu_fish_hold", luzzuFishHold);
         out.addProperty("luzzu_engine", luzzuEngine);
         out.addProperty("luzzu_finds_home", luzzuFindsHome);
+        out.addProperty("fish_in_vanilla_oceans", fishInVanillaOceans);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             Files.createDirectories(file.getParent());

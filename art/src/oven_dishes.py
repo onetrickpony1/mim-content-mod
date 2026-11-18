@@ -673,19 +673,90 @@ PENNE = [
 ]
 
 
-def penne(eaten, per=8):
-    """About 8 small tubes per portion (owner: "there arent enough penne"): 1 x 1 across, about 3 long, lying along x
-    or z, some stacked half a pixel higher, at varied yaws and lifts; the same layout every eaten state."""
-    gone = set(ORDER[:eaten])
+def penne_layout(per=8, gap=0.05, floor=5.02, cap=7.15, limit=8.25, trim=7.45):
+    """Where every tube lies, worked out once for the whole dish (owner 2026-11-17: "the penne on the imqarrun
+    graphically glitch into each other"). The accepted layout's tubes (same random draws: length, along x or z, the
+    turn) cut into each other; now each one is laid in turn on a 0.25 grid of spots inside its own portion (so a cut
+    never leaves one hanging) and dropped from above until it rests 0.02 over the bake or 0.05 over a tube already
+    laid, never touching. It takes the lowest layer it can, keeping its drawn turn (or lying straight) where it can,
+    nearest its drawn spot; other turns are tried only when it would rise past 7.15 (the accepted heap's top), and a
+    tube that would still rise past 8.25 is left out. Last, every tube whose top is over 7.45 is taken off (critic:
+    the pile read as dry pasta), so the heap is about as high as the accepted one; no other tube moves. No two
+    boxes meet and no two faces share a plane, so nothing cuts through or flickers (art/tools/model_check.py checks it)."""
+    sys.path.insert(0, os.path.join(os.path.dirname(HERE), "tools"))
+    import model_check as MC
     rs = np.random.RandomState(41)
     rots = [("y", 22.5), ("y", -22.5), ("y", 45), ("y", -45), ("x", 22.5), ("x", -22.5), ("z", 22.5), ("z", -22.5)]
-    e = []
+
+    def element(fr, to, along, axis, angle):
+        ends = ("east", "west") if along == "x" else ("north", "south")
+        faces = {k: {"uv": END_UV if k in ends else TOP_UV if k == "up" else SIDE_UV, "texture": "#penne"}
+                 for k in ("north", "south", "east", "west", "up", "down")}
+        e = {"from": fr, "to": to, "faces": faces}
+        if angle:
+            e["rotation"] = {"origin": [round((fr[0] + to[0]) / 2, 2), fr[1], round((fr[2] + to[2]) / 2, 2)],
+                             "axis": axis, "angle": angle}
+        return e
+
+    def blocked(a, b):
+        """The lifts h (a moved up by h) at which turned box a comes within gap of turned box b: an interval."""
+        ca, cb = MC.corners(a), MC.corners(b)
+        xa, xb = MC.box_axes(a), MC.box_axes(b)
+        tests = list(xa) + list(xb)
+        for u in xa:
+            for v in xb:
+                w = np.cross(u, v)
+                if np.linalg.norm(w) > 1e-6:
+                    tests.append(w / np.linalg.norm(w))
+        lo, hi = -math.inf, math.inf
+        for t in tests:
+            pa, pb = ca @ t, cb @ t
+            l, r = pb.min() - gap - pa.max(), pb.max() + gap - pa.min()    # touching while l < h*t_y < r
+            if abs(t[1]) < 1e-9:
+                if l < 0 < r:
+                    continue
+                return None
+            l, r = sorted((l / t[1], r / t[1]))
+            lo, hi = max(lo, l), min(hi, r)
+            if lo >= hi:
+                return None
+        return lo, hi
+
+    def settle(fr, to, along, axis, angle, x0, z0, laid):
+        """Moved inside the portion (0.1 margin), then the lowest lift that clears the bake and every laid tube."""
+        e = element(fr, to, along, axis, angle)
+        c = MC.corners(e)
+        dx = max(0, x0 + 0.1 - c[:, 0].min()) - max(0, c[:, 0].max() - (x0 + 5.9))
+        dz = max(0, z0 + 0.1 - c[:, 2].min()) - max(0, c[:, 2].max() - (z0 + 3.9))
+        e = element([fr[0] + dx, fr[1], fr[2] + dz], [to[0] + dx, to[1], to[2] + dz], along, axis, angle)
+        h = floor - MC.corners(e)[:, 1].min()
+        spans = sorted(s for s in (blocked(e, o) for o in laid) if s)
+        moved = True
+        while moved:                                             # rise past every span h falls in
+            moved = False
+            for lo, hi in spans:
+                if lo < h + 0.005 < hi:
+                    h, moved = hi + 0.01, True
+        y = fr[1] + h
+        r = lambda v: round(float(v), 2)
+        e = element([r(fr[0] + dx), r(y + 0.005), r(fr[2] + dz)], [r(to[0] + dx), r(y + 0.005) + 1, r(to[2] + dz)],
+                    along, axis, angle)
+        return e, h - (floor - MC.corners(element(fr, to, along, axis, angle))[:, 1].min())
+
+    def top(e):
+        return MC.corners(e)[:, 1].max()
+
+    def low(e):
+        return MC.corners(e)[:, 1].min()
+
+    layout = {}
     for i, (c, r) in enumerate(ORDER):
         x0, z0 = XS[c], ZS[r]
+        laid = []
         for j in range(per):
             along = "x" if rs.rand() < 0.6 else "z"
             L = 2.6 + rs.rand() * 0.6
-            y = 5 + (0.6 if j >= per - 3 else 0)                 # the last few stacked on the others
+            y = 5
             if along == "x":
                 fx, fz = x0 + 0.3 + rs.rand() * (6 - L - 0.6), z0 + 0.2 + rs.rand() * 2.6
                 fr, to = [fx, y, fz], [fx + L, y + 1, fz + 1]
@@ -693,16 +764,35 @@ def penne(eaten, per=8):
                 fx, fz = x0 + 0.2 + rs.rand() * 4.6, z0 + 0.2 + rs.rand() * (4 - L - 0.4)
                 fr, to = [fx, y, fz], [fx + 1, y + 1, fz + L]
             axis, angle = rots[rs.randint(0, len(rots))]
-            if (c, r) in gone:
+            w, d = to[0] - fr[0], to[2] - fr[2]
+            best = None
+            for k, turns in enumerate(([(axis, angle), ("y", 0)], [t for t in rots if t != (axis, angle)])):
+                for ax2, an2 in turns:                           # the drawn turn (or lying straight) first
+                    for sx in np.arange(x0, x0 + 6 - w + 0.01, 0.25):
+                        for sz in np.arange(z0, z0 + 4 - d + 0.01, 0.25):
+                            e2, _ = settle([sx, y, sz], [sx + w, y + 1, sz + d], along, ax2, an2, x0, z0, laid)
+                            # lowest layer first, then the drawn turn, then nearest the drawn spot
+                            score = (round(low(e2), 1), (ax2, an2) != (axis, angle), math.hypot(sx - fr[0], sz - fr[2]))
+                            if best is None or score < best[0]:
+                                best = (score, e2)
+                if best[0][0] <= cap:
+                    break
+            e = best[1]
+            if top(e) > limit:                                   # no room under the heap's top: left out
                 continue
-            fr, to = [round(v, 2) for v in fr], [round(v, 2) for v in to]
-            ends = ("east", "west") if along == "x" else ("north", "south")
-            faces = {k: {"uv": END_UV if k in ends else TOP_UV if k == "up" else SIDE_UV, "texture": "#penne"}
-                     for k in ("north", "south", "east", "west", "up", "down")}
-            e.append({"from": fr, "to": to, "faces": faces,
-                      "rotation": {"origin": [round((fr[0] + to[0]) / 2, 2), y, round((fr[2] + to[2]) / 2, 2)],
-                                   "axis": axis, "angle": angle}})
-    return e
+            laid.append(e)
+        # critic: the heap read as a dry pile; the tubes on top of the pile are taken off, the rest stay put
+        layout[(c, r)] = [e for e in laid if top(e) <= trim]
+    return layout
+
+
+def penne(eaten, per=8):
+    """About 8 small tubes per portion (owner: "there arent enough penne"): 1 x 1 across, about 3 long, lying along x
+    or z, some stacked on the others, at varied yaws and lifts; the same layout every eaten state, a portion's tubes
+    going with it. None touch or cut into each other or the bake (penne_layout)."""
+    gone = set(ORDER[:eaten])
+    layout = penne_layout(per)
+    return [e for cr in ORDER if cr not in gone for e in layout[cr]]
 
 
 def penne_top_v4():

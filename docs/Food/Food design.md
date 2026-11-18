@@ -144,7 +144,7 @@ Each crop is a vanilla-style farmland crop with 4 growth stages and one 16×16 p
 |---|---|---|---|---|
 | **Lampuka** | Lampuka | furnace, smoker or campfire | **Spawns only 15 Aug–31 Dec** ✓ (the real season, opening on the Santa Marija feast), offshore under floating rafts (kannizzati ✓) | A |
 | **Tuna** | Tonn | big steak; preserved in oil | Feeds ħobż biż-żejt ✓ | A |
-| **Sardine / anchovy** | Sardina / Inċova | salted → anchovies | ftira ✓, arjoli ✓, qaqoċċ mimli | A |
+| **Sardine** and **anchovy** (two fish) | Sardina, Inċova | anchovies salted → salted anchovies | ftira ✓, arjoli ✓, qaqoċċ mimli | A |
 | **Octopus** | Qarnita | stew | | A |
 | **Sea bream, grouper** | Awrata, Ċerna | grilled, baked | the common table fish † | A |
 | Swordfish | Pixxispad | grilled steak | | B |
@@ -178,7 +178,7 @@ These keep the dish recipes inside the 3×3 grid.
 | **Ħwawar** (herbs) | Ħwawar † | any 2 of basil / mint / marjoram / parsley / thyme → 2 ħwawar (table) | One slot for "the herbs" |
 | Mince | Laħam ikkappuljat † | 1 raw beef or porkchop → 2 mince (table) | |
 | Breadcrumbs | Frak tal-ħobż † | stale Maltese bread → 3 breadcrumbs (table) | A use for old bread |
-| Anchovies | Inċova | 3 sardines + salt → 3 anchovies (table) | |
+| Anchovies | Inċova | 3 anchovies + salt → 3 salted anchovies (table); the anchovy is its own fish, not the sardine (owner 2026-11-18) | |
 | Tuna in oil | Tonn fiż-żejt † | cooked tuna + olive oil + glass bottle → jar (table) | |
 | **Intrita** (almond paste) | Intrita ✓ | 2 almonds + sugar + egg → 2 intrita (table) | Fills figolli and għadam tal-mejtin ✓ |
 | Orange peel | Qoxra tal-larinġ † | 1 orange → 2 peel (table) | |

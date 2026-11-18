@@ -126,20 +126,23 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 
 ### Fish
 
+> **2026-11-17:** the seven tier A fish are **in progress**: built as mobs with an item, a spawn egg and a bucket, with placeholder art ([[2026-11-17 Tier A fish - start building]]; details in [[Fish]], pictures in [[Fish progress]]).
+
 | # | Mob | Maltese | Also covers | Where / when | Notes | Tier |
 |---|---|---|---|---|---|---|
-| 52 | **Dolphinfish** | **Lampuka** | pompano dolphinfish | Offshore, under floating rafts; **15 Aug – Dec** | Gold-green; the autumn catch; torta tal-lampuki | A |
-| 53 | Tuna | Tonn | albacore, bonito, little tunny, skipjack | Open sea; tuna farms off Malta | Big, fast shoals | A |
+| 52 | **Dolphinfish** | **Lampuka** | pompano dolphinfish | Offshore, under floating rafts; **15 Aug – Dec** | Gold-green; the autumn catch; torta tal-lampuki | A (in progress, [[Fish]]) |
+| 53 | Tuna | Tonn | albacore, bonito, little tunny, skipjack | Open sea; tuna farms off Malta | Big, fast shoals | A (in progress, [[Fish]]) |
 | 54 | Swordfish | Pixxispad | spearfish | Open sea | - | B |
-| 55 | Sardine | Sardina | anchovy (Inċova), sardinella, bogue (Vopa), whitebait | Shoals everywhere | Bait; anchovies for ftira | A |
+| 55 | Sardine | Sardina | sardinella, whitebait | Shoals everywhere | Bait | A (in progress, [[Fish]]) |
+| 55a | Anchovy | Inċova | - | Shoals in open water | A different fish from the sardine (owner 2026-11-18); salted anchovies for ftira | B |
 | 56 | Mackerel | Kavall | horse mackerel, Atlantic mackerel | Shoals | - | C |
 | 57 | Barracuda | Lizz | - | Shoals near the coast, summer | Silver, toothy | C |
-| 58 | Grouper | Ċerna | all groupers, combers, sea bass | Rocky reefs and caves (Dwejra, Blue Grotto) | Big, curious, protected size limits | A |
-| 59 | Sea bream | Awrata | sargu, pagru, denċi, xirgien, xilpa and all breams | Rocks, sand, seagrass | The common table fish | A |
+| 58 | Grouper | Ċerna | all groupers, combers, sea bass | Rocky reefs and caves (Dwejra, Blue Grotto) | Big, curious, protected size limits | A (in progress, [[Fish]]) |
+| 59 | Sea bream | Awrata | sargu, pagru, denċi, xirgien, xilpa, bogue (vopa) and all breams | Rocks, sand, seagrass | The common table fish | A (in progress, [[Fish]]) |
 | 60 | Damselfish | Ċawl | - | Shallow rocks, everywhere | Black adults, electric-blue young | B |
 | 61 | Parrotfish | Marzpan | - | Shallow rocks | Red / grey, "spreading north" | C |
 | 62 | Wrasse | Tird | brown wrasse, pearly razorfish | Shallow rocks, seagrass | Many colours | B |
-| 63 | Moray eel | Murina | conger (Gringu), European eel (Sallura) | Holes in rock, caves; night | Bites | A |
+| 63 | Moray eel | Murina | conger (Gringu), European eel (Sallura) | Holes in rock, caves; night | Bites | A (in progress, [[Fish]]) |
 | 64 | Scorpionfish | Skorfna | all scorpionfish | Rocks, caves | **Venomous spines**: hurts when touched | B |
 | 65 | Mullet | Trilja (red mullet) | grey mullet (Mulett) | Sand, harbours | - | C |
 | 66 | Weever | Sawt | greater and lesser weever | Buried in sand at beaches | **Stings bathers' feet**: hidden hazard on sand | B |
@@ -148,7 +151,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 69 | Flatfish | Lingwata (sole) | turbot, flounder | Sand bottom | Lies flat, hides | C |
 | 70 | Triggerfish | Ħmar | - | Rocks | - | C |
 | 71 | Gurnard | Gallinella | flying gurnard (Bies) | Sand; "walks" on its fins | Blue "wings" | C |
-| 72 | Seahorse | Żiemel tal-Baħar | both seahorses | Posidonia seagrass | Protected: look only | A |
+| 72 | Seahorse | Żiemel tal-Baħar | both seahorses | Posidonia seagrass | Protected: look only | A (in progress, [[Fish]]) |
 | 73 | Shark | Ħuta kaħla (blue shark) | all ~35 sharks incl. catsharks, mako, great white (Kelb Abjad) | Open sea; rare near shore | Catshark egg cases could wash up | B |
 | 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B |
 | 75 | Lionfish | - | - | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
