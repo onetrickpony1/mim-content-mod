@@ -64,7 +64,7 @@ Each lesson came from an owner correction; the decision notes hold their exact w
 
 **Small things**
 - **Never copy vanilla pixels** (STYLE rule 3). Spawn eggs are checked with a copy-check script.
-- **In Obsidian tables, escape the size pipe** in a picture link: `![[x.png\|48]]`. Without the backslash, the pipe splits the table cell.
+- **Progress pages use standard picture links**, `![Lampuka](images/lampuka.png)`, never Obsidian's `![[x.png]]`, which GitHub shows as plain text. Icons are saved at 128x128 (8x, no smoothing) and live shots at 320x180, so they show at a useful size without a size setting, as in [[Food progress]].
 
 ## When the game is needed (2026-11-18)
 Owner decision: [[2026-11-18 Icons previewed offline; in-game tests for models and per category]].
