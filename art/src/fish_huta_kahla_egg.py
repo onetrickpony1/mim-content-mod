@@ -1,5 +1,10 @@
 """Huta kahla (blue shark, Prionace glauca) spawn egg: the item icon (16 x 16), round 2, 2026-11-18.
 
+The pool (owner 2026-11-18, "the pool under the egg should be the same as vanilla"; docs/Decisions/2026-11-18 Boll
+egg B; egg pools match vanilla.md): the pool drawn in the grid below is our old one. vanilla_pool() swaps it for
+vanilla's own pool (art/src/egg_pool.py, the owner's exception to "never copy", for the pool only) before the egg
+is written, keeping every body pixel; what is said below about our own pool is its history.
+
 Round 1 (option A) was rejected by the owner: "the egg doesnt really say shark, just blue blob and yeah it does look
 like an ear" (decision "2026-11-18 Blue shark egg - reads as a blue blob, fin like an ear"). Its fin had an upright
 leading edge and a bulging back. This round draws the shark's cues fresh, on vanilla's EGG outline, measured from
@@ -48,6 +53,7 @@ ART = os.path.normpath(os.path.join(HERE, ".."))
 ROOT = os.path.normpath(os.path.join(ART, ".."))
 sys.path.insert(0, os.path.join(ART, "tools"))
 from font import label_font  # noqa: E402
+from egg_pool import POOL_COLOURS, is_pool, pool_line, vanilla_pool  # noqa: E402
 
 TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
 OUT_ICON = os.path.join(TEXTURES, "item", "huta_kahla_spawn_egg.png")
@@ -85,13 +91,16 @@ PAL = {
     # added in round 2b: the one tone not in the icon's palette, a mid step between T #6e84d4 and 3 #4a66c0. The
     # critic flagged ~25 px of flat 3 under the dome; T there merges with the lit rim and 3 is the flat fill itself.
     "M": hx("#5e78cc"),
-    # the pool: our own ramp of blues
+    # the old pool (now swapped for vanilla's): our own ramp of blues
     "u": hx("#1f3a68"),
     "v": hx("#2a5890"),
     "w": hx("#3576b0"),
     "x": hx("#5398cc"),
     "y": hx("#86d0f0"),
 }
+# Our own old pool's colours: vanilla_pool() takes them out and puts vanilla's pool in (owner 2026-11-18,
+# "the pool under the egg should be the same as vanilla"; art/src/egg_pool.py).
+OLD_POOL = {PAL[k] for k in "uvwxy"}
 
 POOL = [
     "..vxyxwyxwwyxv..",
@@ -326,22 +335,25 @@ def measure(paths):
 
 
 def copy_check(icon):
-    """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py)."""
+    """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py).
+    Vanilla's own pool pixels are allowed (the owner's exception, art/src/egg_pool.py); any other copied pixel
+    fails the run."""
     ours = {(x, y): icon.getpixel((x, y)) for x in range(16) for y in range(16) if icon.getpixel((x, y))[3] > 0}
     hits, vcols = [], set()
     for f in sorted(glob.glob(os.path.join(VANILLA, "*spawn_egg*.png"))):
         v = Image.open(f).convert("RGBA")
         if v.size != (16, 16):
             continue
-        same = [p for p, c in ours.items() if v.getpixel(p) == c]
+        same = [p for p, c in ours.items() if v.getpixel(p) == c and not is_pool(p, c)]
         if same:
             hits.append((len(same), os.path.basename(f)))
         vcols |= {v.getpixel((x, y))[:3] for x in range(16) for y in range(16) if v.getpixel((x, y))[3] > 0}
-    shared = sorted({c[:3] for c in ours.values()} & vcols)
+    shared = sorted(({c[:3] for c in ours.values()} - POOL_COLOURS) & vcols)
+    assert not hits, f"copies vanilla pixels besides the pool: {hits}"
     hits.sort(reverse=True)
     most = f", most {hits[0][0]} in {hits[0][1]}" if hits else ""
-    return (f"copied pixels {sum(n for n, _ in hits)} over {len(hits)} vanilla eggs{most}; "
-            f"colours shared with vanilla eggs {len(shared)}")
+    return (f"copied pixels besides vanilla's pool {sum(n for n, _ in hits)} over {len(hits)} vanilla eggs{most}; "
+            f"colours shared with vanilla eggs (besides the pool) {len(shared)}; " + pool_line(icon))
 
 
 HOTBAR_OPTS = ("A", "E4", "F1", "F3", "F3n")
@@ -477,7 +489,7 @@ def sheet(icon, options):
 
 
 if __name__ == "__main__":
-    options = {k: render(v) for k, v in OPTIONS.items()}
+    options = {k: vanilla_pool(render(v), OLD_POOL) for k, v in OPTIONS.items()}
     icon = options[CHOSEN]
     icon.save(OUT_ICON, optimize=False)
     print("wrote", OUT_ICON)

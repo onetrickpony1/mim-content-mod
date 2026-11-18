@@ -143,7 +143,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 61 | Parrotfish | Marzpan | - | Shallow rocks | Red / grey, "spreading north" | C |
 | 62 | Wrasse | Tird | brown wrasse, pearly razorfish | Shallow rocks, seagrass | Many colours | B |
 | 63 | Moray eel | Murina | conger (Gringu), European eel (Sallura) | Holes in rock, caves; night | Bites | A (in progress, [[Fish]]) |
-| 64 | Scorpionfish | Skorfna | all scorpionfish | Rocks, caves | **Venomous spines**: hurts when touched | B |
+| 64 | Scorpionfish | Skorfna | all scorpionfish | Rocks, caves | **Venomous spines**: hurts when touched | B (in progress: the black scorpionfish, [[Fish]]) |
 | 65 | Mullet | Trilja (red mullet) | grey mullet (Mulett) | Sand, harbours | - | C |
 | 66 | Weever | Sawt | greater and lesser weever | Buried in sand at beaches | **Stings bathers' feet**: hidden hazard on sand | B |
 | 67 | John Dory | Pixxi San Pietru | - | Mid-depth | Black "St Peter's thumbprint" spot | C |
@@ -153,7 +153,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 71 | Gurnard | Gallinella | flying gurnard (Bies) | Sand; "walks" on its fins | Blue "wings" | C |
 | 72 | Seahorse | Żiemel tal-Baħar | both seahorses | Posidonia seagrass | Protected: look only | A (in progress, [[Fish]]) |
 | 73 | Shark | Ħuta kaħla (blue shark) | all ~35 sharks incl. catsharks, mako, great white (Kelb Abjad) | Open sea; rare near shore | Catshark egg cases could wash up | B |
-| 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B |
+| 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B (in progress: the common stingray, [[Fish]]) |
 | 75 | Lionfish | - | - | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
 
 ### Other sea creatures
@@ -164,7 +164,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 77 | Lobster (mob) | Awwista | slipper lobster (Ċkala), European lobster, red swamp crayfish | Sea caves, deep rock | - | B |
 | 78 | Crab (mob) | Granċ | spider crab, hermit crab, rock crabs, Percnon | Rocky shores, tide pools | See section 10: same kind as the qabru | A |
 | 79 | Shrimp (mob or catch only) | Gambli | red, rose, golden shrimp | Deep sea | Could be a fishing catch only | C |
-| 80 | Jellyfish (mob) | - (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; purple glow at night | A |
+| 80 | Jellyfish (mob) | - (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; glows when touched at night (green, see [[Jellyfish]]). Research and hazard ideas: [[Jellyfish]] | A |
 | 81 | Sea urchin (block) | Rizza | purple and black urchin | Rocks in shallow water | Hurts to step on; roe for food | A |
 | 82 | Starfish (block) | Stilla tal-Baħar | - | Rocks, seagrass | Decoration | C |
 | 83 | Sea anemone (block) | Artikla | - | Rocks | Decoration | C |

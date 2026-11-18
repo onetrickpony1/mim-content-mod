@@ -16,6 +16,8 @@
     "mimcontent:incova",
     "mimcontent:cawl",
     "mimcontent:huta_kahla",
+    "mimcontent:boll",
+    "mimcontent:skorfna",
     "mimcontent:lampuka_bucket",
     "mimcontent:tonn_bucket",
     "mimcontent:sardina_bucket",
@@ -26,6 +28,8 @@
     "mimcontent:pixxispad_bucket",
     "mimcontent:incova_bucket",
     "mimcontent:cawl_bucket",
-    "mimcontent:huta_kahla_bucket"
+    "mimcontent:huta_kahla_bucket",
+    "mimcontent:boll_bucket",
+    "mimcontent:skorfna_bucket"
   ]
 }

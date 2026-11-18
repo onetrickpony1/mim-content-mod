@@ -4,7 +4,8 @@
   "package": "com.maltaminecraft.mimcontent.test.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "GameRendererGizmoMixin"
+    "GameRendererGizmoMixin",
+    "LuzzuRowingPhaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

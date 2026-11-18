@@ -94,5 +94,15 @@
  "item.mimcontent.huta_kahla": "Ħuta Kaħla",
  "entity.mimcontent.huta_kahla": "Ħuta Kaħla",
  "item.mimcontent.huta_kahla_bucket": "Bucket of Ħuta Kaħla",
- "item.mimcontent.huta_kahla_spawn_egg": "Ħuta Kaħla Spawn Egg"
+ "item.mimcontent.huta_kahla_spawn_egg": "Ħuta Kaħla Spawn Egg",
+ "item.mimcontent.boll": "Boll",
+ "entity.mimcontent.boll": "Boll",
+ "item.mimcontent.boll_bucket": "Bucket of Boll",
+ "item.mimcontent.boll_spawn_egg": "Boll Spawn Egg",
+ "item.mimcontent.skorfna": "Skorfna",
+ "entity.mimcontent.skorfna": "Skorfna",
+ "item.mimcontent.skorfna_bucket": "Bucket of Skorfna",
+ "item.mimcontent.skorfna_spawn_egg": "Skorfna Spawn Egg",
+ "entity.mimcontent.skorfna.variant.black": "Black",
+ "entity.mimcontent.skorfna.variant.red": "Red"
 }

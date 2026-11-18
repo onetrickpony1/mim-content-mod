@@ -1,8 +1,10 @@
 package com.maltaminecraft.mimcontent;
 
+import com.maltaminecraft.mimcontent.entity.fish.BollFish;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimSchoolingFish;
+import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +78,12 @@ public final class MimFishes {
     public static final Fish CAWL = solitary("cawl", 0.35F, 0.4F, 3.0, 6, () -> MimContent.item("cawl", Item::new, new Item.Properties()));
     // The ħuta kaħla (blue shark): about 2.75 blocks long, alone, neutral (HutaKahlaFish); bites for 4 (2 hearts).
     public static final Fish HUTA_KAHLA = shark("huta_kahla", 1.3F, 0.7F, 16.0, 0.9, 4.0, () -> MimContent.item("huta_kahla", Item::new, new Item.Properties()));
+    // Tier B (owner, 2026-11-18: "Work on the stingray next"). The boll (common stingray): a flat disc 1 block wide with
+    // a long whip tail, about 2.1 blocks long; lives on sandy bottoms, alone or in twos, and stings (BollFish).
+    public static final Fish BOLL = ray("boll", 1.0F, 0.25F, 10.0, 2, () -> MimContent.item("boll", Item::new, new Item.Properties()));
+    // Tier B (owner, 2026-11-18: "get another agent started on the skorfna"). The skorfna (black scorpionfish): stocky
+    // and spiny, about 0.8 blocks long; alone, rests on rocky bottoms, and its spines sting (SkorfnaFish).
+    public static final Fish SKORFNA = scorpionfish("skorfna", 0.5F, 0.4F, 6.0, 1, () -> MimContent.item("skorfna", Item::new, new Item.Properties()));
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
     private static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
@@ -102,6 +110,13 @@ public final class MimFishes {
         spawn(INCOVA, 10, 4, 8, malta("bahar_sea", "dwejra_bahar_sea"));
         spawn(CAWL, 20, 3, 6, malta("bahar_sea", "qawra_inland_sea", "dwejra_bahar_sea"));
         spawn(HUTA_KAHLA, 1, 1, 1, malta(MALTA_DEEP));
+        // the boll only spawns over a soft floor (sand, gravel, clay, mud; BollFish), at any depth
+        spawn(BOLL, 5, 1, 2, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(BOLL, 4, 1, 2, malta("posidonia_meadows", "dwejra_posidonia_meadows"));
+        spawn(BOLL, 2, 1, 2, malta(MALTA_DEEP));
+        // the skorfna only spawns over a rock floor (SkorfnaFish), at any depth
+        spawn(SKORFNA, 4, 1, 1, malta("bahar_sea", "dwejra_bahar_sea"));
+        spawn(SKORFNA, 2, 1, 1, malta("fond_deep_sea", "dwejra_fond_deep_sea"));
         if (MimConfig.fishInVanillaOceans) {
             ResourceKey<Biome> warm = Biomes.WARM_OCEAN, luke = Biomes.LUKEWARM_OCEAN, deepLuke = Biomes.DEEP_LUKEWARM_OCEAN;
             spawn(SARDINA, 10, 4, 8, List.of(warm, luke, deepLuke));
@@ -115,6 +130,8 @@ public final class MimFishes {
             spawn(INCOVA, 8, 4, 8, List.of(warm, luke, deepLuke, Biomes.OCEAN, Biomes.DEEP_OCEAN));
             spawn(CAWL, 8, 3, 6, List.of(warm, luke));
             spawn(HUTA_KAHLA, 1, 1, 1, List.of(luke, deepLuke, Biomes.DEEP_OCEAN));
+            spawn(BOLL, 2, 1, 2, List.of(warm, luke));
+            spawn(SKORFNA, 2, 1, 1, List.of(warm, luke));
         }
 
         // Besides the mod's own tab: spawn eggs in vanilla's Spawn Eggs tab, buckets beside vanilla's fish buckets.
@@ -166,6 +183,28 @@ public final class MimFishes {
                 b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, WaterAnimal::checkSurfaceWaterAnimalSpawnRules)
                     .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)
                         .add(Attributes.MOVEMENT_SPEED, speed).add(Attributes.ATTACK_DAMAGE, damage)))
+            .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** The stingray: a solitary fish of its own kind (BollFish) with its own spawn rule, over a soft sea floor. */
+    private static Fish ray(String id, float width, float height, double health, int cluster, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<BollFish> type = MimContent.entity(id, FabricEntityType.Builder.<BollFish>createMob(
+                (t, level) -> new BollFish(t, level, () -> bucket[0], cluster), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BollFish::checkBollSpawnRules)
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)))
+            .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** The scorpionfish: a solitary fish of its own kind (SkorfnaFish) with its own spawn rule, over a rock floor. */
+    private static Fish scorpionfish(String id, float width, float height, double health, int cluster, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<SkorfnaFish> type = MimContent.entity(id, FabricEntityType.Builder.<SkorfnaFish>createMob(
+                (t, level) -> new SkorfnaFish(t, level, () -> bucket[0], cluster), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SkorfnaFish::checkSkorfnaSpawnRules)
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)))
             .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
         return finish(id, type, bucket, item);
     }

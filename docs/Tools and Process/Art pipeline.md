@@ -32,6 +32,7 @@ Each lesson came from an owner correction; the decision notes hold their exact w
 - **One fish's pieces in series, different fish in parallel**, at most 4 makers at once ([[2026-11-18 Fish art - one fish in series, fish in parallel]]):
   - The **item icon comes first** and sets the fish's look and palette.
   - The bucket, spawn egg and 3D model follow one at a time, each after the owner accepts the one before. They reuse the icon's exact colours.
+  - **Nothing moves on without the owner's OK**, whichever piece comes first: if the 3D model is first, the icon waits for the owner to approve the model ([[2026-11-18 Fish art - owner approves each piece before the next]]).
   - When pieces of one fish ran in parallel, a rejected icon forced its bucket and egg to be redone too.
 - **Makers find their own reference photos.** Any photo is fine for reference, not only Creative Commons.
 - **For true colour, use photos of the fish out of water**: caught, on a boat, at the market. Water tints colour, and the moray turned out violet-brown, not olive ([[2026-11-18 Murina icon - clearer head, check colour out of water]]).
@@ -49,6 +50,7 @@ Each lesson came from an owner correction; the decision notes hold their exact w
   - Gold or yellow beside the eye reads as a beak.
 - **Spawn eggs are stylised eggs.** Keep the egg outline in its own pool and paint the fish's features on it, the vanilla 26.x way: a cap, one eye, a pale belly patch, side fin flaps, and one or two signature parts breaking the outline. A whole fish squeezed into the egg read as "a fat version of the fish" ([[2026-11-18 Sardina egg - a representation, not a fat fish]]).
 - **Spawn eggs keep vanilla's EGG outline** ([[2026-11-18 Three eggs rejected - must be egg-shaped; cawl and shark buckets accepted]]): a narrow top widening downwards, about rows 3-15 with the pool. A round ball read as a pufferfish, a whole animal filling the slot read as the animal, and a band across the middle read as a Pokéball. Signature parts may poke out a little, but the silhouette stays an egg. Any pale point sticking out at eye height in front of the head reads as a bird's beak, even a swordfish's sword ([[2026-11-18 Seahorse and incova eggs accepted; swordfish egg reads as a bird]]).
+- **The pool under a spawn egg is vanilla's own**, the owner's one exception to "never copy vanilla pixels" (STYLE rule 3) ([[2026-11-18 Boll egg B; egg pools match vanilla]]): the same 30 pixels in the same 5 blues as vanilla's cod, salmon, pufferfish and tropical fish eggs (rows 12-15; the egg's bottom edge sits on row 13, x 5-10). `art/src/egg_pool.py` holds it: egg scripts call `vanilla_pool()`, which keeps the egg as drawn (where its body covers a pool pixel, the body stays), and their copy checks allow those pool pixels and fail on any other copied pixel. Where an egg sits off-centre (the pixxispad), it gets "a full circular pool under it" (owner): vanilla's whole pool and colours, closed into a ring where vanilla's egg would stand, and moved sideways under the egg's own base, keeping inside the slot. The egg stays in front and is not changed.
 - **Blind reads settle hard icons.** When critics go round in circles, give the icon to a fresh viewer with no context, alone among vanilla items at 1x and 2x, and ask what animal it is. Send it to the owner only when the first word is the right animal ([[2026-11-18 Blue shark egg accepted]]).
 - **Buckets show the head**, rising out of the water, the vanilla way, and never the tail: a whole fish looked "snapped in half" ([[2026-11-18 Cerna bucket - head showing, not the whole fish]]).
   - The bucket is a layered model: the player's own vanilla `cod_bucket` with our fish-only layer on top.
@@ -74,11 +76,11 @@ Owner decision: [[2026-11-18 Icons previewed offline; in-game tests for models a
 
 
 ## Fish models (contract for the art makers, 2026-11-17)
-The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, made by `art/src/fish_placeholders.py`) so the mobs could be tested first; the pixxispad (tier B) too. The script takes the fish to make by name (`fish_placeholders.py pixxispad`) and never overwrites a file that already exists. Real art replaces these files at the same paths:
+The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, made by `art/src/fish_placeholders.py`) so the mobs could be tested first; the pixxispad and the other tier B fish too; the boll and the skorfna (2026-11-18) are still placeholder art. The script takes the fish to make by name (`fish_placeholders.py pixxispad`) and never overwrites a file that already exists. Real art replaces these files at the same paths:
 
 | What | Path (under `mod/src/main/`) |
 |---|---|
-| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`, `PixxispadModel`, `IncovaModel`, `CawlModel`, `HutaKahlaModel`) |
+| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`, `PixxispadModel`, `IncovaModel`, `CawlModel`, `HutaKahlaModel`, `BollModel`, `SkorfnaModel`) |
 | Mob texture | `resources/assets/mimcontent/textures/entity/fish/<id>.png` |
 | Caught fish icon | `resources/assets/mimcontent/textures/item/<id>.png` (none for the żiemel; the lampuka's is accepted art) |
 | Bucket icon | `resources/assets/mimcontent/textures/item/<id>_bucket.png` |
@@ -90,6 +92,15 @@ A model class must:
 - optionally have **`tail_fin`**, a child of the root (or of `tail`): it sways like vanilla cod's tail fin;
 - optionally have **`tail`**, a child of the root: the back half of a long fish (the murina), swaying more gently, like vanilla salmon's back; put `tail_fin` inside it so the fin follows;
 - face **-z** (head toward -z), with y 24 at the ground, like vanilla's `CodModel`. Any other parts (fins, head) are free.
+
+**Rays (the boll) are different** ([[2026-11-18 Stingray next - the common stingray]]): `BollModel` extends **`RayModel`** (itself a `FishModel`), which gives it its own animation instead of the fish wag, the way the seahorse has its own hovering one. A ray model must have:
+- **`body`** (root child): the middle of the flat disc, head toward -z, ground at y 24. It stays flat: no yaw wiggle (its renderer's wiggle is 0).
+- **`left_wing`** (+x) and **`right_wing`** (-x), children of `body`, pivoted where they join the body: they flap up and down together, mirrored.
+- optionally **`left_wing_tip`** and **`right_wing_tip`**, children of the wings, pivoted where they join: the outer edges, flapping a little later and further, so the wing ripples from the body out. The placeholder has them.
+- **`tail`** (root child), pivoted at the back of the disc and running toward +z: it trails and sways slowly. The spine goes on the tail, near its end, as a child part **`spine`** (the placeholder's; not animated) or as cubes of the tail.
+- The ripple is gentle (0.1 radians) while it lies still and grows to about 0.32 as it swims; on land the wings only flutter a little. The renderer keeps a ray **flat on land** (`liesFlat`, not on its side), and its hit boxes are marked flat in `FishShape` to match; the test checks the two agree.
+
+**The skorfna** (black scorpionfish) is a normal `FishModel`. Its placeholder names its parts for the makers: `body` (cubes: head with the eyes, jaw for the big mouth, trunk, and the stalk at the tail's base), `head_flaps` (a child of `body`: the fleshy flaps over the eyes), `top_fin` (the tall spiny dorsal fin), `left_fin` / `right_fin` (the fan-like pectoral fins, spread flat to rest on) and `tail_fin` (the rounded tail, which sways). It mostly lies still on the floor, so the model is seen at rest from above and the side more than swimming.
 
 The swimming animation lives in `FishModel` and the body wiggle and flopping on land in `FishRenderer`, so a model only names its parts. Sizes: the model can be its real size; the body box in `MimFishes` is only for swimming (see [[Fish]]). Test with `SMOKE_ONLY=fish ART_RUN=<name> tools/run-art.sh`: the `fish-*` shots show all seven in a glass tank beside vanilla cod and salmon, on land, and the items, buckets and eggs in the hotbar.
 

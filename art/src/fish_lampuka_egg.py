@@ -1,5 +1,10 @@
 """Lampuka spawn egg: the item icon (16 x 16), 2026-11-18.
 
+The pool (owner 2026-11-18, "the pool under the egg should be the same as vanilla"; docs/Decisions/2026-11-18 Boll
+egg B; egg pools match vanilla.md): the pool drawn in the grid below is our old one. vanilla_pool() swaps it for
+vanilla's own pool (art/src/egg_pool.py, the owner's exception to "never copy", for the pool only) before the egg
+is written, keeping every body pixel; what is said below about our own pool is its history.
+
 Built the way vanilla 26.3 builds its new per-mob spawn eggs, measured from the fish ones (cod, salmon,
 tropical_fish and pufferfish _spawn_egg in art/.vanilla/item, measured, not loaded): the egg is the animal
 itself, not an egg tinted in its colours. The egg stands in a small pool of water (rows 13 to 15; vanilla's
@@ -21,14 +26,18 @@ Photos (reference only): art/references/fish_lampuka_refonly/ (list.tsv).
 Writes: mod/src/main/resources/assets/mimcontent/textures/item/lampuka_spawn_egg.png
 Run:    art/.venv/bin/python art/src/fish_lampuka_egg.py
 """
+import glob
 import os
 
 from PIL import Image
+
+from egg_pool import is_pool, pool_line, vanilla_pool
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 OUT = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures", "item",
                    "lampuka_spawn_egg.png")
+VANILLA = os.path.join(os.environ.get("MIM_VANILLA_TEXTURES", os.path.join(ROOT, "art", ".vanilla")), "item")
 
 
 def hx(h):
@@ -51,7 +60,7 @@ PAL = {
     "B": hx("#c4b43a"),  # yellow: tail and fins
     "A": hx("#5e5a1c"),  # olive: fin edges
     "S": hx("#2f6f9a"),  # blue: the small spots on the flank
-    # the pool: our own ramp of water blues (in the range vanilla's water-mob eggs use, not their values),
+    # the old pool (now swapped for vanilla's): our own ramp of water blues (in the range vanilla's water-mob eggs use, not their values),
     # lop-sided: it spreads out under the tail and its lower edge sits to the right
     "1": hx("#283f72"),
     "2": hx("#345887"),
@@ -59,6 +68,9 @@ PAL = {
     "4": hx("#4a95c6"),
     "5": hx("#6ccbfa"),
 }
+# Our own old pool's colours: vanilla_pool() takes them out and puts vanilla's pool in (owner 2026-11-18,
+# "the pool under the egg should be the same as vanilla"; art/src/egg_pool.py).
+OLD_POOL = {PAL[k] for k in "12345"}
 
 GRID = [
     "................",
@@ -87,9 +99,27 @@ def build():
         for x, ch in enumerate(row):
             if ch != ".":
                 im.putpixel((x, y), PAL[ch] + (255,))
-    return im
+    return vanilla_pool(im, OLD_POOL)
+
+
+def copy_check(icon):
+    """Exact-pixel copy check against every vanilla spawn egg. Vanilla's own pool pixels are allowed (the owner's
+    exception, art/src/egg_pool.py); any other copied pixel fails the run."""
+    ours = {(x, y): icon.getpixel((x, y)) for x in range(16) for y in range(16) if icon.getpixel((x, y))[3] > 0}
+    hits = []
+    for f in sorted(glob.glob(os.path.join(VANILLA, "*spawn_egg*.png"))):
+        v = Image.open(f).convert("RGBA")
+        if v.size == (16, 16):
+            same = [p for p, c in ours.items() if v.getpixel(p) == c and not is_pool(p, c)]
+            if same:
+                hits.append((len(same), os.path.basename(f)))
+    assert not hits, f"copies vanilla pixels besides the pool: {hits}"
+    return ["same pixel and colour as a vanilla spawn egg, besides its pool: 0 pixels", pool_line(icon)]
 
 
 if __name__ == "__main__":
-    build().save(OUT, optimize=False)
+    icon = build()
+    for line in copy_check(icon):
+        print(line)
+    icon.save(OUT, optimize=False)
     print("wrote", OUT)

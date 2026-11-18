@@ -1,5 +1,10 @@
 """Pixxispad spawn egg: the item icon (16 x 16), round 6 of 2026-11-18: a new shape, with the sword as the key.
 
+The pool (owner 2026-11-18, "the pool under the egg should be the same as vanilla"; docs/Decisions/2026-11-18 Boll
+egg B; egg pools match vanilla.md): the pool drawn in the grid below is our old one. vanilla_pool() swaps it for
+vanilla's own pool (art/src/egg_pool.py, the owner's exception to "never copy", for the pool only) before the egg
+is written, keeping every body pixel; what is said below about our own pool is its history.
+
 The owner: "develop a different shape for this one, can be less egg-y. the sword is critical to seeing it as a
 swordfish" (docs/Decisions/2026-11-18 Swordfish egg - a different shape, the sword is critical.md). This egg alone may
 leave vanilla's egg outline; it must still read as a spawn egg (a stylised egg-like body in its own pool), not as a
@@ -49,6 +54,7 @@ ART = os.path.normpath(os.path.join(HERE, ".."))
 ROOT = os.path.normpath(os.path.join(ART, ".."))
 sys.path.insert(0, os.path.join(ART, "tools"))
 from font import label_font  # noqa: E402
+from egg_pool import POOL as VANILLA_POOL, POOL_COLOURS, is_pool, pool_line, vanilla_pool  # noqa: E402
 
 TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
 ITEM = os.path.join(TEXTURES, "item")
@@ -87,13 +93,74 @@ PAL = {
     "D": hx("#8a7480"), "d": hx("#5a4450"),   # dorsal fin: lit leading edge, membrane
     "T": hx("#8a7480"), "t": hx("#5e4654"),   # tail: lit, dark
     "k": hx("#1c1218"),                       # keel on the tail stalk
-    # the pool: our own deep open-sea indigo ramp
+    # the old pool (now swapped for vanilla's): our own deep open-sea indigo ramp
     "a": hx("#1e2560"),
     "b": hx("#2b3c86"),
     "c": hx("#3a55a8"),
     "w": hx("#5579c8"),
     "W": hx("#a4bdf0"),
 }
+# Our own old pool's colours: vanilla_pool() takes them out and puts vanilla's pool in (owner 2026-11-18,
+# "the pool under the egg should be the same as vanilla"; art/src/egg_pool.py).
+OLD_POOL = {PAL[k] for k in "abcwW"}
+# The swordfish's own pool. Owner 2026-11-18: "for the swordfish fix it by making a full pool under it in the style of
+# the vanilla pool", then "swordfish needs a full circular pool under it". Its egg leans to the right (its base on
+# row 13 is x 8-13; vanilla's eggs stand on x 5-10), so vanilla's pool in vanilla's place left it hanging off the right
+# end with a gap on the left. Instead it gets the whole of vanilla's pool, every pixel of the ring, moved right by
+# POOL_SHIFT so it sits under the egg's own base:
+# - vanilla's 30 pool pixels and colours (art/src/egg_pool.py), all moved right by 2 (x 4-15). A shift of 3, which
+#   would centre it exactly, runs off the slot; 2 takes it to the right edge, as vanilla's dolphin and nautilus
+#   pools reach x 15;
+# - plus RING_FILL: the 6 pixels where vanilla's own egg stands (row 13, x 5-10, never seen on vanilla), drawn as the
+#   far edge of the water in vanilla's pool colours, lit on the left and shading to the right as vanilla's row 13
+#   does, so the oval is closed. Only the first of them (x 7 after the shift) shows; the egg covers the rest.
+# Where the egg covers pool pixels the egg stays in front, as on vanilla's eggs. The egg itself is unchanged.
+_S, _R, _T = (75, 152, 196), (62, 118, 163), (53, 90, 139)
+RING_FILL = {(5, 13): _S, (6, 13): _S, (7, 13): _R, (8, 13): _R, (9, 13): _T, (10, 13): _T}
+POOL_SHIFT = 2
+PIXXISPAD_POOL = {(x + POOL_SHIFT, y): c for (x, y), c in {**VANILLA_POOL, **RING_FILL}.items()}
+assert all(0 <= x <= 15 for x, _ in PIXXISPAD_POOL), "the pool must stay inside the slot"
+
+
+def round_pool(icon):
+    """The egg with our old pool taken out and the swordfish's whole round pool put in behind it."""
+    im = icon.copy()
+    for x in range(16):
+        for y in range(16):
+            p = im.getpixel((x, y))
+            if p[3] and p[:3] in OLD_POOL:
+                im.putpixel((x, y), (0, 0, 0, 0))
+    for xy, c in PIXXISPAD_POOL.items():
+        if im.getpixel(xy)[3] == 0:
+            im.putpixel(xy, c + (255,))
+    round_pool_line(im)
+    return im
+
+
+def is_round_pool(xy, colour):
+    return PIXXISPAD_POOL.get(xy) == tuple(colour[:3]) and colour[3] == 255
+
+
+def round_pool_line(icon):
+    """Each pixel of the round pool is its colour or behind the egg's body; no pool blue anywhere else."""
+    shown = under = 0
+    for x in range(16):
+        for y in range(16):
+            p = icon.getpixel((x, y))
+            if (x, y) in PIXXISPAD_POOL:
+                assert p[3], f"pool pixel ({x},{y}) is empty"
+                if is_round_pool((x, y), p):
+                    shown += 1
+                else:
+                    assert p[:3] not in POOL_COLOURS, f"pool pixel ({x},{y}) has the wrong blue"
+                    under += 1
+            else:
+                assert not (p[3] and p[:3] in POOL_COLOURS), f"pool blue at ({x},{y}), outside the pool"
+    return (f"pool: vanilla's whole pool and colours (owner's exception), closed into a ring and moved right by "
+            f"{POOL_SHIFT}: {shown} of its {len(PIXXISPAD_POOL)} pixels shown, {under} behind the egg; no pool blue "
+            f"anywhere else")
+
+
 POOL_KEYS = "abcwW"
 
 OPTIONS = {
@@ -295,24 +362,31 @@ def colours(im):
 
 def copy_check(icon):
     """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py),
-    and the colours against every vanilla egg."""
+    and the colours against every vanilla egg.
+    Vanilla's own pool pixels are allowed (the owner's exception, art/src/egg_pool.py), and on the chosen egg the
+    pixels of its round pool (vanilla's pool moved right, PIXXISPAD_POOL); any other copied pixel fails the run."""
     ours = {(x, y): icon.getpixel((x, y)) for x in range(16) for y in range(16) if icon.getpixel((x, y))[3] > 0}
+    rnd = all(is_round_pool(xy, icon.getpixel(xy)) or icon.getpixel(xy)[:3] not in POOL_COLOURS
+              for xy in PIXXISPAD_POOL) and icon.getpixel((7, 13))[:3] in POOL_COLOURS  # the swordfish's round pool
+    allowed = is_round_pool if rnd else is_pool
     hits, vcols = [], set()
     for f in sorted(glob.glob(os.path.join(VANILLA, "*spawn_egg*.png"))):
         v = Image.open(f).convert("RGBA")
         if v.size != (16, 16):
             continue
-        same = [p for p, c in ours.items() if v.getpixel(p) == c]
+        same = [p for p, c in ours.items() if v.getpixel(p) == c and not allowed(p, c)]
         if same:
             hits.append((len(same), os.path.basename(f)))
         vcols |= colours(v)
-    shared = colours(icon) & vcols
+    shared = (colours(icon) - POOL_COLOURS) & vcols
+    assert not hits, f"copies vanilla pixels besides the pool: {hits}"
     hits.sort(reverse=True)
     most = f"most: {hits[0][0]} in {hits[0][1]}" if hits else "none"
-    own = {PAL[k] for k in PAL}
-    return [f"same pixel and colour as a vanilla spawn egg: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
-            f"our colours also used by any vanilla spawn egg: {len(shared)}",
-            f"colours outside the icon palette plus our pool: {len(colours(icon) - own)}"]
+    own = {PAL[k] for k in PAL} | POOL_COLOURS
+    return [f"same pixel and colour as a vanilla spawn egg, besides its pool: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
+            f"our colours (besides the pool) also used by any vanilla spawn egg: {len(shared)}",
+            f"colours outside the icon palette plus the pool: {len(colours(icon) - own)}",
+            round_pool_line(icon) if rnd else pool_line(icon)]
 
 
 def hotbars(chosen_path):
@@ -469,7 +543,8 @@ def sheet(icon, opts, old):
 
 
 if __name__ == "__main__":
-    opts = {k: render(g) for k, g in OPTIONS.items()}
+    opts = {k: vanilla_pool(render(g), OLD_POOL) for k, g in OPTIONS.items()}
+    opts[CHOSEN] = round_pool(render(OPTIONS[CHOSEN]))  # the chosen egg stands in its own round pool
     for k, im in opts.items():
         im.save(OPT_ICONS[k])
     old = {}

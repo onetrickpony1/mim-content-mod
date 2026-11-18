@@ -1,5 +1,10 @@
 """Incova spawn egg: the item icon (16 x 16), round 4 (round 3 redesign with the critic's fixes), 2026-11-18.
 
+The pool (owner 2026-11-18, "the pool under the egg should be the same as vanilla"; docs/Decisions/2026-11-18 Boll
+egg B; egg pools match vanilla.md): the pool drawn in the grid below is our old one. vanilla_pool() swaps it for
+vanilla's own pool (art/src/egg_pool.py, the owner's exception to "never copy", for the pool only) before the egg
+is written, keeping every body pixel; what is said below about our own pool is its history.
+
 The owner rejected the round 2 egg (decision "2026-11-18 Three eggs rejected - must be egg-shaped; cawl and shark
 buckets accepted"): "incova egg looks like a pokeball/dolphin mix". Its white band straight across the middle read
 as a Pokeball and its pointed snout as a dolphin. This redesign starts from vanilla's EGG outline (measured from
@@ -40,6 +45,7 @@ ROOT = os.path.normpath(os.path.join(ART, ".."))
 sys.path.insert(0, os.path.join(ART, "tools"))
 sys.path.insert(0, HERE)
 from font import label_font  # noqa: E402
+from egg_pool import POOL_COLOURS, is_pool, pool_line, vanilla_pool  # noqa: E402
 from fish_incova_icon import PAL as ICON  # noqa: E402
 
 TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
@@ -64,13 +70,16 @@ def hx(h):
 # e the eye; j and J the mouth line; a the side fins.
 PAL = {k: ICON[k] for k in "hTumkfFWpsgoejJa"}
 PAL.update({
-    # the pool: our own ramp of slate-to-azure blues
+    # the old pool (now swapped for vanilla's): our own ramp of slate-to-azure blues
     "1": hx("#1b3048"),
     "2": hx("#26517a"),
     "3": hx("#3170a0"),
     "4": hx("#4893c0"),
     "5": hx("#8ccde8"),
 })
+# Our own old pool's colours: vanilla_pool() takes them out and puts vanilla's pool in (owner 2026-11-18,
+# "the pool under the egg should be the same as vanilla"; art/src/egg_pool.py).
+OLD_POOL = {PAL[k] for k in "12345"}
 POOL_KEYS = "12345"
 
 POOL = [
@@ -200,29 +209,28 @@ def eye_check():
 
 def copy_check(icon):
     """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py),
-    and the pool's colours against every vanilla egg and every other egg of ours."""
+    and the pool against vanilla's (art/src/egg_pool.py).
+    Vanilla's own pool pixels are allowed (the owner's exception, art/src/egg_pool.py); any other copied pixel
+    fails the run."""
     ours = {(x, y): icon.getpixel((x, y)) for x in range(16) for y in range(16) if icon.getpixel((x, y))[3] > 0}
     hits, vcols = [], set()
     for f in sorted(glob.glob(os.path.join(VANILLA, "*spawn_egg*.png"))):
         v = Image.open(f).convert("RGBA")
         if v.size != (16, 16):
             continue
-        same = [p for p, c in ours.items() if v.getpixel(p) == c]
+        same = [p for p, c in ours.items() if v.getpixel(p) == c and not is_pool(p, c)]
         if same:
             hits.append((len(same), os.path.basename(f)))
         vcols |= colours(v)
-    shared = colours(icon) & vcols
+    shared = (colours(icon) - POOL_COLOURS) & vcols
+    assert not hits, f"copies vanilla pixels besides the pool: {hits}"
     hits.sort(reverse=True)
     most = f"most: {hits[0][0]} in {hits[0][1]}" if hits else "none"
-    pool = {PAL[k] for k in POOL_KEYS}
-    mine = set()
-    for n in OUR_EGGS:
-        mine |= colours(Image.open(os.path.join(TEXTURES, "item", n + "_spawn_egg.png")).convert("RGBA"))
     icon_cols = set(ICON.values())
-    return [f"same pixel and colour as a vanilla spawn egg: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
-            f"our colours also used by any vanilla spawn egg: {len(shared)}",
-            f"pool colours also used by our other eggs ({', '.join(OUR_EGGS)}): {len(pool & mine)}",
-            f"colours not in the incova icon palette, besides the pool: {len(colours(icon) - pool - icon_cols)}",
+    return [f"same pixel and colour as a vanilla spawn egg, besides its pool: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
+            f"our colours (besides the pool) also used by any vanilla spawn egg: {len(shared)}",
+            pool_line(icon),
+            f"colours not in the incova icon palette, besides the pool: {len(colours(icon) - POOL_COLOURS - icon_cols)}",
             eye_check()]
 
 
@@ -338,7 +346,7 @@ def sheet(icon):
 
 
 if __name__ == "__main__":
-    icon = render(GRID)
+    icon = vanilla_pool(render(GRID), OLD_POOL)
     icon.save(OUT_ICON, optimize=False)
     print("wrote", OUT_ICON)
     sheet(icon)

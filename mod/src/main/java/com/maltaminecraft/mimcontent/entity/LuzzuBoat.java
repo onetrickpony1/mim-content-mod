@@ -184,6 +184,15 @@ public class LuzzuBoat extends Boat implements HasCustomInventoryScreen, Contain
         return Mth.clamp(this.getPassengers().indexOf(passenger), 0, SEAT_PLACES.length - 1);
     }
 
+    /** Where the helm seat (the first, the rower's) is, in blocks forward of the middle, as getPassengerAttachmentPoint
+     *  places it: the oars' thole pins sit beside it. */
+    public float helmPlace() {
+        if (hasMoreSeats()) {
+            return SEAT_PLACES[0];
+        }
+        return this.getPassengers().size() > 1 ? 0.2F : this.getSinglePassengerXOffset();
+    }
+
     /** The rider sits at the helm (the first seat, the one that steers and rows). */
     public boolean isAtHelm(Entity passenger) {
         return this.getPassengers().indexOf(passenger) == 0;

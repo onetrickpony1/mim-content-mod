@@ -143,11 +143,11 @@ public class LuzzuModel extends AbstractBoatModel {
         root.addOrReplaceChild("left_paddle", CubeListBuilder.create()
             .texOffs(0, 0).addBox(-0.5F, 0.0F, -7.0F, 1.0F, 1.0F, 23.0F)
             .texOffs(0, 24).addBox(-0.501F, -1.0F, 6.0F, 1.0F, 3.0F, 11.0F),
-            PartPose.offsetAndRotation(2.0F, -7.0F, 9.0F, 0.0F, 0.0F, (float) (Math.PI / 16)));
+            PartPose.offsetAndRotation(11.0F, -8.5F, 8.0F, 0.0F, 0.0F, (float) (Math.PI / 16)));
         root.addOrReplaceChild("right_paddle", CubeListBuilder.create()
             .texOffs(48, 0).addBox(-0.5F, 0.0F, -7.0F, 1.0F, 1.0F, 23.0F)
             .texOffs(24, 24).addBox(-0.499F, -1.0F, 6.0F, 1.0F, 3.0F, 11.0F),
-            PartPose.offsetAndRotation(2.0F, -7.0F, -9.0F, 0.0F, (float) Math.PI, (float) (Math.PI / 16)));
+            PartPose.offsetAndRotation(11.0F, -8.5F, -8.0F, 0.0F, (float) Math.PI, (float) (Math.PI / 16)));
         return LayerDefinition.create(mesh, 128, 128);
     }
 

@@ -92,7 +92,8 @@ WELL_V = 3   # the eye panel is open too: its V-stepped sides become walls and i
              # well runs on into the bow and stern (room for three aboard) while the outside stays the same
 POSTS = {True: (12.0, 26), False: (-8.0, 22)}   # bow / stern: rake in degrees, height of the top (px up)
 TIP_SEGS = 3                                       # the last segments, whose ends and undersides show head-on
-OAR_POSE = (2.0, -5.0 - LIFT, 9.0)
+OAR_POSE = (11.0, -6.5 - LIFT, 8.0)  # the thole pins: beside the helm, 6.5 px ahead of the rower's shoulders, on the
+                                    # gunwale's outer edge (owner 2026-11-18; must match client/LuzzuOars.java)
 WATER_Y, BOOT_Y = 6.0, 7.0   # bottom paint below 6 px (the water stands at 5.85), white boot-top from 6 to 7 px
 
 
@@ -269,15 +270,21 @@ def vee_rows(x):
     return int(reach * (0.7 if x > 0 else 0.3))
 
 
-def eye(lx, row, vstart):
-    """The Eye of Osiris, 5 x 4 with its outline: a brow over the white, a dark iris between, on the bow panel."""
-    shape = [".DDD.",
+EYE_TOP = 2   # the eye's top row on the bow panel, the same on every scheme: right under the band, all on the outer tier
+
+
+def eye(lx, row):
+    """The Eye of Osiris, 5 x 2 (owner 2026-11-18: sharper, smaller, less round): a sharp almond like the real
+    eyes (photos 10, 16, 26), its dark brow sweeping back to a point at the stern (column 0), the white closed at
+    both ends with the iris between. The whole eye lies on the outer tier of the bow panel (rows 2-3), so it reads as
+    one eye from the front too (owner 2026-11-18: not on two levels); a row of the V's yellow under it frames it. On
+    the brown boat the brow lies on the wood band's lower row, like real varnished luzzus (photos 15, 26)."""
+    shape = ["DDDD.",
              "DWKWD",
-             "DWWWD",
-             ".DDD."]
-    j, i = row - vstart, int(math.floor(lx))
-    if 0 <= j < 4 and 0 <= i < 5:
-        return {"D": EYE_D, "W": WHITE, "K": EYE_K}.get(shape[j][i])
+             "YYYYY"]
+    j, i = row - EYE_TOP, int(math.floor(lx))
+    if 0 <= j < len(shape) and 0 <= i < 5:
+        return {"D": EYE_D, "W": WHITE, "K": EYE_K, "Y": YELLOW}.get(shape[j][i])
     return None
 
 
@@ -285,14 +292,14 @@ def outer(sc, X, Y, row, lx, info):
     """The outside of the hull: bands that follow the sheer near the top, level bands at the waterline."""
     if row == 0:
         return sc["cap"]
+    if info.get("bow") and info.get("seg") == EYE_SEG:
+        e = eye(lx, row)   # (before the band: on the brown boat the brow lies on the wood band)
+        if e:
+            return e
     if row <= sc["band_rows"]:
         return sc["band"]
     vstart = sc["band_rows"] + 1
     if row < vstart + vee_rows(X):
-        if info.get("bow") and info.get("seg") == EYE_SEG:
-            e = eye(lx, row, vstart)
-            if e:
-                return e
         if Y >= BOOT_Y + 2:   # the V stops short, so at least two rows of blue stay above the boot-top
             return sc["vee"]
     if Y < WATER_Y:

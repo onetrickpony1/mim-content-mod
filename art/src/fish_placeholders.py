@@ -139,6 +139,45 @@ FISH = {
             ("tail_fin", None, (0, 20, 14), [(0, -9, 0, 0, 8, 8, "fin"), (0, -1, 0, 0, 4, 3, "fin")]),
         ],
     },
+    # tier B (2026-11-18, "Stingray next"): the common stingray, a flat disc 16 px (1 block) wide and 14 px long, 2.5 px
+    # thick, with a whip tail 20 px long and the spine near its end; 34 px (2.1 blocks) in all. A ray model extends
+    # RayModel (its own animation: the wings ripple up and down, the tail trails; no fish wag). Parts, by name, for the
+    # art makers: body (middle of the disc), left_wing / right_wing (children of body), left_wing_tip / right_wing_tip
+    # (the outer edges, children of the wings), tail (root child, from the back of the disc) and spine (child of tail).
+    "boll": {
+        "name": "Boll", "base": "RayModel",
+        "about": "common stingray: flat rhombic disc, olive grey-brown back, white belly, long thin whip tail with a spine",
+        "back": "#6b5f4c", "side": "#86775f", "belly": "#e6e0d4", "fin": "#4f4536", "accent": None,
+        "parts": [
+            ("body", None, (0, 22.5, 0), [(-3, -1, -7, 6, 2.5, 13, "body eye"), (-2, -0.5, -8, 4, 2, 1, "body")]),
+            ("left_wing", "body", (3, 1, 0), [(0, -0.5, -6.5, 3, 1, 11, "body")]),
+            ("left_wing_tip", "left_wing", (3, 0, 0), [(0, -0.5, -4.5, 2, 1, 7, "body")]),
+            ("right_wing", "body", (-3, 1, 0), [(-3, -0.5, -6.5, 3, 1, 11, "body")]),
+            ("right_wing_tip", "right_wing", (-3, 0, 0), [(-2, -0.5, -4.5, 2, 1, 7, "body")]),
+            ("tail", None, (0, 23, 6), [(-0.5, -0.5, 0, 1, 1, 20, "fin")]),
+            ("spine", "tail", (0, -0.5, 15), [(-0.5, -0.5, 0, 1, 0.5, 4, "fin")]),
+        ],
+    },
+    # tier B (2026-11-18, "Skorfna - start"): the black scorpionfish, stocky and big-headed, 13 px (0.81 blocks) long,
+    # a little larger than life so the spines show. A normal FishModel (it wags like the others). Parts, by name, for the
+    # art makers: body (cubes: head with the eyes, jaw = the big mouth, trunk, stalk = the tail's base), head_flaps
+    # (child of body: the fleshy flaps above the eyes), top_fin (the tall spiny dorsal fin), left_fin / right_fin (the
+    # fan-like pectoral fins, spread to rest on), tail_fin (the rounded tail, which sways).
+    "skorfna": {
+        "name": "Skorfna",
+        "about": "black scorpionfish: stocky and big-headed, mottled brown, fleshy flaps over the eyes, big mouth, "
+                 "tall spiny dorsal fin, fan-like pectoral fins",
+        "back": "#4f3d2c", "side": "#76603f", "belly": "#c2ae8e", "fin": "#5d4a35", "accent": "#a68c62",
+        "parts": [
+            ("body", None, (0, 21, 0), [(-2.5, -2.5, -6, 5, 5, 4, "body eye blotch"), (-2, 1.5, -6.5, 4, 1, 1, "body"),
+                                        (-2, -2.5, -2, 4, 4.5, 4, "body blotch"), (-1, -1.5, 2, 2, 3, 2, "body blotch")]),
+            ("head_flaps", "body", (0, -2.5, -5), [(-2, -1, 0, 0, 1, 2, "fin"), (2, -1, 0, 0, 1, 2, "fin")]),
+            ("top_fin", None, (0, 18.5, -4), [(0, -3, 0, 0, 3, 8, "fin")]),
+            ("right_fin", None, (-2, 22.5, -2), [(-3, 0, 0, 3, 0, 3, "fin")]),
+            ("left_fin", None, (2, 22.5, -2), [(0, 0, 0, 3, 0, 3, "fin")]),
+            ("tail_fin", None, (0, 21, 4), [(0, -2.5, 0, 0, 5, 3, "fin")]),
+        ],
+    },
 }
 
 
@@ -241,8 +280,10 @@ def java_model(fid, fish, uvs):
         f" * PLACEHOLDER model of the {fid} ({fish['about']}): plain boxes until the art round.",
         " * Made by art/src/fish_placeholders.py; the art makers replace this file, keeping the fish model contract",
         " * (docs/Tools and Process/Art pipeline.md, \"Fish models\"). Texture: textures/entity/fish/" + fid + ".png.",
+    ] + ([f" * Extends {fish['base']}, which animates it; keep its part names: "
+          + ", ".join(p[0] for p in fish["parts"]) + "."] if fish.get("base") else []) + [
         " */",
-        f"public class {name}Model extends FishModel {{",
+        f"public class {name}Model extends {fish.get('base', 'FishModel')} {{",
         f"    public {name}Model(ModelPart root) {{",
         "        super(root);",
         "    }",
@@ -273,8 +314,30 @@ def f(x):
 
 # ---- icons (16 x 16) ----
 
+def icon_ray(fish):
+    """A ray seen from above: the rhombic disc at the bottom left, the whip tail running to the top right."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    back, side, fin = rgb(fish["back"]), rgb(fish["side"]), rgb(fish["fin"])
+    cx, cy = 6.0, 10.0
+    for x in range(16):
+        for y in range(16):
+            # the disc's long axis runs along the tail's line (to the top right), so rotate 45 degrees
+            u, v = ((x + 0.5 - cx) + (y + 0.5 - cy)) / 1.414, ((x + 0.5 - cx) - (y + 0.5 - cy)) / 1.414
+            if abs(u) / 5.6 + abs(v) / 5.0 <= 1.0:
+                px[x, y] = (side if abs(u) / 5.6 + abs(v) / 5.0 > 0.6 else back) + (255,)
+    outline(img)
+    for i in range(6):                              # the tail, then the spine near its end
+        px[10 + i, 5 - i] = fin + (255,)
+    px[13, 1] = shade(fin, 0.6) + (255,)
+    px[5, 9], px[7, 9] = (16, 16, 16, 255), (16, 16, 16, 255)
+    return img
+
+
 def icon_fish(fish, fid):
     """The caught fish in vanilla's pose: head bottom left, tail top right."""
+    if fid == "boll":
+        return icon_ray(fish)
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
     thick = {"sardina": 1.6, "incova": 1.3, "cawl": 3.0, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4}.get(fid, 2.5)

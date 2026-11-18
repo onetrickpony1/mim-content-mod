@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.maltaminecraft.mimcontent.MimConfig;
 import com.maltaminecraft.mimcontent.MimFishes;
+import com.maltaminecraft.mimcontent.entity.fish.BollFish;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
+import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -90,12 +92,13 @@ public class FishCheck implements FabricClientGameTest {
             context.waitTicks(10);
             AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
 
-            // 2. each fish lives and swims: all eleven at once (the tier A seven, the pixxispad, the inċova, ċawl and ħuta
-            // kaħla), positions sampled for 200 ticks
+            // 2. each fish lives and swims: all thirteen at once (the tier A seven, the pixxispad, the inċova, ċawl, ħuta
+            // kaħla, boll and skorfna), positions sampled for 200 ticks (the skorfna sinks to the floor, which counts)
             List<MimFishes.Fish> all = MimFishes.ALL;
-            check(all.size() == 11, "expected 11 fish, found " + all.size());
+            check(all.size() == 13, "expected 13 fish, found " + all.size());
             for (int i = 0; i < all.size(); i++) {
-                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 1.2 * i, y - 3, z + 0.5));
+                // spread across the pool's water (x - 7 to x + 7), however many fish there are
+                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 12.0 * i / Math.max(1, all.size() - 1), y - 3, z + 0.5));
             }
             context.waitTicks(2);
             Map<String, Vec3> start = positions(server, pool);
@@ -197,6 +200,10 @@ public class FishCheck implements FabricClientGameTest {
             server.runCommand("kill @e[type=!minecraft:player]");
             vanillaOceanSpawns(server);
             shark(context, server, x, y, z, pool);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            boll(context, server, x, y, z, pool);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            skorfna(context, server, x, y, z, pool);
             server.runCommand("gamemode creative @a");
             server.runCommand("kill @e[type=!minecraft:player]");
             log("all checks passed");
@@ -204,6 +211,7 @@ public class FishCheck implements FabricClientGameTest {
             shots(context, server, world, p[0], p[1], p[2]);
         }
         tonnSizes(context);
+        skorfnaVariants(context);
         FishHitboxCheck.run(context);
         System.out.println("[smoke] fish: all checks passed, screenshots written");
     }
@@ -216,7 +224,9 @@ public class FishCheck implements FabricClientGameTest {
         Map<MimFishes.Fish, List<net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome>>> want = Map.of(
             MimFishes.INCOVA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.OCEAN, Biomes.DEEP_OCEAN),
             MimFishes.CAWL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
-            MimFishes.HUTA_KAHLA, List.of(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_OCEAN));
+            MimFishes.HUTA_KAHLA, List.of(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_OCEAN),
+            MimFishes.BOLL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
+            MimFishes.SKORFNA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN));
         String result = server.computeOnServer(s -> {
             var biomes = s.registryAccess().lookupOrThrow(Registries.BIOME);
             StringBuilder out = new StringBuilder();
@@ -236,7 +246,7 @@ public class FishCheck implements FabricClientGameTest {
             }
             return out.isEmpty() ? "ok" : out.toString();
         });
-        log("inċova, ċawl and ħuta kaħla spawns in vanilla oceans: " + result);
+        log("inċova, ċawl, ħuta kaħla, boll and skorfna spawns in vanilla oceans: " + result);
         check(result.equals("ok"), "spawns: " + result);
     }
 
@@ -307,6 +317,245 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("clear @a");
     }
 
+    /**
+     * The boll (common stingray): it lives on the bottom (summoned near the surface, it goes down and stays within
+     * about two blocks of the floor); it only spawns over a soft floor; hurt it and it stings the attacker (damage and
+     * poison); a survival player standing on it is stung; a creative player is not.
+     */
+    private static void boll(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool) {
+        server.runCommand("clear @a");
+        server.runCommand("effect clear @a");
+        // the pool: water y-5 to y-1, its stone floor's top at y-5. A spectator far off, so it doesn't shy away.
+        server.runCommand("gamemode spectator @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %.1f %.1f {PersistenceRequired:1b}", x + 0.5, y - 1.5, z + 0.5));
+        double floor = y - 5;
+        context.waitTicks(140);
+        double highest = 0.0, sum = 0.0;
+        boolean rested = false;
+        int samples = 30;
+        for (int t = 0; t < samples; t++) {
+            context.waitTicks(10);
+            double[] h = server.computeOnServer(s -> {
+                BollFish boll = (BollFish) s.overworld().getEntities(MimFishes.BOLL.type(), pool, e -> true).getFirst();
+                return new double[] {boll.getY() - floor, boll.isResting() ? 1 : 0};
+            });
+            highest = Math.max(highest, h[0]);
+            sum += h[0];
+            rested |= h[1] > 0;
+        }
+        log(String.format(Locale.ROOT, "boll summoned 3.5 blocks above the floor: after 7 s, over 15 s it swam at most %.2f blocks above the floor"
+            + " (on average %.2f); rested on the bottom: %s", highest, sum / samples, rested));
+        // the water's surface is 4 blocks above the floor here
+        check(highest <= BollFish.SWIM_HIGH + 1.0 && sum / samples <= 1.5,
+            String.format(Locale.ROOT, "the boll should stay near the bottom, it rose %.2f above it (average %.2f)", highest, sum / samples));
+
+        // the spawn floor: sand under one spot of the pool, stone under the rest
+        server.runCommand(String.format(Locale.ROOT, "setblock %d %d %d minecraft:sand", x + 5, y - 6, z + 5));
+        String floors = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            boolean sand = BollFish.softFloorBelow(level, new BlockPos(x + 5, y - 3, z + 5)) != null;
+            boolean stone = BollFish.softFloorBelow(level, new BlockPos(x - 5, y - 3, z - 5)) != null;
+            @SuppressWarnings("unchecked")
+            var type = (net.minecraft.world.entity.EntityType<BollFish>) (Object) MimFishes.BOLL.type();
+            boolean rule = BollFish.checkBollSpawnRules(type, level, EntitySpawnReason.NATURAL, new BlockPos(x + 5, y - 3, z + 5), level.getRandom());
+            return "over sand " + sand + ", over stone " + stone + "; the full rule over sand here (sea level " + level.getSeaLevel()
+                + ", pool at y " + (y - 3) + "): " + rule;
+        });
+        log("boll spawn floor: " + floors);
+        check(floors.startsWith("over sand true, over stone false"), "the boll should spawn over sand only: " + floors);
+
+        // hurt it, with the player beside it: it stings back
+        server.runCommand("gamemode survival @a");
+        server.runCommand("effect give @a minecraft:water_breathing 120 0 true");
+        Vec3 at = server.computeOnServer(s -> s.overworld().getEntities(MimFishes.BOLL.type(), pool, e -> true).getFirst().position());
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", at.x + 1.2, at.y, at.z));
+        context.waitTicks(5);
+        String hurt = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+            BollFish boll = (BollFish) level.getEntities(MimFishes.BOLL.type(), pool, e -> true).getFirst();
+            boll.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+            return stingState(player);
+        });
+        log("hurt the boll from beside it: " + hurt);
+        check(hurt.contains("poison=" + BollFish.POISON_SECONDS * 20) && hurt.contains("by boll") && !hurt.startsWith("health 20.0"),
+            "a hurt boll should sting the attacker (2 damage and poison): " + hurt);
+
+        // a survival player standing on a boll lying on the floor is stung; then a creative one is not
+        server.runCommand("kill @e[type=mimcontent:boll]");
+        server.runCommand("effect clear @a minecraft:poison");
+        // past the player's hurt cooldown from the sting above (else the next sting's damage doesn't count)
+        context.waitTicks(25);
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor, z - 3.5));
+        server.runOnServer(s -> {
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+        });
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String stepped = waitForSting(context, server, 20);
+        log("a survival player standing on a boll: " + stepped);
+        check(stepped.contains("poison=") && !stepped.contains("poison=none") && stepped.contains("by boll"),
+            "a survival player standing on a boll should be stung: " + stepped);
+        server.runCommand("effect clear @a minecraft:poison");
+        server.runCommand("gamemode creative @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(BollFish.STING_COOLDOWN + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String creative = waitForSting(context, server, 30);
+        log("a creative player standing on a boll: " + creative);
+        check(creative.contains("poison=none") && !creative.contains("by boll"), "a creative player should not be stung: " + creative);
+        server.runCommand("effect clear @a");
+        server.runCommand("clear @a");
+    }
+
+    /**
+     * The skorfna (black scorpionfish): it lives on the bottom (summoned near the surface, it sinks and stays on the
+     * floor, resting most of the time); it only spawns over a rock floor; hit it in melee and its spines sting the
+     * attacker (damage and poison); a survival player or a mob touching it is stung; a creative player is not.
+     */
+    private static void skorfna(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool) {
+        server.runCommand("clear @a");
+        server.runCommand("effect clear @a");
+        // the pool: water y-5 to y-1, its stone floor's top at y-5. A spectator far off.
+        server.runCommand("gamemode spectator @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %.1f %.1f {PersistenceRequired:1b}", x + 0.5, y - 1.5, z + 0.5));
+        double floor = y - 5;
+        context.waitTicks(100);
+        double highest = 0.0, sum = 0.0;
+        int rests = 0, samples = 40;
+        for (int t = 0; t < samples; t++) {
+            context.waitTicks(10);
+            double[] h = server.computeOnServer(s -> {
+                SkorfnaFish fish = (SkorfnaFish) s.overworld().getEntities(MimFishes.SKORFNA.type(), pool, e -> true).getFirst();
+                return new double[] {fish.getY() - floor, fish.isResting() ? 1 : 0};
+            });
+            highest = Math.max(highest, h[0]);
+            sum += h[0];
+            rests += (int) h[1];
+        }
+        log(String.format(Locale.ROOT, "skorfna summoned 3.5 blocks above the floor: after 5 s, over 20 s it was at most %.2f blocks above the floor"
+            + " (on average %.2f); resting in %d of %d samples", highest, sum / samples, rests, samples));
+        check(highest <= 0.6 && sum / samples <= 0.3, String.format(Locale.ROOT,
+            "the skorfna should stay on the bottom, it rose %.2f above it (average %.2f)", highest, sum / samples));
+        check(rests >= samples / 2, "the skorfna should rest most of the time, it rested in " + rests + " of " + samples + " samples");
+
+        // the spawn floor: sand under one spot of the pool, stone under the rest
+        server.runCommand(String.format(Locale.ROOT, "setblock %d %d %d minecraft:sand", x + 5, y - 6, z + 5));
+        String floors = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            boolean stone = SkorfnaFish.rockFloorBelow(level, new BlockPos(x - 5, y - 3, z - 5)) != null;
+            boolean sand = SkorfnaFish.rockFloorBelow(level, new BlockPos(x + 5, y - 3, z + 5)) != null;
+            @SuppressWarnings("unchecked")
+            var type = (net.minecraft.world.entity.EntityType<SkorfnaFish>) (Object) MimFishes.SKORFNA.type();
+            boolean rule = SkorfnaFish.checkSkorfnaSpawnRules(type, level, EntitySpawnReason.NATURAL, new BlockPos(x - 5, y - 3, z - 5), level.getRandom());
+            return "over stone " + stone + ", over sand " + sand + "; the full rule over stone here (sea level " + level.getSeaLevel()
+                + ", pool at y " + (y - 3) + "): " + rule;
+        });
+        log("skorfna spawn floor: " + floors);
+        check(floors.startsWith("over stone true, over sand false"), "the skorfna should spawn over rock only: " + floors);
+        server.runCommand(String.format(Locale.ROOT, "setblock %d %d %d minecraft:stone", x + 5, y - 6, z + 5));
+
+        // hit it in melee, with the player beside it: the spines sting
+        server.runCommand("gamemode survival @a");
+        server.runCommand("effect give @a minecraft:water_breathing 120 0 true");
+        Vec3 at = server.computeOnServer(s -> s.overworld().getEntities(MimFishes.SKORFNA.type(), pool, e -> true).getFirst().position());
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", at.x + 1.5, at.y, at.z));
+        context.waitTicks(5);
+        String hit = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+            player.removeEffect(net.minecraft.world.effect.MobEffects.POISON);
+            SkorfnaFish fish = (SkorfnaFish) level.getEntities(MimFishes.SKORFNA.type(), pool, e -> true).getFirst();
+            fish.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+            return stingState(player);
+        });
+        log("hit the skorfna in melee: " + hit);
+        check(hit.contains("poison=" + SkorfnaFish.POISON_SECONDS * 20) && hit.contains("by skorfna") && !hit.startsWith("health 20.0"),
+            "a skorfna hit in melee should sting the attacker (2 damage and poison): " + hit);
+
+        // a survival player touching (standing on) a skorfna lying on the floor is stung
+        server.runCommand("kill @e[type=mimcontent:skorfna]");
+        server.runCommand("effect clear @a minecraft:poison");
+        // past the player's hurt cooldown from the sting above (else the next sting's damage doesn't count)
+        context.waitTicks(25);
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor, z - 3.5));
+        server.runOnServer(s -> {
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+        });
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String touched = waitForSting(context, server, 20);
+        log("a survival player touching a skorfna: " + touched);
+        check(touched.contains("poison=") && !touched.contains("poison=none") && touched.contains("by skorfna"),
+            "a survival player touching a skorfna should be stung: " + touched);
+
+        // then a creative one is not
+        server.runCommand("effect clear @a minecraft:poison");
+        server.runCommand("gamemode creative @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(SkorfnaFish.STING_COOLDOWN + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String creative = waitForSting(context, server, 30);
+        log("a creative player touching a skorfna: " + creative);
+        check(creative.contains("poison=none") && !creative.contains("by skorfna"), "a creative player should not be stung: " + creative);
+
+        // a mob touching it is stung too (a pig pushed against it), but other fish are not
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
+        context.waitTicks(SkorfnaFish.STING_COOLDOWN + 5);
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor + 0.1, z - 3.5));
+        context.waitTicks(10);
+        String cod = server.computeOnServer(s -> {
+            var found = s.overworld().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, pool,
+                e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath().equals("cod"));
+            return found.isEmpty() ? "no cod" : stingState(found.getFirst());
+        });
+        log("a cod touching a skorfna: " + cod);
+        check(cod.contains("poison=none"), "another fish should not be stung: " + cod);
+        server.runCommand("kill @e[type=minecraft:cod]");
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:pig %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor + 0.1, z - 3.5));
+        String pig = "";
+        for (int t = 0; t < 20 && !pig.contains("by skorfna"); t += 2) {
+            context.waitTicks(2);
+            pig = server.computeOnServer(s -> {
+                var found = s.overworld().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, pool,
+                e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath().equals("pig"));
+                return found.isEmpty() ? "no pig" : stingState(found.getFirst());
+            });
+        }
+        log("a pig touching a skorfna: " + pig);
+        check(pig.contains("by skorfna") && !pig.contains("poison=none"), "a mob touching a skorfna should be stung: " + pig);
+        server.runCommand("kill @e[type=minecraft:pig]");
+        server.runCommand("effect clear @a");
+        server.runCommand("clear @a");
+    }
+
+    private static String waitForSting(ClientGameTestContext context, TestServerContext server, int ticks) {
+        String state = "";
+        for (int t = 0; t < ticks; t += 2) {
+            context.waitTicks(2);
+            state = server.computeOnServer(s -> stingState(s.getPlayerList().getPlayers().getFirst()));
+            if (!state.contains("poison=none")) {
+                break;
+            }
+        }
+        return state;
+    }
+
+    private static String stingState(net.minecraft.world.entity.LivingEntity player) {
+        var poison = player.getEffect(net.minecraft.world.effect.MobEffects.POISON);
+        var by = player.getLastHurtByMob();
+        return String.format(Locale.ROOT, "health %.1f, poison=%s, hurt %s", player.getHealth(), poison == null ? "none" : poison.getDuration() + "",
+            by == null ? "by nothing" : "by " + BuiltInRegistries.ENTITY_TYPE.getKey(by.getType()).getPath());
+    }
+
     /** Waits up to the given ticks until the shark's state starts with the prefix; returns the last state. */
     private static String waitForShark(ClientGameTestContext context, TestServerContext server, AABB pool, String prefix, int ticks) {
         String state = sharkState(server, pool);
@@ -373,6 +622,8 @@ public class FishCheck implements FabricClientGameTest {
         incovaShots(context, server, world, x + 30, y, z + 125);
         cawlShots(context, server, world, x - 30, y, z + 125);
         hutaKahlaShots(context, server, world, x - 30, y, z + 150);
+        bollShots(context, server, world, x + 30, y, z + 150);
+        skorfnaShots(context, server, world, x, y, z + 150);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {
@@ -385,8 +636,13 @@ public class FishCheck implements FabricClientGameTest {
                 "minecraft:salmon_spawn_egg"},
             {"minecraft:cod", "mimcontent:pixxispad", "minecraft:cod_bucket", "mimcontent:pixxispad_bucket", "minecraft:cod_spawn_egg",
                 "mimcontent:pixxispad_spawn_egg", "mimcontent:tonn", "mimcontent:tonn_bucket", "mimcontent:tonn_spawn_egg"},
+            {"minecraft:cod", "mimcontent:boll", "minecraft:cod_bucket", "mimcontent:boll_bucket", "minecraft:cod_spawn_egg",
+                "mimcontent:boll_spawn_egg", "mimcontent:huta_kahla", "mimcontent:huta_kahla_bucket", "mimcontent:huta_kahla_spawn_egg"},
+            {"minecraft:cod", "mimcontent:skorfna", "minecraft:cod_bucket", "mimcontent:skorfna_bucket", "minecraft:cod_spawn_egg",
+                "mimcontent:skorfna_spawn_egg", "minecraft:pufferfish", "minecraft:pufferfish_bucket", "minecraft:pufferfish_spawn_egg"},
         };
-        String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad"};
+        String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad", "fish-11-hotbar-boll",
+            "fish-12-hotbar-skorfna"};
         context.runOnClient(mc -> {
             if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.options.guiScale().set(4);
@@ -666,6 +922,241 @@ public class FishCheck implements FabricClientGameTest {
         context.runOnClient(mc -> mc.level.removeEntity(-4242, Entity.RemovalReason.DISCARDED));
     }
 
+    /**
+     * The skorfna's two versions (owner 2026-11-18, "Skorfna - two versions, red and black, as reskins"), in a world of
+     * its own: the spawn split; /summon and the spawn egg give a random version, /summon with Variant gives that one,
+     * one with no saved version is black; the client sees each fish's version and draws it with its own texture (both
+     * textures exist); the bucket keeps the version and its tooltip names it; and every version survives a save and
+     * reload. Then the review shot fish-skorfna-variants: a black and a red one side by side.
+     */
+    private static void skorfnaVariants(ClientGameTestContext context) {
+        // the spawn split, drawn 4000 times each way
+        net.minecraft.util.RandomSource random = net.minecraft.util.RandomSource.create(1234L);
+        int deepRed = 0, elsewhereRed = 0, draws = 4000;
+        for (int i = 0; i < draws; i++) {
+            deepRed += SkorfnaFish.pickVariant(random, true) == SkorfnaFish.Variant.RED ? 1 : 0;
+            elsewhereRed += SkorfnaFish.pickVariant(random, false) == SkorfnaFish.Variant.RED ? 1 : 0;
+        }
+        float deepShare = deepRed / (float) draws, elsewhereShare = elsewhereRed / (float) draws;
+        log(String.format(Locale.ROOT, "skorfna variants: red %.1f%% in the deep-sea biomes (want %.0f%%), %.1f%% elsewhere (want %.0f%%)",
+            deepShare * 100, SkorfnaFish.RED_CHANCE_DEEP * 100, elsewhereShare * 100, SkorfnaFish.RED_CHANCE_ELSEWHERE * 100));
+        check(Math.abs(deepShare - SkorfnaFish.RED_CHANCE_DEEP) < 0.03F && Math.abs(elsewhereShare - SkorfnaFish.RED_CHANCE_ELSEWHERE) < 0.03F,
+            "the skorfna spawn split is off");
+
+        TestWorldSave save;
+        Map<UUID, SkorfnaFish.Variant> variants = new HashMap<>();
+        int[] at;
+        try (TestSingleplayerContext world = context.worldBuilder().create()) {
+            save = world.getWorldSave();
+            world.getConnection().waitForChunksRender();
+            TestServerContext server = world.getServer();
+            server.runCommand("gamemode creative @a");
+            server.runCommand("gamerule spawn_mobs false");
+            server.runCommand("gamerule advance_time false");
+            server.runCommand("time set 6000");
+            int[] p = context.computeOnClient(mc -> new int[] {mc.player.getBlockX(), mc.player.getBlockY(), mc.player.getBlockZ()});
+            int x = p[0], y = p[1] + 30, z = p[2];
+            at = p;
+            fill(server, x - 12, y - 9, z - 12, x + 12, y + 4, z + 12, "minecraft:air");
+            fill(server, x - 11, y - 8, z - 11, x + 11, y, z + 11, "minecraft:stone");
+            fill(server, x - 10, y - 7, z - 10, x + 10, y - 1, z + 10, "minecraft:water");
+            server.runCommand(String.format("tp @a %d %d %d", x - 11, y + 1, z - 11));
+            world.getConnection().waitForChunksRender();
+            context.waitTicks(10);
+            AABB pool = new AABB(x - 12, y - 9, z - 12, x + 12, y + 5, z + 12);
+
+            // 20 by /summon and 10 from the spawn egg, all random
+            for (int i = 0; i < 20; i++) {
+                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f", x - 9.5 + i, y - 4, z - 6.5));
+            }
+            for (int i = 0; i < 10; i++) {
+                int fx = x - 9 + 2 * i;
+                server.runOnServer(s -> {
+                    ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(MimFishes.SKORFNA.spawnEgg()));
+                    BlockPos floor = BlockPos.containing(fx, y - 8, z - 2);
+                    player.getItemInHand(InteractionHand.MAIN_HAND).useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
+                        new BlockHitResult(Vec3.atCenterOf(floor).add(0, 0.5, 0), Direction.UP, floor, false)));
+                });
+            }
+            context.waitTicks(2);
+            Map<UUID, SkorfnaFish.Variant> random30 = skorfnaVariantsIn(server, pool);
+            long reds = random30.values().stream().filter(v -> v == SkorfnaFish.Variant.RED).count();
+            log("summon and spawn egg: " + random30.size() + " skorfna, " + reds + " red, " + (random30.size() - reds) + " black");
+            check(random30.size() == 30, "expected 30 skorfna, found " + random30.size());
+            check(reds > 0 && reds < 30, "summon and the spawn egg should give both versions, got " + reds + " red of 30");
+
+            // /summon with the version in its data; one with no saved version (as saved before versions existed) is black
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {PersistenceRequired:1b,Variant:\"red\"}", x + 0.5, y - 4, z + 3.5));
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {PersistenceRequired:1b,Variant:\"black\"}", x + 0.5, y - 4, z + 5.5));
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {PersistenceRequired:1b}", x + 0.5, y - 4, z + 7.5));
+            context.waitTicks(2);
+            String summoned = server.computeOnServer(s -> {
+                StringBuilder out = new StringBuilder();
+                for (double sz : new double[] {3.5, 5.5, 7.5}) {
+                    List<SkorfnaFish> here = skorfnas(s.overworld(), new AABB(x, y - 9, z + sz - 0.9, x + 1, y, z + sz + 0.9));
+                    out.append(here.size() == 1 ? here.getFirst().getVariant().id() : "found " + here.size()).append(' ');
+                }
+                return out.toString().trim();
+            });
+            log("summon with Variant red, Variant black, no Variant: " + summoned);
+            check(summoned.equals("red black black"), "summoned with data: " + summoned);
+            server.runOnServer(s -> s.overworld().getEntities(MimFishes.SKORFNA.type(), pool, e -> true).forEach(e -> e.setPersistenceRequired()));
+            Map<UUID, SkorfnaFish.Variant> found = skorfnaVariantsIn(server, pool);
+
+            // the client: same version for each fish, drawn with its own texture, and both textures exist
+            context.waitTicks(10);
+            String client = context.computeOnClient(mc -> {
+                for (String tex : new String[] {"skorfna", "skorfna_red"}) {
+                    if (mc.getResourceManager().getResource(com.maltaminecraft.mimcontent.MimContent.id("textures/entity/fish/" + tex + ".png")).isEmpty()) {
+                        return "missing texture " + tex + ".png";
+                    }
+                }
+                int seen = 0;
+                for (Entity e : mc.level.entitiesForRendering()) {
+                    if (e instanceof SkorfnaFish fish && found.containsKey(e.getUUID())) {
+                        if (fish.getVariant() != found.get(e.getUUID())) {
+                            return "the client sees a " + fish.getVariant().id() + " skorfna that is " + found.get(e.getUUID()).id();
+                        }
+                        String tex = ((com.maltaminecraft.mimcontent.client.fish.FishRenderer) (Object) mc.getEntityRenderDispatcher().getRenderer(e))
+                            .textureFor(fish).getPath();
+                        String want = fish.getVariant() == SkorfnaFish.Variant.RED ? "textures/entity/fish/skorfna_red.png" : "textures/entity/fish/skorfna.png";
+                        if (!tex.equals(want)) {
+                            return "a " + fish.getVariant().id() + " skorfna is drawn with " + tex;
+                        }
+                        seen++;
+                    }
+                }
+                return seen == found.size() ? "ok, " + seen + " fish, both textures found" : "the client sees " + seen + " of " + found.size() + " skorfna";
+            });
+            log("client sync and textures: " + client);
+            check(client.startsWith("ok"), "client: " + client);
+
+            // the bucket keeps the version: catch a red and a black one, read the bucket and its tooltip, let them out
+            server.runCommand("gamemode survival @a");
+            for (SkorfnaFish.Variant variant : SkorfnaFish.Variant.values()) {
+                UUID id = found.entrySet().stream().filter(e -> e.getValue() == variant).findFirst().orElseThrow().getKey();
+                String bucket = server.computeOnServer(s -> {
+                    ServerLevel level = s.overworld();
+                    ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                    SkorfnaFish fish = (SkorfnaFish) level.getEntity(id);
+                    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WATER_BUCKET));
+                    fish.interact(player, InteractionHand.MAIN_HAND, fish.position());
+                    ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+                    if (!held.is(MimFishes.SKORFNA.bucket())) {
+                        return "bucketing gave " + BuiltInRegistries.ITEM.getKey(held.getItem());
+                    }
+                    String stored = held.getOrDefault(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY).copyTag().getStringOr("Variant", "none");
+                    player.getInventory().setItem(8, held.copy());
+                    BlockPos out = BlockPos.containing(x + 6.5, y - 4, z + 6.5);
+                    ((MobBucketItem) held.getItem()).checkExtraContent(player, level, held, out);
+                    List<SkorfnaFish> back = skorfnas(level, new AABB(out).inflate(2.0)).stream().filter(SkorfnaFish::fromBucket).toList();
+                    if (back.size() != 1) {
+                        return "emptying the bucket gave " + back.size() + " skorfna";
+                    }
+                    SkorfnaFish released = back.getFirst();
+                    released.discard();
+                    return "caught " + variant.id() + ", bucket says " + stored + ", let out " + released.getVariant().id()
+                        + (stored.equals(variant.id()) && released.getVariant() == variant ? " ok" : " WRONG");
+                });
+                context.waitTicks(5);
+                String tooltip = context.computeOnClient(mc -> {
+                    ItemStack stack = mc.player.getInventory().getItem(8);
+                    List<net.minecraft.network.chat.Component> lines = stack.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.of(mc.level),
+                        mc.player, net.minecraft.world.item.TooltipFlag.NORMAL);
+                    return String.join(" / ", lines.stream().map(net.minecraft.network.chat.Component::getString).toList());
+                });
+                String word = variant == SkorfnaFish.Variant.RED ? "Red" : "Black";
+                log("bucket: " + bucket + "; tooltip: " + tooltip);
+                check(bucket.endsWith(" ok"), "the bucket lost the version: " + bucket);
+                check(tooltip.contains(" / " + word), "the bucket tooltip should say " + word + ": " + tooltip);
+                server.runCommand("clear @a");
+            }
+            // an old bucket (filled before versions existed) holds a black one
+            String old = server.computeOnServer(s -> {
+                ServerLevel level = s.overworld();
+                ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                ItemStack held = new ItemStack(MimFishes.SKORFNA.bucket());
+                BlockPos out = BlockPos.containing(x - 6.5, y - 4, z + 6.5);
+                ((MobBucketItem) held.getItem()).checkExtraContent(player, level, held, out);
+                List<SkorfnaFish> back = skorfnas(level, new AABB(out).inflate(2.0));
+                String v = back.size() == 1 ? back.getFirst().getVariant().id() : "found " + back.size();
+                back.forEach(Entity::discard);
+                return v;
+            });
+            log("an old bucket with no version lets out: " + old);
+            check(old.equals("black"), "an old bucket should hold a black skorfna, gave " + old);
+            server.runCommand("gamemode creative @a");
+            context.waitTicks(2);
+            variants.putAll(skorfnaVariantsIn(server, pool));
+            check(variants.size() == 31, "before saving (two caught and let out, then removed), expected 31 skorfna, found " + variants.size());
+        }
+
+        // save and reload: every skorfna comes back the same version
+        try (TestSingleplayerContext world = save.open()) {
+            world.getConnection().waitForChunksRender();
+            context.waitTicks(40);
+            TestServerContext server = world.getServer();
+            int x = at[0], y = at[1] + 30, z = at[2];
+            AABB pool = new AABB(x - 12, y - 9, z - 12, x + 12, y + 5, z + 12);
+            Map<UUID, SkorfnaFish.Variant> reloaded = skorfnaVariantsIn(server, pool);
+            int same = 0;
+            for (Map.Entry<UUID, SkorfnaFish.Variant> e : variants.entrySet()) {
+                check(reloaded.get(e.getKey()) == e.getValue(), "a " + e.getValue().id() + " skorfna came back as " + reloaded.get(e.getKey()));
+                same++;
+            }
+            long reds = variants.values().stream().filter(v -> v == SkorfnaFish.Variant.RED).count();
+            log("save and reload: all " + same + " skorfna kept their version (" + reds + " red, " + (same - reds) + " black)");
+            server.runCommand("kill @e[type=mimcontent:skorfna]");
+            skorfnaVariantShot(context, server, world, at[0], at[1], at[2]);
+        }
+    }
+
+    /** The review shot fish-skorfna-variants: a black (left) and a red skorfna (right) side by side on a stone floor, in a
+     *  shallow open tank at midday, seen from the air above the water. */
+    private static void skorfnaVariantShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 9, y, z - 6, x + 9, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 9, y - 1, z - 6, x + 9, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 6, y, z + 4, x + 6, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y, z + 8, "minecraft:stone");
+        // a shallow, open tank in full daylight, so the two colours can be judged: one block of water, air above it,
+        // and the cameras in the air (inside the water its fog greys and darkens everything)
+        fill(server, x - 5, y + 1, z + 5, x + 5, y + 1, z + 8, "minecraft:water");
+        fill(server, x - 5, y + 2, z + 5, x + 5, y + 5, z + 8, "minecraft:air");
+        server.runCommand("time set 6000");
+        server.runCommand("weather clear");
+        // +x is on the left of a camera looking south
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],Variant:\"black\"}",
+            x + 1.3, y + 1, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],Variant:\"red\"}",
+            x - 0.7, y + 1, z + 6.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        context.runOnClient(mc -> {
+            if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+        });
+        // look() places the player's feet (and a barrier under them); the eyes are 1.62 higher, here just above the water
+        look(context, server, x + 0.3, y + 0.6, z + 5.2, x + 0.3, y + 1.2, z + 6.5, "fish-skorfna-variants");
+        look(context, server, x + 0.3, y + 3.0, z + 6.3, x + 0.3, y + 1.2, z + 6.5, "fish-skorfna-variants-top");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** Every skorfna in the area, by UUID, with its version. */
+    private static Map<UUID, SkorfnaFish.Variant> skorfnaVariantsIn(TestServerContext server, AABB area) {
+        return server.computeOnServer(s -> {
+            Map<UUID, SkorfnaFish.Variant> out = new HashMap<>();
+            skorfnas(s.overworld(), area).forEach(f -> out.put(f.getUUID(), f.getVariant()));
+            return out;
+        });
+    }
+
+    private static List<SkorfnaFish> skorfnas(ServerLevel level, AABB area) {
+        List<SkorfnaFish> out = new ArrayList<>();
+        level.getEntities(MimFishes.SKORFNA.type(), area, e -> true).forEach(e -> out.add((SkorfnaFish) e));
+        return out;
+    }
+
     /** Every tonn in the area, by UUID, with its length. */
     private static Map<UUID, Float> tonnLengths(TestServerContext server, AABB area) {
         return server.computeOnServer(s -> {
@@ -920,6 +1411,66 @@ public class FishCheck implements FabricClientGameTest {
         look(context, server, x - 0.3, y + 0.2, z + 4.3, x - 0.3, y + 1.85, z + 6.5, "fish-huta-kahla-beside-cod");
         server.runCommand("gamemode creative @a");
         look(context, server, x + 0.5, y, z - 2.6, x + 0.5, y + 0.2, z + 0.5, "fish-huta-kahla-on-land");
+    }
+
+    /** The boll's own review: one lying on a sand floor in a tank, a vanilla cod above it for scale, and one on land. */
+    private static void bollShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 9, y, z - 6, x + 9, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 9, y - 1, z - 6, x + 9, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 6, y, z + 4, x + 6, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y, z + 8, "minecraft:sand");
+        fill(server, x - 5, y + 1, z + 5, x + 5, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1, z + 5.6));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.9, y + 1.9, z + 5.8));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.3, y - 0.3, z + 4.3, x + 0.3, y + 1.1, z + 5.6, "fish-boll-side");
+        look(context, server, x - 0.5, y + 0.1, z + 4.3, x + 0.6, y + 1.05, z + 5.6, "fish-boll-three-quarter");
+        look(context, server, x + 0.3, y + 1.4, z + 4.3, x + 0.3, y + 1.1, z + 5.6, "fish-boll-top");
+        look(context, server, x - 0.4, y - 0.2, z + 4.2, x - 0.4, y + 1.4, z + 5.7, "fish-boll-beside-cod");
+        // from below: a third boll held up near the surface (no gravity), seen from low in the glass wall
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %.1f %.1f {NoAI:1b,NoGravity:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 3.8, y + 3.6, z + 5.6));
+        context.waitTicks(10);
+        look(context, server, x + 3.8, y - 0.1, z + 4.3, x + 3.8, y + 3.65, z + 5.6, "fish-boll-below");
+        // the wing ripple at rest (RayModel: 0.1 radians, a beat about every 25 ticks), from in front of its head
+        look(context, server, x - 1.0, y - 0.3, z + 5.6, x + 0.5, y + 1.1, z + 5.6, "fish-boll-ripple-0");
+        for (int frame = 1; frame < 5; frame++) {
+            context.waitTicks(5);
+            context.takeScreenshot("fish-boll-ripple-" + frame);
+        }
+        server.runCommand("gamemode creative @a");
+        look(context, server, x - 0.3, y + 0.1, z - 1.0, x + 0.5, y, z + 0.5, "fish-boll-on-land");
+    }
+
+    /** The skorfna's own review: one resting on a stone floor in a tank, a vanilla cod beside it for scale, and one on land. */
+    private static void skorfnaShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 9, y, z - 6, x + 9, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 9, y - 1, z - 6, x + 9, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 6, y, z + 4, x + 6, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y, z + 8, "minecraft:stone");
+        fill(server, x - 5, y + 1, z + 5, x + 5, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],Variant:\"black\"}",
+            x + 0.5, y + 1, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.3, y + 1.6, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:skorfna %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],Variant:\"black\"}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.3, y + 0.2, z + 4.4, x + 0.3, y + 1.3, z + 6.5, "fish-skorfna-side");
+        look(context, server, x - 1.5, y + 0.8, z + 4.4, x + 0.5, y + 1.3, z + 6.5, "fish-skorfna-three-quarter");
+        look(context, server, x + 0.4, y + 2.4, z + 4.6, x + 0.4, y + 1.2, z + 6.5, "fish-skorfna-top");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y + 0.2, z - 1.8, x + 0.5, y + 0.2, z + 0.5, "fish-skorfna-on-land");
     }
 
     private static Map<String, Vec3> positions(TestServerContext server, AABB area) {

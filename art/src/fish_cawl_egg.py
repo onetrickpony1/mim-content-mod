@@ -1,5 +1,10 @@
 """Ċawl spawn egg: the item icon (16 x 16), 2026-11-18.
 
+The pool (owner 2026-11-18, "the pool under the egg should be the same as vanilla"; docs/Decisions/2026-11-18 Boll
+egg B; egg pools match vanilla.md): the pool drawn in the grid below is our old one. vanilla_pool() swaps it for
+vanilla's own pool (art/src/egg_pool.py, the owner's exception to "never copy", for the pool only) before the egg
+is written, keeping every body pixel; what is said below about our own pool is its history.
+
 Built the vanilla 26.x way (decisions "2026-11-18 Sardina egg - a representation, not a fat fish" and "2026-11-18 Three
 eggs rejected - must be egg-shaped; cawl and shark buckets accepted"): vanilla's EGG outline, standing in its own pool,
 with the fish painted ON it. Vanilla's cod egg (art/.vanilla/item/cod_spawn_egg.png) is the template for the outline,
@@ -43,6 +48,7 @@ ART = os.path.normpath(os.path.join(HERE, ".."))
 ROOT = os.path.normpath(os.path.join(ART, ".."))
 sys.path.insert(0, os.path.join(ART, "tools"))
 from font import label_font  # noqa: E402
+from egg_pool import POOL_COLOURS, is_pool, pool_line, vanilla_pool  # noqa: E402
 
 TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
 OUT_ICON = os.path.join(TEXTURES, "item", "cawl_spawn_egg.png")
@@ -71,10 +77,13 @@ PAL = {
     "d": hx("#7a6656"),                       # the lit tip of the left side fin
     "p": hx("#a8968a"),                       # pale: the belly patch
     "q": hx("#8e705d"), "r": hx("#6d5242"), "t": hx("#614434"),  # the tail: lit lobe, shaded lobe, notch
-    # the pool: our own ramp of deep blues
+    # the old pool (now swapped for vanilla's): our own ramp of deep blues
     "u": hx("#152a47"), "v": hx("#1f4d7c"), "x": hx("#2b70aa"), "y": hx("#4b95d3"), "z": hx("#9ccdf0"),
     "o": hx("#1d130c"),                       # the egg's shadow on the water
 }
+# Our own old pool's colours: vanilla_pool() takes them out and puts vanilla's pool in (owner 2026-11-18,
+# "the pool under the egg should be the same as vanilla"; art/src/egg_pool.py).
+OLD_POOL = {PAL[k] for k in "uvxyz"}
 
 GRID = [
     "................",
@@ -136,22 +145,26 @@ def measure(paths):
 
 
 def copy_check(icon):
-    """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py)."""
+    """Exact-pixel copy check against every vanilla spawn egg (as art/candidates/critic_sardina_egg_v5/check.py).
+    Vanilla's own pool pixels are allowed (the owner's exception, art/src/egg_pool.py); any other copied pixel
+    fails the run."""
     ours = {(x, y): icon.getpixel((x, y)) for x in range(16) for y in range(16) if icon.getpixel((x, y))[3] > 0}
     hits, vcols = [], set()
     for f in sorted(glob.glob(os.path.join(VANILLA, "*spawn_egg*.png"))):
         v = Image.open(f).convert("RGBA")
         if v.size != (16, 16):
             continue
-        same = [p for p, c in ours.items() if v.getpixel(p) == c]
+        same = [p for p, c in ours.items() if v.getpixel(p) == c and not is_pool(p, c)]
         if same:
             hits.append((len(same), os.path.basename(f)))
         vcols |= {v.getpixel((x, y))[:3] for x in range(16) for y in range(16) if v.getpixel((x, y))[3] > 0}
-    shared = {c[:3] for c in ours.values()} & vcols
+    shared = ({c[:3] for c in ours.values()} - POOL_COLOURS) & vcols
+    assert not hits, f"copies vanilla pixels besides the pool: {hits}"
     hits.sort(reverse=True)
     most = f"most: {hits[0][0]} in {hits[0][1]}" if hits else "none"
-    return [f"same pixel and colour as a vanilla spawn egg: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
-            f"our colours also used by any vanilla spawn egg: {len(shared)}"]
+    return [f"same pixel and colour as a vanilla spawn egg, besides its pool: {sum(n for n, _ in hits)} pixels over {len(hits)} eggs ({most})",
+            f"our colours (besides the pool) also used by any vanilla spawn egg: {len(shared)}",
+            pool_line(icon)]
 
 
 def tile_row(items, d, band, y0):
@@ -249,7 +262,7 @@ def sheet(icon):
 
 
 if __name__ == "__main__":
-    icon = render(GRID)
+    icon = vanilla_pool(render(GRID), OLD_POOL)
     icon.save(OUT_ICON, optimize=False)
     print("wrote", OUT_ICON)
     sheet(icon)
