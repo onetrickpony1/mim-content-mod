@@ -48,8 +48,8 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
     private static final Map<String, FishShape> SHAPES = Map.ofEntries(
         // 23 px long, 5.4 wide, 12 tall
         shape("awrata", 5.75F, 0.1F, new float[][] {{-8.125F, 1.5F, 13F, 23F}, {-2.375F, 2.72F, 13F, 25F}, {3.375F, 1.5F, 13F, 24F}, {9.125F, 1F, 14F, 24F}}),
-        // 34 px long (the whip tail included), 16 wide (the disc), 2 thick over the dome; flat: it lies flat on land too
-        flatShape("boll", 5.667F, 0.0F, new float[][] {{-5.167F, 7F, 22F, 24F}, {0.5F, 8F, 22F, 24F}, {6.167F, 4F, 22F, 24F}, {11.833F, 0.5F, 22F, 24F}, {17.5F, 0.5F, 22F, 24F}, {23.167F, 0.5F, 23F, 24F}}),
+        // 42 px long (the whip tail included), 20 wide (the disc, 1.25 blocks), 2 thick over the dome; flat: it lies flat on land too
+        flatShape("boll", 6.000F, 0.0F, new float[][] {{-7F, 8F, 21F, 24F}, {-1F, 10F, 22F, 24F}, {5F, 8F, 22F, 24F}, {11F, 2F, 23F, 24F}, {17F, 0.5F, 22.95F, 24F}, {23F, 0.5F, 23F, 24F}, {29F, 0.5F, 23F, 24F}}),
         // 14 px long, 4.4 wide, 8 tall
         shape("cawl", 4.667F, 0.1F, new float[][] {{-4.667F, 2.22F, 16F, 24F}, {0F, 2.22F, 16F, 24F}, {4.667F, 0.5F, 16F, 24F}}),
         // 29 px long, 9.1 wide, 13 tall

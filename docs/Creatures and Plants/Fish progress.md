@@ -52,6 +52,7 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 |         | Lingwata         | Sole        | Sand bottom             | planned |
 |         | Ħmar             | Triggerfish | Rocks                   | planned |
 |         | Gallinella       | Gurnard     | Sand; walks on its fins | planned |
+|         | †                | Ocean sunfish (mola mola) | Open sea; caught with jellyfish meat once fishing is overhauled | planned |
 
 ## Other sea life
 
@@ -59,7 +60,9 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 | --- | --- | --- | --- | --- |
 |  | Qarnita | Octopus | Rocks, holes, caves | planned |
 |  | Granċ | Crab | Rocky shores, tide pools | planned |
-|  | Brama | Jellyfish | Open sea; summer swarms | planned |
+|  | Brama | Mauve stinger | Open sea; summer swarms; stings, glows green at night | building (placeholder art) |
+|  | Brama | Fried-egg jellyfish | Bays, late summer; harmless | building (placeholder art) |
+|  | Brama | Portuguese man o' war | Floats on the open sea, rare; long stinging tentacles | building (placeholder art) |
 |  | Rizza | Sea urchin (block) | Rocks in shallow water | planned |
 |  | Awwista | Lobster | Sea caves, deep rock | planned |
 |  | Gambli | Shrimp | Deep sea | planned |

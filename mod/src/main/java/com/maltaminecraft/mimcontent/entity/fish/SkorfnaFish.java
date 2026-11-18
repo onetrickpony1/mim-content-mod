@@ -37,6 +37,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -61,7 +62,9 @@ import org.jspecify.annotations.Nullable;
  * porcus, the default) and {@link Variant#RED} (the red scorpionfish, Scorpaena scrofa, Ċippullazza), which lives
  * deeper. A new skorfna (natural spawn, spawn egg, /summon without data) picks one ({@link #pickVariant}). The variant
  * is synced to clients, saved with the fish ({@code Variant}: "black" or "red") and kept in the bucket; a skorfna saved
- * before variants existed is black.
+ * before variants existed is black. Each version drops its own item (owner 2026-11-18, "Skorfna icon D accepted; each
+ * colour drops its own item"): the black one by the entity's loot table (entities/skorfna, the skorfna item), the red
+ * one by entities/skorfna_red (the skorfna_red item); see {@link #dropFromLootTable}.
  */
 public class SkorfnaFish extends MimFish {
     /** The sting: damage (1 heart) and how long the poison lasts. */
@@ -84,7 +87,7 @@ public class SkorfnaFish extends MimFish {
     /** How deep under a spawn point the rock floor may lie, in blocks. */
     public static final int SPAWN_FLOOR_DEPTH = 16;
 
-    /** The two versions: same model, shape, behaviour, sting and drop; only the texture differs. */
+    /** The two versions: same model, shape, behaviour and sting; only the texture and the dropped item differ. */
     public enum Variant {
         BLACK("black"), RED("red");
 
@@ -117,6 +120,9 @@ public class SkorfnaFish extends MimFish {
     private static final List<ResourceKey<Biome>> DEEP_BIOMES = List.of(
         ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("maltamc", "fond_deep_sea")),
         ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("maltamc", "dwejra_fond_deep_sea")));
+    /** The red skorfna's loot table (drops skorfna_red); the black one uses the entity's own, entities/skorfna. */
+    public static final ResourceKey<LootTable> RED_LOOT = ResourceKey.create(Registries.LOOT_TABLE,
+        Identifier.fromNamespaceAndPath("mimcontent", "entities/skorfna_red"));
     private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(SkorfnaFish.class, EntityDataSerializers.INT);
 
     /** True while it lies still on the bottom (server side). */
@@ -159,6 +165,21 @@ public class SkorfnaFish extends MimFish {
     public static boolean isDeepBiome(ServerLevelAccessor level, BlockPos pos) {
         var biome = level.getBiome(pos);
         return DEEP_BIOMES.stream().anyMatch(biome::is);
+    }
+
+    /**
+     * The death drop by version: a red skorfna rolls {@link #RED_LOOT} instead of the entity's table. Only the table
+     * changes; the kill goes through vanilla's loot code as for every other fish (same context: killer, weapon and its
+     * Looting, on fire), so whatever the table says about those applies. A skorfna given its own DeathLootTable (by
+     * /summon or a datapack) keeps it.
+     */
+    @Override
+    protected void dropFromLootTable(ServerLevel level, DamageSource source, boolean playerKilled) {
+        if (getVariant() == Variant.RED && getLootTable().equals(getType().getDefaultLootTable())) {
+            dropFromLootTable(level, source, playerKilled, RED_LOOT);
+        } else {
+            super.dropFromLootTable(level, source, playerKilled);
+        }
     }
 
     @Override

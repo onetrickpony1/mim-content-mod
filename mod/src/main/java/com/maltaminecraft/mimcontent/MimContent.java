@@ -111,6 +111,7 @@ public class MimContent implements ModInitializer {
     public void onInitialize() {
         MimConfig.load();
         MimFishes.init();
+        MimJellyfish.init();
         DispenserBlock.registerBehavior(LUZZU_ITEM, new BoatDispenseItemBehavior(LUZZU));
         DispenserBlock.registerBehavior(LUZZU_RED_ITEM, new BoatDispenseItemBehavior(LUZZU_RED));
         DispenserBlock.registerBehavior(LUZZU_BROWN_ITEM, new BoatDispenseItemBehavior(LUZZU_BROWN));

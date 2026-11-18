@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "mimcontent:item/mauve_stinger_spawn_egg"
+ }
+}

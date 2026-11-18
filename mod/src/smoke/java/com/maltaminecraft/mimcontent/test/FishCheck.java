@@ -131,10 +131,13 @@ public class FishCheck implements FabricClientGameTest {
             // 3. drops: kill each one in turn, count what lands
             for (MimFishes.Fish f : all) {
                 server.runCommand("kill @e[type=item]");
+                // the skorfna was summoned with a random version, and each version drops its own item
+                boolean red = f == MimFishes.SKORFNA && server.computeOnServer(s -> s.overworld().getEntities(f.type(), pool, e -> true).stream()
+                    .anyMatch(e -> e instanceof SkorfnaFish k && k.getVariant() == SkorfnaFish.Variant.RED));
                 server.runCommand("kill @e[type=mimcontent:" + f.id() + "]");
                 context.waitTicks(5);
                 String drops = drops(server, pool);
-                String expected = f.item() == null ? "" : BuiltInRegistries.ITEM.getKey(f.item()) + " x1";
+                String expected = f.item() == null ? "" : BuiltInRegistries.ITEM.getKey(red ? MimFishes.SKORFNA_RED : f.item()) + " x1";
                 log(f.id() + " dropped [" + drops + "]");
                 check(drops.equals(expected), f.id() + " should drop [" + expected + "], dropped [" + drops + "]");
             }
@@ -154,6 +157,7 @@ public class FishCheck implements FabricClientGameTest {
             log("burning lampuka dropped [" + fried + "]");
             check(fried.equals("mimcontent:lampuka_moqlija x1"), "a burning lampuka should drop lampuka_moqlija, dropped [" + fried + "]");
             server.runCommand("kill @e[type=item]");
+            skorfnaDrops(context, server, x, y, z, pool);
 
             // 4. buckets, in survival (creative keeps the water bucket): catch, let out; then the spawn egg
             server.runCommand("gamemode survival @a");
@@ -408,6 +412,18 @@ public class FishCheck implements FabricClientGameTest {
         String creative = waitForSting(context, server, 30);
         log("a creative player standing on a boll: " + creative);
         check(creative.contains("poison=none") && !creative.contains("by boll"), "a creative player should not be stung: " + creative);
+
+        // a survival player under Jellyfish Ward isn't stung either (Venom.canSting: the Ward blocks every sting)
+        server.runCommand("effect give @a mimcontent:jellyfish_ward 60 0 true");
+        server.runCommand("gamemode survival @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(BollFish.STING_COOLDOWN + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String warded = waitForSting(context, server, 30);
+        log("a survival player under Jellyfish Ward standing on a boll: " + warded);
+        check(warded.contains("poison=none") && !warded.contains("by boll"), "a player under Jellyfish Ward should not be stung by a boll: " + warded);
+        server.runCommand("effect clear @a mimcontent:jellyfish_ward");
+        server.runCommand("gamemode creative @a");
         server.runCommand("effect clear @a");
         server.runCommand("clear @a");
     }
@@ -506,6 +522,18 @@ public class FishCheck implements FabricClientGameTest {
         String creative = waitForSting(context, server, 30);
         log("a creative player touching a skorfna: " + creative);
         check(creative.contains("poison=none") && !creative.contains("by skorfna"), "a creative player should not be stung: " + creative);
+
+        // a survival player under Jellyfish Ward isn't stung either (Venom.canSting: the Ward blocks every sting)
+        server.runCommand("effect give @a mimcontent:jellyfish_ward 60 0 true");
+        server.runCommand("gamemode survival @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(SkorfnaFish.STING_COOLDOWN + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String warded = waitForSting(context, server, 30);
+        log("a survival player under Jellyfish Ward touching a skorfna: " + warded);
+        check(warded.contains("poison=none") && !warded.contains("by skorfna"), "a player under Jellyfish Ward should not be stung by a skorfna: " + warded);
+        server.runCommand("effect clear @a mimcontent:jellyfish_ward");
+        server.runCommand("gamemode creative @a");
 
         // a mob touching it is stung too (a pig pushed against it), but other fish are not
         server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
@@ -640,9 +668,12 @@ public class FishCheck implements FabricClientGameTest {
                 "mimcontent:boll_spawn_egg", "mimcontent:huta_kahla", "mimcontent:huta_kahla_bucket", "mimcontent:huta_kahla_spawn_egg"},
             {"minecraft:cod", "mimcontent:skorfna", "minecraft:cod_bucket", "mimcontent:skorfna_bucket", "minecraft:cod_spawn_egg",
                 "mimcontent:skorfna_spawn_egg", "minecraft:pufferfish", "minecraft:pufferfish_bucket", "minecraft:pufferfish_spawn_egg"},
+            // the two skorfna items, black and red, beside vanilla's fish and the accepted ones
+            {"minecraft:cod", "mimcontent:skorfna", "mimcontent:skorfna_red", "minecraft:salmon", "mimcontent:cerna",
+                "mimcontent:awrata", "minecraft:pufferfish", "mimcontent:lampuka", "minecraft:tropical_fish"},
         };
         String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad", "fish-11-hotbar-boll",
-            "fish-12-hotbar-skorfna"};
+            "fish-12-hotbar-skorfna", "fish-13-hotbar-skorfna-items"};
         context.runOnClient(mc -> {
             if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.options.guiScale().set(4);
@@ -1439,6 +1470,7 @@ public class FishCheck implements FabricClientGameTest {
             x + 3.8, y + 3.6, z + 5.6));
         context.waitTicks(10);
         look(context, server, x + 3.8, y - 0.1, z + 4.3, x + 3.8, y + 3.65, z + 5.6, "fish-boll-below");
+        look(context, server, x + 3.8, y + 0.4, z + 5.6, x + 3.8, y + 3.65, z + 5.65, "fish-boll-below-close");
         // the wing ripple at rest (RayModel: 0.1 radians, a beat about every 25 ticks), from in front of its head
         look(context, server, x - 1.0, y - 0.3, z + 5.6, x + 0.5, y + 1.1, z + 5.6, "fish-boll-ripple-0");
         for (int frame = 1; frame < 5; frame++) {
@@ -1447,6 +1479,26 @@ public class FishCheck implements FabricClientGameTest {
         }
         server.runCommand("gamemode creative @a");
         look(context, server, x - 0.3, y + 0.1, z - 1.0, x + 0.5, y, z + 0.5, "fish-boll-on-land");
+        // the size choice (owner 2026-11-18, "seemingly small"): the installed boll (disc 1.25 blocks) between one scaled
+        // to a 1.0 block disc and one to 1.5, beside a vanilla cod and a 3-block tonn, all on dry sand so nothing greys them
+        fill(server, x - 9, y, z + 14, x + 9, y + 12, z + 30, "minecraft:air");
+        fill(server, x - 9, y - 1, z + 14, x + 9, y - 1, z + 30, "minecraft:smooth_sandstone");
+        String[] sizes = {"0.8", "1.0", "1.2"};
+        for (int i = 0; i < sizes.length; i++) {
+            server.runCommand(String.format(Locale.ROOT,
+                "summon mimcontent:boll %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],attributes:[{id:\"minecraft:scale\",base:%s}]}",
+                x - 4.5 + 4.5 * i, y, z + 21.5, sizes[i]));
+        }
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 4.5, y, z + 24.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:tonn %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f],Length:3.0f}",
+            x + 1.5, y, z + 24.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(30);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.0, y + 6.0, z + 22.9, x + 0.0, y, z + 23.0, "fish-boll-sizes");
+        look(context, server, x + 0.0, y + 1.6, z + 17.0, x + 0.0, y, z + 22.5, "fish-boll-sizes-low");
+        server.runCommand("gamemode creative @a");
     }
 
     /** The skorfna's own review: one resting on a stone floor in a tank, a vanilla cod beside it for scale, and one on land. */
@@ -1484,6 +1536,48 @@ public class FishCheck implements FabricClientGameTest {
     }
 
     /** What items lie in the area, as "namespace:id xN" joined by commas (sorted). */
+    /**
+     * Each skorfna version drops its own item (owner 2026-11-18): black the skorfna item, red skorfna_red, one each, the
+     * same way the other fish drop: killed outright, killed by a player with a Looting III sword, and killed burning.
+     */
+    private static void skorfnaDrops(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool) {
+        check(MimFishes.SKORFNA_RED != null && MimFishes.SKORFNA_RED != MimFishes.SKORFNA.item()
+            && BuiltInRegistries.ITEM.getKey(MimFishes.SKORFNA_RED).toString().equals("mimcontent:skorfna_red"), "the skorfna_red item is missing");
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:diamond_sword[enchantments={\"minecraft:looting\":3}]");
+        List<String> results = new ArrayList<>();
+        for (SkorfnaFish.Variant variant : SkorfnaFish.Variant.values()) {
+            String expected = (variant == SkorfnaFish.Variant.RED ? "mimcontent:skorfna_red" : "mimcontent:skorfna") + " x1";
+            for (String how : new String[] {"killed", "player, looting 3", "burning"}) {
+                server.runCommand("kill @e[type=item]");
+                server.runOnServer(s -> {
+                    ServerLevel level = s.overworld();
+                    SkorfnaFish fish = (SkorfnaFish) MimFishes.SKORFNA.type().create(level, EntitySpawnReason.COMMAND);
+                    fish.setVariant(variant);
+                    fish.setPos(x + 7.5, y + 1, z - 7.5);
+                    level.addFreshEntity(fish);
+                    switch (how) {
+                        case "player, looting 3" -> {
+                            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                            fish.hurtServer(level, level.damageSources().playerAttack(player), 1000.0F);
+                        }
+                        case "burning" -> {
+                            fish.igniteForSeconds(5.0F);
+                            fish.kill(level);
+                        }
+                        default -> fish.kill(level);
+                    }
+                });
+                context.waitTicks(5);
+                String got = drops(server, pool);
+                results.add(variant.id() + " " + how + ": [" + got + "]");
+                check(got.equals(expected), "a " + variant.id() + " skorfna (" + how + ") should drop [" + expected + "], dropped [" + got + "]");
+            }
+        }
+        server.runCommand("kill @e[type=item]");
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:air");
+        log("skorfna drops by version: " + String.join("; ", results));
+    }
+
     private static String drops(TestServerContext server, AABB area) {
         return server.computeOnServer(s -> {
             Map<String, Integer> counts = new java.util.TreeMap<>();

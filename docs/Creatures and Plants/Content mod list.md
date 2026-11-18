@@ -155,6 +155,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 73 | Shark | Ħuta kaħla (blue shark) | all ~35 sharks incl. catsharks, mako, great white (Kelb Abjad) | Open sea; rare near shore | Catshark egg cases could wash up | B |
 | 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B (in progress: the common stingray, [[Fish]]) |
 | 75 | Lionfish | - | - | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
+| 75a | Ocean sunfish (mola mola) | †: not yet checked | - | Open sea | Caught with jellyfish meat once fishing is overhauled ([[2026-11-18 Jellyfish drops - venom and meat; mola mola later]]) | planned |
 
 ### Other sea creatures
 
@@ -164,7 +165,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 77 | Lobster (mob) | Awwista | slipper lobster (Ċkala), European lobster, red swamp crayfish | Sea caves, deep rock | - | B |
 | 78 | Crab (mob) | Granċ | spider crab, hermit crab, rock crabs, Percnon | Rocky shores, tide pools | See section 10: same kind as the qabru | A |
 | 79 | Shrimp (mob or catch only) | Gambli | red, rose, golden shrimp | Deep sea | Could be a fishing catch only | C |
-| 80 | Jellyfish (mob) | - (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; glows when touched at night (green, see [[Jellyfish]]). Research and hazard ideas: [[Jellyfish]] | A |
+| 80 | Jellyfish (mob) | - (Brama for the common jellyfish) | mauve stinger, Portuguese man o' war, fried-egg, barrel jellyfish | Open sea; **summer swarms** onto beaches | Stings; glows when touched at night (green, see [[Jellyfish]]). Research and hazard ideas: [[Jellyfish]] | A (built with placeholder art: mauve stinger, fried-egg, man o' war, [[Jellyfish]]) |
 | 81 | Sea urchin (block) | Rizza | purple and black urchin | Rocks in shallow water | Hurts to step on; roe for food | A |
 | 82 | Starfish (block) | Stilla tal-Baħar | - | Rocks, seagrass | Decoration | C |
 | 83 | Sea anemone (block) | Artikla | - | Rocks | Decoration | C |

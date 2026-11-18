@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "mimcontent:item/fried_egg_jellyfish_spawn_egg"
+ }
+}

@@ -80,14 +80,24 @@ public final class MimFishes {
     public static final Fish HUTA_KAHLA = shark("huta_kahla", 1.3F, 0.7F, 16.0, 0.9, 4.0, () -> MimContent.item("huta_kahla", Item::new, new Item.Properties()));
     // Tier B (owner, 2026-11-18: "Work on the stingray next"). The boll (common stingray): a flat disc 1 block wide with
     // a long whip tail, about 2.1 blocks long; lives on sandy bottoms, alone or in twos, and stings (BollFish).
-    public static final Fish BOLL = ray("boll", 1.0F, 0.25F, 10.0, 2, () -> MimContent.item("boll", Item::new, new Item.Properties()));
+    public static final Fish BOLL = ray("boll", 1.25F, 0.25F, 10.0, 2, () -> MimContent.item("boll", Item::new, new Item.Properties()));
     // Tier B (owner, 2026-11-18: "get another agent started on the skorfna"). The skorfna (black scorpionfish): stocky
     // and spiny, about 0.8 blocks long; alone, rests on rocky bottoms, and its spines sting (SkorfnaFish).
-    public static final Fish SKORFNA = scorpionfish("skorfna", 0.5F, 0.4F, 6.0, 1, () -> MimContent.item("skorfna", Item::new, new Item.Properties()));
+    // Each version drops its own item (owner 2026-11-18, "Skorfna icon D accepted; each colour drops its own item"): the
+    // black one skorfna (Black Skorfna), the red one skorfna_red (Red Skorfna, loot table entities/skorfna_red, picked in
+    // SkorfnaFish). Both are registered together so they sit side by side in the creative tab.
+    private static final Item[] SKORFNA_RED_HOLDER = new Item[1];
+    public static final Fish SKORFNA = scorpionfish("skorfna", 0.5F, 0.4F, 6.0, 1, () -> {
+        Item black = MimContent.item("skorfna", Item::new, new Item.Properties());
+        SKORFNA_RED_HOLDER[0] = MimContent.item("skorfna_red", Item::new, new Item.Properties());
+        return black;
+    });
+    /** The red skorfna's item, dropped by a red skorfna ({@link SkorfnaFish.Variant#RED}); same properties as skorfna. */
+    public static final Item SKORFNA_RED = SKORFNA_RED_HOLDER[0];
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
-    private static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
-    private static final String[] MALTA_DEEP = {"fond_deep_sea", "fond_band_1", "fond_band_2", "fond_band_3", "fond_band_4",
+    static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
+    static final String[] MALTA_DEEP = {"fond_deep_sea", "fond_band_1", "fond_band_2", "fond_band_3", "fond_band_4",
         "fond_band_5", "fond_band_6", "fond_band_7", "fond_band_8"};
 
     private MimFishes() {
@@ -237,7 +247,7 @@ public final class MimFishes {
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(biomes), MobCategory.WATER_AMBIENT, fish.type(), weight, min, max);
     }
 
-    private static List<ResourceKey<Biome>> malta(String... names) {
+    static List<ResourceKey<Biome>> malta(String... names) {
         List<ResourceKey<Biome>> keys = new ArrayList<>();
         for (String name : names) {
             keys.add(ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("maltamc", name)));

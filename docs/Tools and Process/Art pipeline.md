@@ -97,6 +97,7 @@ A model class must:
 - **`body`** (root child): the middle of the flat disc, head toward -z, ground at y 24. It stays flat: no yaw wiggle (its renderer's wiggle is 0).
 - **`left_wing`** (+x) and **`right_wing`** (-x), children of `body`, pivoted where they join the body: they flap up and down together, mirrored.
 - optionally **`left_wing_tip`** and **`right_wing_tip`**, children of the wings, pivoted where they join: the outer edges, flapping a little later and further, so the wing ripples from the body out. The placeholder has them.
+- optionally **`left_wing_edge`** and **`right_wing_edge`**, children of the tips: a third ring that follows the tip one step later. At rest and on land the wings only lift upward, so they never dip into the floor.
 - **`tail`** (root child), pivoted at the back of the disc and running toward +z: it trails and sways slowly. The spine goes on the tail, near its end, as a child part **`spine`** (the placeholder's; not animated) or as cubes of the tail.
 - The ripple is gentle (0.1 radians) while it lies still and grows to about 0.32 as it swims; on land the wings only flutter a little. The renderer keeps a ray **flat on land** (`liesFlat`, not on its side), and its hit boxes are marked flat in `FishShape` to match; the test checks the two agree.
 
@@ -105,3 +106,25 @@ A model class must:
 The swimming animation lives in `FishModel` and the body wiggle and flopping on land in `FishRenderer`, so a model only names its parts. Sizes: the model can be its real size; the body box in `MimFishes` is only for swimming (see [[Fish]]). Test with `SMOKE_ONLY=fish ART_RUN=<name> tools/run-art.sh`: the `fish-*` shots show all seven in a glass tank beside vanilla cod and salmon, on land, and the items, buckets and eggs in the hotbar.
 
 **Hit boxes come from the model** ([[2026-11-18 Fish hitboxes match their size]]). Each fish is hit through a chain of boxes measured from its model at rest, fins, sword and tail included: the length from snout to tail is cut into equal slices of about 6 px (at least 2, at most 8), and each slice gets a box as tall as the cubes reaching into it and as wide as they are or as long as the slice, whichever is more. The numbers live in a table in `entity/fish/FishShape.java`, because the server can't read client model classes. **After changing a model, run the fish test** (`SMOKE_ONLY=fish`, or only this part with `SMOKE_ONLY=fish-hitboxes`): it measures every baked model again and fails on any fish whose row no longer matches, printing the new row to paste in. It also checks the land lift in `MimContentClient` against the table (copy a changed lift into `FishShape` too), and the murina's boxes against its wave (a new long fish that bends needs its sections added to `FishShape`'s `Wave`). The `fish-hitbox-*` shots show the chains with F3+B.
+
+## Jellyfish models (contract for the art makers, 2026-11-18)
+The three jellyfish ([[Jellyfish]]) are built as mobs. Placeholder art comes from `art/src/jelly_placeholders.py`, which never overwrites a file that already exists (a maker's model or texture is kept). Real art goes at these paths:
+
+| What | Path (under `mod/src/main/`) |
+|---|---|
+| Model | `java/com/maltaminecraft/mimcontent/client/jelly/<Name>Model.java` (`MauveStingerModel`, `FriedEggJellyfishModel`, `ManOWarModel`) |
+| Mob texture | `resources/assets/mimcontent/textures/entity/jellyfish/<id>.png` (`mauve_stinger`, `fried_egg_jellyfish`, `man_o_war`); its size is the model's choice |
+| Spawn egg icon | `resources/assets/mimcontent/textures/item/<id>_spawn_egg.png` |
+| Drops | `textures/item/jellyfish_venom.png`, `textures/item/jellyfish_meat.png` |
+| Jellyfish Ward effect icon | `textures/mob_effect/jellyfish_ward.png` (18 x 18, like vanilla's) |
+
+A model class must:
+- be `public class <Name>Model extends JellyfishModel` with a constructor `public <Name>Model(ModelPart root) { super(root); }` and `public static LayerDefinition createBodyLayer()`;
+- have a root child named **`bell`** (required): the bell, or for the man o' war the float;
+- optionally have **`tentacle_0`** to **`tentacle_N`** (numbered from 0 with no gaps), children of the root or of `bell`: each sways gently, out of phase with the others. Out of water a bell's tentacles splay out from the middle, as the animal lies flat;
+- optionally have **`oral_arms`**, a child of `bell`: it sways slowly;
+- have y 24 at the bottom of the mob's box. Any other parts are free.
+
+What `JellyfishModel` does: a bell pulses with a slight squash and stretch (wider and lower, then back) each time the jellyfish pulses upward, breathes faintly between pulses, and slumps a little on land, all scaled from the bell's pivot (pivot it at the rim to squash toward the rim). The man o' war's float doesn't pulse: it bobs and tilts on the surface. The renderer draws every jellyfish **translucent** (an entity translucent render type), so a texture's alpha shows; a flashing mauve stinger is drawn full-bright.
+
+**The box comes from the model.** The mob's box is the model's size: as wide as the widest part (x or z), and as tall as from y 24 up to the top, tentacles included. For the man o' war only the float counts (its tentacles hang 3.5 blocks below the box as a stinging column, `Jellyfish.MAN_O_WAR_TENTACLE_LENGTH`). The sizes are in `MimJellyfish`. **After changing a model, run the jelly test** (`SMOKE_ONLY=jelly ART_RUN=<name> tools/run-art.sh`): it measures each baked model and fails if a box is more than about 1 px off, or if the man o' war's tentacles no longer reach about 3.5 blocks. Its `jelly-*` shots show each jellyfish beside a vanilla cod and squid from the side, three-quarters and below, all three together, and the mauve stinger flashing at night.

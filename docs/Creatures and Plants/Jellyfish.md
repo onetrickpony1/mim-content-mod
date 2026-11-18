@@ -2,15 +2,15 @@
 type: item
 kind: mob
 subject: Creatures and Plants
-status: idea
+status: built (placeholder art)
 tier: A
 maltese: Brama (plural bram)
 english: jellyfish (mauve stinger, fried-egg jellyfish, barrel jellyfish, crystal jellyfish, by-the-wind sailor, Portuguese man o' war, nomad jellyfish)
-id: 
+id: mimcontent:mauve_stinger, fried_egg_jellyfish, man_o_war
 ---
 # Jellyfish
 
-Jellyfish are part of every Maltese summer. "Hemm il-brim?" (are there jellyfish?) is the first question at a bay ([[Maltese life ideas]], idea 65). This note holds the research and the ideas for making them a hazard in the game ([[2026-11-18 Jellyfish - research and hazard ideas]]). It is [[Content mod list]] no. 80. **Ideas only: nothing is built until the owner picks.**
+Jellyfish are part of every Maltese summer. "Hemm il-brim?" (are there jellyfish?) is the first question at a bay ([[Maltese life ideas]], idea 65). This note holds the research and the ideas for making them a hazard in the game ([[2026-11-18 Jellyfish - research and hazard ideas]]). It is [[Content mod list]] no. 80. **Built (2026-11-18), with placeholder art:** the three kinds of the first build ([[2026-11-18 Jellyfish - start the three kinds]]), with only what needs no answer yet; see "In the game" below. Everything else on this page is still ideas waiting for the owner.
 
 ## The short version
 - Malta has over 40 kinds of jellyfish and their relatives. Seven matter for the game.
@@ -19,6 +19,38 @@ Jellyfish are part of every Maltese summer. "Hemm il-brim?" (are there jellyfish
 - **The Portuguese man o' war** is rare and the most dangerous. It floats on top and stings even when dead on the sand.
 - Maltese first aid is **sea water, baking soda, a card to scrape, then ice**. Not fresh water, and in Malta's own advice not vinegar either.
 - A **purple flag** on a Maltese beach means jellyfish.
+
+## In the game (built 2026-11-18)
+Three mobs, each with a spawn egg (in vanilla's Spawn Eggs tab too) and **no bucket and no item of the jellyfish itself** ([[2026-11-18 Jellyfish drops - venom and meat; mola mola later]]). Only the general word *brama* is used; none of the three has a Maltese name of its own (see Maltese names below). The art is placeholder for now; the model contract is in [[Art pipeline]], "Jellyfish models".
+
+| Id | Name | Box (blocks, w x h) | Health | Moves | Sting |
+|---|---|---|---|---|---|
+| `mauve_stinger` | Mauve Stinger | 0.5 x 1.31 (bell 0.5 wide, tentacles below) | 4 | drifts, pulses up; near the surface at night (bell top 0.4 to 2 blocks down), lower by day (4 to 8) | 2 damage (1 heart) and Poison 5 s |
+| `fried_egg_jellyfish` | Fried-Egg Jellyfish | 0.94 x 0.81 | 6 | drifts, pulses up; bell top 1 to 5 blocks down | none: harmless |
+| `man_o_war` | Portuguese Man o' War | 0.63 x 0.56 (the float) | 6 | floats on the surface and drifts slowly (about 0.15 blocks a second), turning now and then | 3 damage (1.5 hearts), Poison 8 s and Nausea 5 s, also from its tentacles anywhere in the 3.5 blocks under it |
+
+- **Not fish.** They don't swim away from you. A pulse lifts a jellyfish about 1.4 blocks; between pulses it sinks slowly (at most about 0.2 blocks a second). Out of water they lie still and die slowly (like a squid), without flopping. The hit box is the size of the model, tentacles included (for the man o' war only the float: its tentacles don't block you, but they sting).
+- **Stings.** A player or mob that touches one is stung, at most once every 2 seconds per jellyfish; hitting one in melee counts as touching (arrows don't). Fish and other jellyfish are not stung. Creative and spectator players, and peaceful difficulty, are never stung. **A sting never kills:** its damage never takes you below 1 heart (Poison, as in vanilla, stops at half a heart).
+- **Night glow (idea 8).** A mauve stinger that is touched or hit, or now and then in rain (about once in 20 seconds each, when the rain falls on the water above it), flashes: green glow particles and a full-bright bell for 1.5 seconds.
+- **Spawns** (uncommon; weights against the fish in the same biome): mauve stinger 4 in groups of 2 to 4 in the Malta world's shallow and deep seas; fried-egg 3 in the shallow seas and 2 in the deep, 1 to 2 together; man o' war 1, alone, only in the deep sea (`fond_deep_sea`, `fond_band_1`-`8`). With `fish_in_vanilla_oceans` on (the default) also in vanilla's oceans: mauve stinger 3 in warm, lukewarm and deep lukewarm; fried-egg 2 in warm and lukewarm; man o' war 1 in deep lukewarm. **No seasons yet:** they wait for the calendar (idea 1).
+
+### Drops
+From the owner's words in [[2026-11-18 Jellyfish drops - venom and meat; mola mola later]]. Each Looting level adds up to 1 more.
+
+| Jellyfish | Jellyfish Venom | Jellyfish Meat |
+|---|---|---|
+| Mauve stinger | 0 to 1 | 1 to 2 |
+| Fried-egg | none (it is harmless) | 2 to 3 (it is big) |
+| Man o' war | 1 to 2 | 1 to 2 |
+
+- **Jellyfish Venom** (`mimcontent:jellyfish_venom`): an ingredient for brewing (below).
+- **Jellyfish Meat** (`mimcontent:jellyfish_meat`): poor food, 2 hunger (1 drumstick) and low saturation (0.1, like rotten flesh); eating it gives Poison for 4 seconds 15% of the time. **It can't be cooked:** there is no furnace, smoker or campfire recipe for it. It is in the item tag `mimcontent:bait`, for when fishing is overhauled and it becomes the bait for the mola mola (ocean sunfish, [[Content mod list]] no. 75a); no fishing changes yet.
+
+### Brewing
+Both are data recipes for vanilla's brewing stand, behind the switch **`jellyfish_venom_recipes`** in `config/mimcontent.json` (on by default; `false` removes them, so Poison brews only from the spider eye as in vanilla).
+- **Poison:** awkward potion + jellyfish venom gives a Potion of Poison, a second way beside vanilla's spider eye. Splash and lingering awkward potions work too, and from there redstone, glowstone, gunpowder, dragon's breath and tipped arrows work as vanilla's.
+- **Jellyfish Ward** (`mimcontent:jellyfish_ward`): **thick potion + jellyfish venom**. This gives vanilla's otherwise useless thick potion a use; the choice of base potion was ours, not the owner's, and can change. 3 minutes, or 8 with redstone; gunpowder makes it splash, dragon's breath lingering, and lingering ward makes tipped arrows as usual. While it lasts, **no jellyfish can sting you**: no damage, poison or nausea. A mauve stinger you touch still flashes (that is only light). It also blocks the boll's and the skorfna's stings: **every sting** ([[2026-11-18 Boll model - sad face, small, eyes like nostrils; man o' war accepted; ward blocks all stings|owner]]).
+- **Vanilla uses of poison**, checked: nothing in vanilla crafts with a spider eye for its poison. The spider eye goes into the fermented spider eye (which turns potions into their opposites, not poison); the suspicious stew of lily of the valley gives Poison from the flower; tipped arrows of poison are made from lingering poison potions, so venom poison works for them already. No vanilla recipe was changed.
 
 ## Species
 
@@ -172,6 +204,7 @@ Next, once the calendar exists: seasons and bloom years (ideas 1 to 3), the by-t
 6. **Turtles:** let vanilla turtles eat jellyfish (behind a switch), or wait for a Maltese loggerhead?
 7. **Live data:** offline only (real date from the computer clock), or might an online "today's jellyfish" file on maltaminecraft.com be wanted one day?
 8. **Nets and flags:** should players craft their own nets and flags, or should flags only come with lifeguards at the big beaches?
+9. ~~**The boll and the skorfna:** should Jellyfish Ward also block their stings?~~ Answered: yes, it blocks every sting.
 
 ## Sources
 1. [UM Newspoint, Spot the Jellyfish, 10 years (2020)](https://www.um.edu.mt/newspoint/news/features/2020/01/jellyfish-campaign-10)

@@ -1,5 +1,6 @@
 package com.maltaminecraft.mimcontent.entity.fish;
 
+import com.maltaminecraft.mimcontent.MimJellyfish;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,9 +19,13 @@ public final class Venom {
     private Venom() {
     }
 
-    /** True if this one may be stung: alive, not a creative or spectator player, and not on peaceful difficulty. */
+    /**
+     * True if this one may be stung: alive, not a creative or spectator player, not on peaceful difficulty, and not
+     * under Jellyfish Ward, which blocks every sting (owner, 2026-11-18: "jellyfish ward can block all kinds of stings").
+     */
     public static boolean canSting(Entity target) {
-        if (!(target instanceof LivingEntity living) || !living.isAlive() || target.level().getDifficulty() == Difficulty.PEACEFUL) {
+        if (!(target instanceof LivingEntity living) || !living.isAlive() || target.level().getDifficulty() == Difficulty.PEACEFUL
+                || living.hasEffect(MimJellyfish.WARD)) {
             return false;
         }
         return !(target instanceof Player player) || (!player.isCreative() && !player.isSpectator());

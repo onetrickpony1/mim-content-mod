@@ -1,8 +1,9 @@
 """Item icon for the skorfna (scorpionfish): the caught fish, like vanilla cod and salmon.
 
 The skorfna has two skins on one approved model (owner 2026-11-18, "skorfna approved"): the black scorpionfish
-(Scorpaena porcus, Skorfna sewda), the default, and the red one (S. scrofa, Ċippullazza). Both drop the same item,
-so the icon shows the black one. The model came first, so the icon follows it: same features, and the model's
+(Scorpaena porcus, Skorfna sewda), the default, and the red one (S. scrofa, Ċippullazza). Each drops its own item
+(owner 2026-11-18, "Skorfna icon D accepted; each colour drops its own item"): skorfna.png is candidate D in the black
+palette, skorfna_red.png the very same pixels in the red skin's palette, as the sheet showed them. The model came first, so the icon follows it: same features, and the model's
 black palette before its in-game lift (fish_skorfna_model.py keeps PALETTES["black"] and lifts it x1.18 for the
 water; an icon sits about x1.2 darker than its model, so the icon uses the unlifted values as they are).
 
@@ -26,7 +27,7 @@ upper right, light from the top left: a lit rim along the back under the dorsal 
 darker at the rim.
 
 Run:  art/.venv/bin/python art/src/fish_skorfna_icon.py
-Writes mod/.../textures/item/skorfna.png (byte-identical on rerun), art/candidates/fish_skorfna_icon.png (compare
+Writes mod/.../textures/item/skorfna.png and skorfna_red.png (byte-identical on rerun), art/candidates/fish_skorfna_icon.png (compare
 sheet: candidates at 8x, 1x and 2x beside vanilla and the accepted fish, the model shots, the references) and the
 offline hotbar previews art/candidates/fish_skorfna_icon_hotbar*.png (no slot selected).
 """
@@ -46,6 +47,7 @@ from fish_skorfna_model import PALETTES  # noqa: E402  (the approved model's col
 
 TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
 OUT_ICON = os.path.join(TEXTURES, "item", "skorfna.png")
+OUT_ICON_RED = os.path.join(TEXTURES, "item", "skorfna_red.png")
 OUT_SHEET = os.path.join(ART, "candidates", "fish_skorfna_icon.png")
 VANILLA = os.path.join(os.environ.get("MIM_VANILLA_TEXTURES", os.path.join(ART, ".vanilla")), "item")
 REFS = os.path.join(ART, "references", "fish_skorfna_refonly")
@@ -66,6 +68,7 @@ def palette(variant):
 
 
 PAL = palette("black")
+PAL_RED = palette("red")   # the red item: the same pixels, the red skin's colours
 # Keys used: body ramp 0 (pale belly) J (belly shade, chin) h (lit rim) 1 2 3 4 (mid to dark), blotches B (dark
 # saddle) R (red-brown), o (shaded rim), E (eye), M (the gape), fins S (spine tips) D (dark band, rim) F (membrane)
 # f (shaded membrane) r (pale rays).
@@ -361,16 +364,16 @@ def sheet(icons, hb):
     d.text((10, y), "D, A, B, C, " + ", ".join(ACCEPTED) + ", " + ", ".join(VAN_FISH), fill=ink, font=small)
     parts.append(("All at 1x and 2x", band))
 
-    # the red skin, for comparison only (not written to the mod)
-    red = palette("red")
+    # the red skin: the red item (skorfna_red.png), the owner's pick as first shown here
+    red = PAL_RED
     band = Image.new("RGB", (W, 128 + 40), bg)
     d = ImageDraw.Draw(band)
     for i, (name, im) in enumerate(((f"black {CHOICE} (the item)", icons[CHOICE]),
-                                    (f"{CHOICE} in the red skin's palette (not used)",
+                                    (f"{CHOICE} in the red skin's palette (the red item)",
                                      render(dict(CANDIDATES)[CHOICE], red)))):
         tiles(band, im, 10 + i * 340, 22)
         d.text((10 + i * 340, 2), name, fill=ink, font=small)
-    parts.append(("The same pixels in the red skin's palette, to judge whether a red item would be worth offering", band))
+    parts.append(("The same pixels in the red skin's palette: textures/item/skorfna_red.png, the red skorfna's item", band))
 
     # build against the accepted fish
     lines = []
@@ -426,9 +429,15 @@ def main():
         check(name, rows)
         icons[name] = render(rows)
     icons[CHOICE].save(OUT_ICON, optimize=False)
+    # the red item: the chosen rows in the red palette, so the same pixel checks hold; it must differ only in colour
+    check(CHOICE + " red", dict(CANDIDATES)[CHOICE])
+    red = render(dict(CANDIDATES)[CHOICE], PAL_RED)
+    assert red.getchannel("A").tobytes() == icons[CHOICE].getchannel("A").tobytes(), "the red icon's outline differs"
+    assert red.tobytes() != icons[CHOICE].tobytes(), "the red icon is the black one"
+    red.save(OUT_ICON_RED, optimize=False)
     hb = hotbars()
     sheet(icons, hb)
-    print("wrote", os.path.relpath(OUT_ICON, ROOT), "and", os.path.relpath(OUT_SHEET, ROOT))
+    print("wrote", os.path.relpath(OUT_ICON, ROOT), os.path.relpath(OUT_ICON_RED, ROOT), "and", os.path.relpath(OUT_SHEET, ROOT))
 
 
 if __name__ == "__main__":

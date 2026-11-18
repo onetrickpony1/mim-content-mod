@@ -18,6 +18,12 @@ import com.maltaminecraft.mimcontent.client.fish.SkorfnaModel;
 import com.maltaminecraft.mimcontent.client.fish.TonnModel;
 import com.maltaminecraft.mimcontent.client.fish.ZiemelModel;
 import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
+import com.maltaminecraft.mimcontent.MimJellyfish;
+import com.maltaminecraft.mimcontent.client.jelly.FriedEggJellyfishModel;
+import com.maltaminecraft.mimcontent.client.jelly.JellyfishModel;
+import com.maltaminecraft.mimcontent.client.jelly.JellyfishRenderer;
+import com.maltaminecraft.mimcontent.client.jelly.ManOWarModel;
+import com.maltaminecraft.mimcontent.client.jelly.MauveStingerModel;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.ChatFormatting;
@@ -61,6 +67,10 @@ public class MimContentClient implements ClientModInitializer {
         // the skorfna: stocky (5 px thick), a small wiggle as it barely swims
         // two versions on one model, black (skorfna.png) and red (skorfna_red.png), drawn by the fish's variant
         fish(MimFishes.SKORFNA, SkorfnaModel::createBodyLayer, SkorfnaModel::new, 0.35F, 2.0F, 0.1875F, false, MimContentClient::skorfnaTexture);
+        // the jellyfish: model, shadow size (drawn translucent, JellyfishRenderer)
+        jelly(MimJellyfish.MAUVE_STINGER, MauveStingerModel::createBodyLayer, MauveStingerModel::new, 0.25F);
+        jelly(MimJellyfish.FRIED_EGG, FriedEggJellyfishModel::createBodyLayer, FriedEggJellyfishModel::new, 0.45F);
+        jelly(MimJellyfish.MAN_O_WAR, ManOWarModel::createBodyLayer, ManOWarModel::new, 0.3F);
         // the skorfna bucket says which version is inside, as vanilla's tropical fish bucket names its pattern
         ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
             if (stack.is(MimFishes.SKORFNA.bucket())) {
@@ -90,6 +100,13 @@ public class MimContentClient implements ClientModInitializer {
             FishRenderer renderer = new FishRenderer(context, model.apply(context.bakeLayer(location)), fish.id(), shadow, wiggle, landLift, liesFlat);
             return textures == null ? renderer : renderer.withTextures(textures);
         });
+    }
+
+    private static void jelly(MimJellyfish.Jelly jelly, net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry.TexturedLayerDefinitionProvider layer,
+                              Function<ModelPart, JellyfishModel> model, float shadow) {
+        ModelLayerLocation location = new ModelLayerLocation(MimContent.id("jellyfish/" + jelly.id()), "main");
+        ModelLayerRegistry.registerModelLayer(location, layer);
+        EntityRenderers.register(jelly.type(), context -> new JellyfishRenderer(context, model.apply(context.bakeLayer(location)), jelly.id(), shadow));
     }
 
     /** The skorfna's texture by its version: black skorfna.png, red skorfna_red.png. */

@@ -483,7 +483,9 @@ final class FishHitboxCheck {
         check(result.contains("on land=true"), "the boll should be on land: " + result);
         String[] nums = result.replaceAll(".*from ([-0-9.]+) to ([-0-9.]+).*", "$1 $2").split(" ");
         double low = Double.parseDouble(nums[0]), high = Double.parseDouble(nums[1]);
-        check(Math.abs(low) < 0.01 && high <= 2.5 / 16.0 + 0.01, "the boll's boxes on land should lie flat on the ground: " + result);
+        // flat on the ground: its boxes start at its feet and reach no higher than the model's thickest point (3 px at the
+        // raised eyes on the dome; art/src/fish_boll_model.py)
+        check(Math.abs(low) < 0.01 && high <= 3.0 / 16.0 + 0.01, "the boll's boxes on land should lie flat on the ground: " + result);
     }
 
     /** Side views of the big fish with hit boxes shown (F3+B): the white box moves the fish, the green-yellow chain is hit. */

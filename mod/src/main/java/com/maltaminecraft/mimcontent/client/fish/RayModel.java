@@ -19,7 +19,8 @@ import net.minecraft.util.Mth;
  * <li>{@code tail} (root child, required), pivoted at the back of the disc and running toward +z: it trails and sways
  *     slowly; the spine on it can be a child part {@code spine} (optional, not animated) or cubes of the tail.</li>
  * </ul>
- * The ripple is gentle when it lies still and grows as it swims faster; out of water the wings only flutter a little.
+ * The ripple is gentle when it lies still (upward only, so the wings never dip into the floor) and grows into a full
+ * up-and-down beat as it swims faster; out of water the wings only flutter a little, upward.
  */
 public abstract class RayModel extends FishModel {
     private final ModelPart leftWing;
@@ -49,20 +50,25 @@ public abstract class RayModel extends FishModel {
         float flap;
         float lag;
         float phase;
+        // how much of the beat goes below flat: none while it lies still (on the floor, or on land) so the wings never
+        // dip into the ground, a full up-and-down beat while it swims
+        float swim;
         if (state.isInWater) {
-            // 0.1 radians while still, up to 0.32 swimming; one beat about every 1.25 s
+            // 0.06 radians while still, up to 0.32 swimming; one beat about every 1.25 s
             float moving = Mth.clamp(state.walkAnimationSpeed * 2.0F, 0.0F, 1.0F);
-            flap = 0.1F + 0.22F * moving;
+            flap = 0.06F + 0.26F * moving;
             phase = 0.25F * t;
             lag = 0.9F;
+            swim = moving;
         } else {
             flap = 0.05F;
             phase = 0.5F * t;
             lag = 0.6F;
+            swim = 0.0F;
         }
-        float wing = flap * Mth.sin(phase);
-        float tip = 1.3F * flap * Mth.sin(phase - lag);
-        float edge = 1.3F * flap * Mth.sin(phase - 2.0F * lag);
+        float wing = flap * beat(phase, swim);
+        float tip = 1.3F * flap * beat(phase - lag, swim);
+        float edge = 1.3F * flap * beat(phase - 2.0F * lag, swim);
         // +zRot turns the +x side down, so the two wings mirror each other
         leftWing.zRot = wing;
         rightWing.zRot = -wing;
@@ -81,5 +87,14 @@ public abstract class RayModel extends FishModel {
         // the tail trails behind and sways slowly (FishModel's quick fish sway is replaced)
         tail.yRot = (state.isInWater ? 0.08F : 0.02F) * Mth.sin(0.1F * t);
         tail.xRot = state.isInWater ? 0.03F * Mth.sin(0.13F * t + 1.0F) : 0.0F;
+    }
+
+    /**
+     * One ring's beat at this phase, from -1 (up) to 1 (down): a full sine while swimming (swim 1), only upward from
+     * flat while still (swim 0), blended in between.
+     */
+    private static float beat(float phase, float swim) {
+        float sin = Mth.sin(phase);
+        return swim * sin - (1.0F - swim) * 0.5F * (1.0F + sin);
     }
 }

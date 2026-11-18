@@ -1,0 +1,26 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "mimcontent:config",
+      "switch": "jellyfish_venom_recipes"
+    }
+  ],
+  "type": "minecraft:brewing",
+  "input": {
+    "item": "minecraft:potion",
+    "potion_contents": {
+      "potions": "minecraft:awkward"
+    }
+  },
+  "output": {
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "minecraft:poison"
+      }
+    },
+    "id": "minecraft:potion"
+  },
+  "reagent": {
+    "item": "mimcontent:jellyfish_venom"
+  }
+}

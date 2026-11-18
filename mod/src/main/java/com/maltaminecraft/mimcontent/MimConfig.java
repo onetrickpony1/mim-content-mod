@@ -34,6 +34,9 @@ public final class MimConfig {
     /** Fish: the tier A fish also live in vanilla's warm and lukewarm oceans, so they turn up in normal worlds.
      *  false: only in the Malta world's sea biomes. */
     public static boolean fishInVanillaOceans = true;
+    /** Jellyfish venom brews: a second way to brew Poison (awkward potion + venom) and the Jellyfish Ward potion
+     *  (thick potion + venom). false: no venom recipes; Poison brews only from vanilla's spider eye. */
+    public static boolean jellyfishVenomRecipes = true;
 
     private MimConfig() {
     }
@@ -61,6 +64,7 @@ public final class MimConfig {
         luzzuEngine = read(json, "luzzu_engine", true);
         luzzuFindsHome = read(json, "luzzu_finds_home", true);
         fishInVanillaOceans = read(json, "fish_in_vanilla_oceans", true);
+        jellyfishVenomRecipes = read(json, "jellyfish_venom_recipes", true);
 
         JsonObject out = new JsonObject();
         out.addProperty("_about", "Malta in Minecraft content mod. true = on, false = vanilla behaviour. Restart after editing.");
@@ -69,6 +73,7 @@ public final class MimConfig {
         out.addProperty("luzzu_engine", luzzuEngine);
         out.addProperty("luzzu_finds_home", luzzuFindsHome);
         out.addProperty("fish_in_vanilla_oceans", fishInVanillaOceans);
+        out.addProperty("jellyfish_venom_recipes", jellyfishVenomRecipes);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             Files.createDirectories(file.getParent());
