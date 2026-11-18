@@ -33,7 +33,7 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 | ![pixxispad](images/pixxispad.png) ![pixxispad spawn egg](images/pixxispad_spawn_egg.png) ![pixxispad live](images/pixxispad_live.png)       | Pixxispad  | Swordfish                    | Open sea                          | done (art accepted 2026-11-18) |
 | ![cawl](images/cawl.png) ![cawl spawn egg](images/cawl_spawn_egg.png) ![cawl live](images/cawl_live.png)                                     | Ċawl       | Damselfish                   | Shallow rocks                     | done (art accepted 2026-11-18) |
 |                                                                                                                                              | Tird       | Wrasse                       | Shallow rocks, seagrass           | planned                        |
-|                                                                                                                                              | Skorfna    | Scorpionfish (black and red) | Rocks, caves; venomous spines     | building (placeholder art)     |
+|                                                                                                                                              | Skorfna    | Scorpionfish (black and red) | Rocks, caves; venomous spines     | building: model and icon accepted; bucket (black and red, shows the colour inside) accepted ([[2026-11-18 Skorfna bucket accepted]]); spawn egg (one for both colours) drawn, waiting for the owner |
 |                                                                                                                                              | Sawt       | Weever                       | Buried in beach sand; stings feet | planned                        |
 | ![huta kahla](images/huta_kahla.png) ![huta kahla spawn egg](images/huta_kahla_spawn_egg.png) ![huta kahla live](images/huta_kahla_live.png) | Ħuta kaħla | Blue shark (all sharks)      | Open sea; rare near shore         | done (art accepted 2026-11-18) |
 |                                                                                                                                              | Boll       | Common stingray              | Sand bottom                       | building (placeholder art)     |
@@ -52,7 +52,7 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 |         | Lingwata         | Sole        | Sand bottom             | planned |
 |         | Ħmar             | Triggerfish | Rocks                   | planned |
 |         | Gallinella       | Gurnard     | Sand; walks on its fins | planned |
-|         | †                | Ocean sunfish (mola mola) | Open sea; caught with jellyfish meat once fishing is overhauled | planned |
+|         | Pixxiluna (also qamar, pixxitanbur) | Ocean sunfish (mola mola) | Deep sea, basks at the surface; extremely rare, caught with jellyfish meat once fishing is overhauled ([[Mola mola]]) | building: 3D model accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]); item icon drawn (three poses, upright side view A installed; `art/src/fish_mola_icon.py`), waiting for the owner; placeholder bucket and egg |
 
 ## Other sea life
 

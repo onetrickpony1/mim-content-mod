@@ -155,7 +155,7 @@ Fox, wolf and bear lived in Malta only in the Ice Age. Vanilla already has foxes
 | 73 | Shark | Ħuta kaħla (blue shark) | all ~35 sharks incl. catsharks, mako, great white (Kelb Abjad) | Open sea; rare near shore | Catshark egg cases could wash up | B |
 | 74 | Ray | Boll (stingray) | all rays and skates incl. **Maltese skate**, electric ray, eagle ray | Sand bottom | Stings; electric ray shocks (could be a variant) | B (in progress: the common stingray, [[Fish]]) |
 | 75 | Lionfish | - | - | Reefs; invasive since 2016 | Venomous; "cull the invader" mechanic | B |
-| 75a | Ocean sunfish (mola mola) | †: not yet checked | - | Open sea | Caught with jellyfish meat once fishing is overhauled ([[2026-11-18 Jellyfish drops - venom and meat; mola mola later]]) | planned |
+| 75a | Ocean sunfish (mola mola) | Pixxiluna, qamar, pixxitanbur ("pixxi qamar" †) | - | Deep sea; basks at the surface | Extremely rare; caught with jellyfish meat once fishing is overhauled ([[2026-11-18 Jellyfish drops - venom and meat; mola mola later]], [[Mola mola]]) | building |
 
 ### Other sea creatures
 

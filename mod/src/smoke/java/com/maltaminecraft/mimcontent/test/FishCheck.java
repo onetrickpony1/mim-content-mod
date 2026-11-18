@@ -5,7 +5,10 @@ import com.google.gson.JsonParser;
 import com.maltaminecraft.mimcontent.MimConfig;
 import com.maltaminecraft.mimcontent.MimFishes;
 import com.maltaminecraft.mimcontent.entity.fish.BollFish;
+import com.maltaminecraft.mimcontent.entity.fish.FishPart;
+import com.maltaminecraft.mimcontent.entity.fish.FishParts;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
+import com.maltaminecraft.mimcontent.entity.fish.MolaFish;
 import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
 import java.nio.file.Files;
@@ -92,10 +95,10 @@ public class FishCheck implements FabricClientGameTest {
             context.waitTicks(10);
             AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
 
-            // 2. each fish lives and swims: all thirteen at once (the tier A seven, the pixxispad, the inċova, ċawl, ħuta
-            // kaħla, boll and skorfna), positions sampled for 200 ticks (the skorfna sinks to the floor, which counts)
+            // 2. each fish lives and swims: all fourteen at once (the tier A seven, the pixxispad, the inċova, ċawl, ħuta
+            // kaħla, boll, skorfna and mola mola), positions sampled for 200 ticks (the skorfna sinks to the floor, which counts)
             List<MimFishes.Fish> all = MimFishes.ALL;
-            check(all.size() == 13, "expected 13 fish, found " + all.size());
+            check(all.size() == 14, "expected 14 fish, found " + all.size());
             for (int i = 0; i < all.size(); i++) {
                 // spread across the pool's water (x - 7 to x + 7), however many fish there are
                 server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 12.0 * i / Math.max(1, all.size() - 1), y - 3, z + 0.5));
@@ -208,6 +211,8 @@ public class FishCheck implements FabricClientGameTest {
             boll(context, server, x, y, z, pool);
             server.runCommand("kill @e[type=!minecraft:player]");
             skorfna(context, server, x, y, z, pool);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            mola(context, server, x, y, z);
             server.runCommand("gamemode creative @a");
             server.runCommand("kill @e[type=!minecraft:player]");
             log("all checks passed");
@@ -230,7 +235,8 @@ public class FishCheck implements FabricClientGameTest {
             MimFishes.CAWL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
             MimFishes.HUTA_KAHLA, List.of(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_OCEAN),
             MimFishes.BOLL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
-            MimFishes.SKORFNA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN));
+            MimFishes.SKORFNA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
+            MimFishes.MOLA_MOLA, List.of(Biomes.WARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN));
         String result = server.computeOnServer(s -> {
             var biomes = s.registryAccess().lookupOrThrow(Registries.BIOME);
             StringBuilder out = new StringBuilder();
@@ -241,6 +247,11 @@ public class FishCheck implements FabricClientGameTest {
                     if (!found) {
                         out.append(e.getKey().id()).append(" missing from ").append(key.identifier()).append("; ");
                     }
+                    // the mola mola is extremely rare (owner 2026-11-18): the lowest weight, 1
+                    if (e.getKey() == MimFishes.MOLA_MOLA && spawnsIn(biomes.getValue(key)).getMobsToSpawn(MobCategory.WATER_AMBIENT).unwrap().stream()
+                        .anyMatch(w -> w.value().type() == e.getKey().type() && w.weight() != 1)) {
+                        out.append("mola_mola weight is not 1 in ").append(key.identifier()).append("; ");
+                    }
                 }
                 // and never in a cold ocean
                 if (spawnsIn(biomes.getValue(Biomes.COLD_OCEAN)).getMobsToSpawn(MobCategory.WATER_AMBIENT).unwrap().stream()
@@ -250,7 +261,7 @@ public class FishCheck implements FabricClientGameTest {
             }
             return out.isEmpty() ? "ok" : out.toString();
         });
-        log("inċova, ċawl, ħuta kaħla, boll and skorfna spawns in vanilla oceans: " + result);
+        log("inċova, ċawl, ħuta kaħla, boll, skorfna and mola mola spawns in vanilla oceans: " + result);
         check(result.equals("ok"), "spawns: " + result);
     }
 
@@ -652,6 +663,7 @@ public class FishCheck implements FabricClientGameTest {
         hutaKahlaShots(context, server, world, x - 30, y, z + 150);
         bollShots(context, server, world, x + 30, y, z + 150);
         skorfnaShots(context, server, world, x, y, z + 150);
+        molaShots(context, server, world, x, y, z + 185);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {
@@ -668,12 +680,15 @@ public class FishCheck implements FabricClientGameTest {
                 "mimcontent:boll_spawn_egg", "mimcontent:huta_kahla", "mimcontent:huta_kahla_bucket", "mimcontent:huta_kahla_spawn_egg"},
             {"minecraft:cod", "mimcontent:skorfna", "minecraft:cod_bucket", "mimcontent:skorfna_bucket", "minecraft:cod_spawn_egg",
                 "mimcontent:skorfna_spawn_egg", "minecraft:pufferfish", "minecraft:pufferfish_bucket", "minecraft:pufferfish_spawn_egg"},
+            // the mola mola's placeholder item, bucket and egg (its icons wait for the owner's OK on the model)
+            {"minecraft:cod", "mimcontent:mola_mola", "minecraft:cod_bucket", "mimcontent:mola_mola_bucket", "minecraft:cod_spawn_egg",
+                "mimcontent:mola_mola_spawn_egg", "mimcontent:tonn", "mimcontent:tonn_bucket", "mimcontent:tonn_spawn_egg"},
             // the two skorfna items, black and red, beside vanilla's fish and the accepted ones
             {"minecraft:cod", "mimcontent:skorfna", "mimcontent:skorfna_red", "minecraft:salmon", "mimcontent:cerna",
                 "mimcontent:awrata", "minecraft:pufferfish", "mimcontent:lampuka", "minecraft:tropical_fish"},
         };
         String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad", "fish-11-hotbar-boll",
-            "fish-12-hotbar-skorfna", "fish-13-hotbar-skorfna-items"};
+            "fish-12-hotbar-skorfna", "fish-14-hotbar-mola", "fish-13-hotbar-skorfna-items"};
         context.runOnClient(mc -> {
             if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.options.guiScale().set(4);
@@ -1523,6 +1538,194 @@ public class FishCheck implements FabricClientGameTest {
         look(context, server, x + 0.4, y + 2.4, z + 4.6, x + 0.4, y + 1.2, z + 6.5, "fish-skorfna-top");
         server.runCommand("gamemode creative @a");
         look(context, server, x + 0.5, y + 0.2, z - 1.8, x + 0.5, y + 0.2, z + 0.5, "fish-skorfna-on-land");
+    }
+
+    /**
+     * The mola mola (owner 2026-11-18: "begin on the mola mola"; "the mola mola must be EXTREMELY rare"): its numbers
+     * (health, speed, body box, no bite); the rarity roll on natural spawns (one in MolaFish.SPAWN_CHANCE) while eggs,
+     * spawners and /summon always work; it doesn't shy away from a player; and in an open pool it rises to the
+     * surface and basks on its side (flat box, at the surface, its hit boxes lying flat and centred), until it is hurt.
+     */
+    private static void mola(ClientGameTestContext context, TestServerContext server, int x, int y, int z) {
+        String numbers = server.computeOnServer(s -> {
+            AbstractFish fish = MimFishes.MOLA_MOLA.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            return String.format(Locale.ROOT, "health %.0f, speed %.2f, box %.2fx%.2f, bite %s", fish.getMaxHealth(),
+                fish.getAttributeValue(Attributes.MOVEMENT_SPEED), fish.getBbWidth(), fish.getBbHeight(),
+                fish.getAttribute(Attributes.ATTACK_DAMAGE) == null ? "none" : "yes");
+        });
+        log("mola mola: " + numbers);
+        check(numbers.equals("health 20, speed 0.35, box 1.30x1.80, bite none"), "the mola mola's numbers: " + numbers);
+
+        // the rarity roll: natural spawns pass about one time in SPAWN_CHANCE, spawners and eggs always
+        int[] passed = server.computeOnServer(s -> {
+            net.minecraft.util.RandomSource random = net.minecraft.util.RandomSource.create(1234L);
+            int natural = 0, chunk = 0, other = 0;
+            for (int i = 0; i < 400_000; i++) {
+                natural += MolaFish.rareRoll(EntitySpawnReason.NATURAL, random) ? 1 : 0;
+            }
+            for (int i = 0; i < 40_000; i++) {
+                chunk += MolaFish.rareRoll(EntitySpawnReason.CHUNK_GENERATION, random) ? 1 : 0;
+                other += MolaFish.rareRoll(i % 3 == 0 ? EntitySpawnReason.SPAWNER : i % 3 == 1 ? EntitySpawnReason.SPAWN_ITEM_USE
+                    : EntitySpawnReason.COMMAND, random) ? 1 : 0;
+            }
+            return new int[] {natural, chunk, other};
+        });
+        log(String.format(Locale.ROOT, "mola mola rarity roll: %d of 400000 natural tries passed (one in %d expected), %d of 40000 at chunk"
+            + " generation, %d of 40000 spawner/egg/command", passed[0], MolaFish.SPAWN_CHANCE, passed[1], passed[2]));
+        double expect = 400_000.0 / MolaFish.SPAWN_CHANCE;
+        check(MolaFish.SPAWN_CHANCE >= 400 && Math.abs(passed[0] - expect) < expect * 0.2 && passed[1] < 40_000 / MolaFish.SPAWN_CHANCE * 2
+            && passed[2] == 40_000, "the mola mola's rarity roll is off: " + java.util.Arrays.toString(passed));
+
+        // an open pool (the main pool has a stone lid): 13 x 13, 6 deep, open to the sky
+        int px = x + 30;
+        fill(server, px - 9, y - 10, z - 9, px + 9, y + 4, z + 9, "minecraft:air");
+        fill(server, px - 7, y - 8, z - 7, px + 7, y - 1, z + 7, "minecraft:stone");
+        fill(server, px - 6, y - 7, z - 6, px + 6, y - 1, z + 6, "minecraft:water");
+        server.runCommand("gamemode survival @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %d %.1f", px - 6.5, y, z - 7.5));
+        context.waitTicks(10);
+        AABB area = new AABB(px - 8, y - 9, z - 8, px + 9, y + 3, z + 9);
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:mola_mola %.1f %d %.1f {PersistenceRequired:1b}", px + 0.5, y - 6, z + 0.5));
+        // a player beside it: it doesn't swim away (no shying), and it basks when it likes
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %d %.1f", px - 2.5, y - 5, z + 0.5));
+        server.runCommand("effect give @a minecraft:water_breathing 200 0 true");
+        server.runCommand("effect give @a minecraft:resistance 200 4 true");
+        String basked = "never";
+        double surface = y - 1 + 8.0 / 9.0;
+        double[] highest = {-1000.0};
+        for (int t = 0; t < 2400 && !basked.startsWith("now"); t += 10) {
+            context.waitTicks(10);
+            basked = server.computeOnServer(s -> {
+                List<? extends AbstractFish> found = s.overworld().getEntities(MimFishes.MOLA_MOLA.type(), area, e -> true);
+                if (found.size() != 1) {
+                    return "found " + found.size();
+                }
+                MolaFish mola = (MolaFish) found.getFirst();
+                highest[0] = Math.max(highest[0], mola.getY() - surface);
+                return String.format(Locale.ROOT, "%s: trips %d, at %.2f below the surface, inWater=%s", mola.isBasking() ? "now" : "not yet",
+                    mola.baskTrips, surface - mola.getY(), mola.isInWater());
+            });
+        }
+        log(String.format(Locale.ROOT, "mola mola in an open pool: %s (highest %.2f from the surface)", basked, highest[0]));
+        check(basked.startsWith("now"), "the mola mola never came up to bask in 2 minutes: " + basked);
+        context.waitTicks(20);
+        String state = server.computeOnServer(s -> {
+            MolaFish mola = (MolaFish) s.overworld().getEntities(MimFishes.MOLA_MOLA.type(), area, e -> true).getFirst();
+            double low = Double.MAX_VALUE, high = -Double.MAX_VALUE, cx = 0, cz = 0;
+            int n = 0;
+            for (FishPart part : ((FishParts.Holder) mola).mimcontent$parts().parts()) {
+                AABB b = part.getBoundingBox();
+                low = Math.min(low, b.minY);
+                high = Math.max(high, b.maxY);
+                cx += b.getCenter().x;
+                cz += b.getCenter().z;
+                n++;
+            }
+            double off = Math.hypot(cx / n - mola.getX(), cz / n - mola.getZ());
+            return String.format(Locale.ROOT, "basking=%s inWater=%s y=%.2f box=%.2fx%.2f boxes %.2f..%.2f off-centre %.2f",
+                mola.isBasking(), mola.isInWater(), mola.getY() - surface, mola.getBbWidth(), mola.getBbHeight(), low - surface, high - surface, off);
+        });
+        log("mola mola basking (heights from the water's surface): " + state);
+        String[] v = state.replaceAll(".*y=([-0-9.]+) box=([0-9.]+)x([0-9.]+) boxes ([-0-9.]+)\\.\\.([-0-9.]+) off-centre ([0-9.]+)", "$1 $2 $3 $4 $5 $6").split(" ");
+        double yy = Double.parseDouble(v[0]), bw = Double.parseDouble(v[1]), bh = Double.parseDouble(v[2]);
+        double lo = Double.parseDouble(v[3]), hi = Double.parseDouble(v[4]), off = Double.parseDouble(v[5]);
+        check(state.startsWith("basking=true inWater=true") && Math.abs(yy + MolaFish.BASK_DEPTH) < 0.2
+                && Math.abs(bw - MolaFish.BASK_WIDTH) < 0.01 && Math.abs(bh - MolaFish.BASK_HEIGHT) < 0.01
+                && lo > -0.9 && lo < 0.0 && hi > 0.0 && hi < 0.6 && off < 0.6,
+            "the basking mola mola should lie flat at the surface, its boxes flat and centred: " + state);
+        // hurt it: it stops basking and swims off
+        server.runOnServer(s -> {
+            ServerLevel level = s.overworld();
+            MolaFish mola = (MolaFish) level.getEntities(MimFishes.MOLA_MOLA.type(), area, e -> true).getFirst();
+            mola.hurtServer(level, level.damageSources().playerAttack(s.getPlayerList().getPlayers().getFirst()), 1.0F);
+        });
+        context.waitTicks(10);
+        String hurt = server.computeOnServer(s -> {
+            MolaFish mola = (MolaFish) s.overworld().getEntities(MimFishes.MOLA_MOLA.type(), area, e -> true).getFirst();
+            return String.format(Locale.ROOT, "basking=%s box=%.2fx%.2f", mola.isBasking(), mola.getBbWidth(), mola.getBbHeight());
+        });
+        log("mola mola after being hurt: " + hurt);
+        check(hurt.equals("basking=false box=1.30x1.80"), "a hurt mola mola should stop basking: " + hurt);
+        // harmless: the player beside it took no damage from it
+        String player = server.computeOnServer(s -> stingState(s.getPlayerList().getPlayers().getFirst()));
+        log("the player beside the mola mola: " + player);
+        check(!player.contains("by mola_mola"), "the mola mola should be harmless: " + player);
+        server.runCommand("effect clear @a");
+        server.runCommand("kill @e[type=mimcontent:mola_mola]");
+    }
+
+    /**
+     * The mola mola model's own review: one in a tall tank (side, three-quarter, front, top), sculling frames from in
+     * front, beside a vanilla cod, a 3-block tonn and the blue shark in a long tank, one basking at the surface of an
+     * open pool (from above the water and from below), and one on land.
+     */
+    private static void molaShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 14, y, z - 8, x + 14, y + 12, z + 30, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 8, x + 14, y - 1, z + 30, "minecraft:smooth_sandstone");
+        // the tall tank: water 11 x 5 x 5 (x - 5 .. x + 5, z + 5 .. z + 9), glass round it
+        fill(server, x - 6, y, z + 4, x + 6, y + 6, z + 10, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y + 5, z + 9, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:mola_mola %.1f %.1f %.1f {NoAI:1b,NoGravity:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 2.5, y + 1.0, z + 7.5));
+        // a vanilla cod in the same tank, for scale and for the water's tint
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,NoGravity:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 1.5, y + 1.8, z + 7.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:mola_mola %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z - 3.0));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        // centre of the disc: 1.22 blocks above its position
+        double cy = y + 1.0 + 1.22;
+        // the cameras sit inside the glass walls (look() puts a barrier under the camera: never in the water)
+        look(context, server, x - 1.5, y + 0.4, z + 4.3, x - 1.5, cy, z + 7.5, "fish-mola-side");
+        look(context, server, x - 5.0, y + 1.0, z + 4.4, x - 2.5, cy, z + 7.5, "fish-mola-three-quarter");
+        look(context, server, x - 5.7, y + 0.6, z + 7.5, x - 2.5, cy, z + 7.5, "fish-mola-front");
+        // sculling: the dorsal and anal fins swing to the same side together, seen from in front
+        look(context, server, x - 5.7, y + 0.6, z + 7.5, x - 2.5, cy, z + 7.5, "fish-mola-scull-0");
+        for (int frame = 1; frame < 5; frame++) {
+            context.waitTicks(6);
+            context.takeScreenshot("fish-mola-scull-" + frame);
+        }
+        // from high in the front glass wall, looking steeply down (the barrier under the camera goes into the wall)
+        look(context, server, x - 2.4, y + 4.4, z + 4.4, x - 2.5, cy, z + 7.5, "fish-mola-top");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y + 0.4, z - 6.8, x + 0.5, y + 0.3, z - 3.0, "fish-mola-on-land");
+
+        // the sizes: a long tank, cod, mola mola, a 3-block tonn and the blue shark side by side
+        fill(server, x - 14, y, z + 13, x + 14, y + 5, z + 19, "minecraft:glass");
+        fill(server, x - 13, y, z + 14, x + 13, y + 4, z + 18, "minecraft:water");
+        String[][] row = {{"minecraft:cod", "-7.5", "1.5", ""}, {"mimcontent:mola_mola", "-4.5", "0.6", ""},
+            {"mimcontent:tonn", "0.5", "1.3", ",Length:3.0f"}, {"mimcontent:huta_kahla", "6.0", "1.3", ""}};
+        for (String[] r : row) {
+            server.runCommand(String.format(Locale.ROOT, "summon %s %.1f %.1f %.1f {NoAI:1b,NoGravity:1b,PersistenceRequired:1b,Rotation:[90f,0f]%s}",
+                r[0], x + Double.parseDouble(r[1]), y + Double.parseDouble(r[2]), z + 16.5, r[3]));
+        }
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(30);
+        server.runCommand("gamemode spectator @a");
+        // between the two tanks (inside the first tank's back wall), then close up inside the long tank's front wall
+        look(context, server, x - 1.0, y + 0.3, z + 10.5, x - 1.0, y + 1.8, z + 16.5, "fish-mola-sizes");
+        look(context, server, x - 4.5, y + 0.3, z + 13.3, x - 4.5, y + 1.8, z + 16.5, "fish-mola-sizes-low");
+        server.runCommand("gamemode creative @a");
+
+        // basking: an open pool, the mola lying on its side at the surface, a cod beside it
+        fill(server, x - 6, y, z + 22, x + 6, y + 3, z + 30, "minecraft:glass");
+        fill(server, x - 5, y, z + 23, x + 5, y + 3, z + 29, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:mola_mola %.1f %.1f %.1f {NoAI:1b,NoGravity:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 26.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 2.5, y + 3.2, z + 24.5));
+        context.waitTicks(5);
+        server.runOnServer(s -> s.overworld().getEntities(MimFishes.MOLA_MOLA.type(), new AABB(x - 6, y, z + 22, x + 6, y + 5, z + 30), e -> true)
+            .forEach(e -> ((MolaFish) e).baskNow()));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(30);
+        look(context, server, x + 0.5, y + 3.6, z + 22.3, x + 0.5, y + 3.6, z + 26.5, "fish-mola-basking");
+        look(context, server, x + 0.7, y + 6.5, z + 25.0, x + 0.5, y + 3.6, z + 26.5, "fish-mola-basking-above");
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.5, y - 0.6, z + 22.3, x + 0.5, y + 3.7, z + 26.5, "fish-mola-basking-below");
+        server.runCommand("gamemode creative @a");
     }
 
     private static Map<String, Vec3> positions(TestServerContext server, AABB area) {

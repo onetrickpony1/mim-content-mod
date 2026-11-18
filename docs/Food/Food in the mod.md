@@ -49,6 +49,15 @@ What exists in `mod/` so far (2026-11-17). Each entry is **art only**: it has it
 | `brodu_tal_laham` | Brodu tal-Laħam (beef broth) | soups |
 | `stuffat_bebbux` | Stuffat tal-Bebbux (snail stew) | soups |
 
+## The golden pastizz (design started 2026-11-18)
+A gold pastizz based on the Pastizz tal-Irkotta ([[2026-11-18 The golden pastizz - design]]). Its icon `golden_pastizz` is the accepted ricotta pastizz's exact shape, turned gold the way vanilla turns the apple and carrot gold, in three candidates that differ only in the ricotta (gold, cream, pale gold): `art/candidates/food_golden_pastizz.png`, made by `art/src/food_golden_pastizz.py`. **Decided** ([[2026-11-18 Golden pastizz - C, 8 ingots, like golden carrot, enchanted as rare loot]]): art C (pale-gold ricotta); recipe a Pastizz tal-Irkotta in 8 gold ingots; eating it is like the golden carrot for now, with a distinctly Maltese effect later; an enchanted golden pastizz exists as rare loot, its loot tables not designed yet. The questions below are answered by that note. The item isn't registered in the mod yet, so it doesn't show in the game.
+
+**Proposal only, nothing is decided: what it could do in the game.** By analogy to vanilla's golden apple (an emergency heal) and golden carrot (the best everyday food):
+- **Owner question 1, the recipe:** a pastizz in the middle of the crafting grid with 8 **gold nuggets** around it (like the golden carrot, cheap enough to eat often) or 8 **gold ingots** (like the golden apple, a rare treat)? Either kind of pastizz, or only tal-irkotta, as the art shows?
+- **Owner question 2, what eating it does:** like the golden carrot (lots of hunger and saturation, no effects), or like the golden apple (a few seconds of Regeneration II and 2 minutes of Absorption)? A third idea: a Maltese twist, such as a short Speed or Haste boost, "fuelled for the day".
+- **Owner question 3, an enchanted version:** vanilla has an enchanted golden apple (found in chests, no recipe since 1.9, with the glint and strong effects). Should there be an enchanted golden pastizz, for example as rare loot or a festa prize, or only the one golden pastizz with no glint?
+- **Owner question 4, other uses:** anything else, e.g. a trade with villagers, a gift that tames or heals an animal, or a festa prize?
+
 ## Placed dishes, eaten in 6 slices like a cake
 | Id | Name | Dish | State |
 |---|---|---|---|

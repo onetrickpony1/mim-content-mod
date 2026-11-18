@@ -19,6 +19,7 @@
     "mimcontent:boll",
     "mimcontent:skorfna",
     "mimcontent:skorfna_red",
+    "mimcontent:mola_mola",
     "mimcontent:lampuka_bucket",
     "mimcontent:tonn_bucket",
     "mimcontent:sardina_bucket",
@@ -31,6 +32,7 @@
     "mimcontent:cawl_bucket",
     "mimcontent:huta_kahla_bucket",
     "mimcontent:boll_bucket",
-    "mimcontent:skorfna_bucket"
+    "mimcontent:skorfna_bucket",
+    "mimcontent:mola_mola_bucket"
   ]
 }

@@ -11,6 +11,7 @@ import com.maltaminecraft.mimcontent.client.fish.FishRenderer;
 import com.maltaminecraft.mimcontent.client.fish.HutaKahlaModel;
 import com.maltaminecraft.mimcontent.client.fish.IncovaModel;
 import com.maltaminecraft.mimcontent.client.fish.LampukaModel;
+import com.maltaminecraft.mimcontent.client.fish.MolaMolaModel;
 import com.maltaminecraft.mimcontent.client.fish.MurinaModel;
 import com.maltaminecraft.mimcontent.client.fish.PixxispadModel;
 import com.maltaminecraft.mimcontent.client.fish.SardinaModel;
@@ -67,6 +68,12 @@ public class MimContentClient implements ClientModInitializer {
         // the skorfna: stocky (5 px thick), a small wiggle as it barely swims
         // two versions on one model, black (skorfna.png) and red (skorfna_red.png), drawn by the fish's variant
         fish(MimFishes.SKORFNA, SkorfnaModel::createBodyLayer, SkorfnaModel::new, 0.35F, 2.0F, 0.1875F, false, MimContentClient::skorfnaTexture);
+        // the mola mola: tall and thin, a slight wiggle; lying on its side (on land, or basking at the surface) its middle
+        // lies over its position (the side shift); both numbers come from its model (art/src/fish_mola_model.py)
+        ModelLayerLocation mola = new ModelLayerLocation(MimContent.id("fish/" + MimFishes.MOLA_MOLA.id()), "main");
+        ModelLayerRegistry.registerModelLayer(mola, MolaMolaModel::createBodyLayer);
+        EntityRenderers.register(MimFishes.MOLA_MOLA.type(), context -> new FishRenderer(context, new MolaMolaModel(context.bakeLayer(mola)),
+            MimFishes.MOLA_MOLA.id(), 0.9F, 0.8F, MolaMolaModel.LAND_LIFT).withSideShift(MolaMolaModel.SIDE_SHIFT));
         // the jellyfish: model, shadow size (drawn translucent, JellyfishRenderer)
         jelly(MimJellyfish.MAUVE_STINGER, MauveStingerModel::createBodyLayer, MauveStingerModel::new, 0.25F);
         jelly(MimJellyfish.FRIED_EGG, FriedEggJellyfishModel::createBodyLayer, FriedEggJellyfishModel::new, 0.45F);
@@ -79,6 +86,8 @@ public class MimContentClient implements ClientModInitializer {
                 lines.add(Math.min(1, lines.size()), Component.translatable(variant.translationKey()).withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
             }
         });
+        // and shows it: items/skorfna_bucket.json picks the black or red picture by this property
+        com.maltaminecraft.mimcontent.client.item.BucketVariantProperty.register();
     }
 
     private static void fish(MimFishes.Fish fish, net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry.TexturedLayerDefinitionProvider layer,

@@ -1,6 +1,7 @@
 package com.maltaminecraft.mimcontent.client.fish;
 
 import com.maltaminecraft.mimcontent.MimContent;
+import com.maltaminecraft.mimcontent.entity.fish.MolaFish;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.function.Function;
@@ -18,16 +19,22 @@ import org.jspecify.annotations.Nullable;
  * Texture: textures/entity/fish/&lt;id&gt;.png, or one picked per fish ({@link #withTextures}, the skorfna's two versions).
  */
 public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderState, FishModel> {
+    /** How far off flat the mola mola lies while it basks, in degrees. */
+    public static final float BASK_TILT = 12.0F;
     private final Identifier texture;
     private final float wiggle;
     private final float landLift;
     private final boolean liesFlat;
+    /** A tall fish's shift back along its height when it lies on its side, in blocks (FishShape's sideShift). */
+    private float sideShift;
     /** Picks the texture for each fish (a fish with versions), or null for the one texture. */
     private @Nullable Function<AbstractFish, Identifier> textures;
 
     /** The render state, with the texture picked for this fish. */
     public static class FishRenderState extends LivingEntityRenderState {
         public @Nullable Identifier texture;
+        /** The mola mola lying on its side at the surface (MolaFish): drawn on its side, though in the water. */
+        public boolean basking;
     }
 
     /**
@@ -53,6 +60,19 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
     public FishRenderer withTextures(Function<AbstractFish, Identifier> textures) {
         this.textures = textures;
         return this;
+    }
+
+    /**
+     * A tall fish (the mola mola): lying on its side, it is moved back along its height by this many blocks, so its
+     * middle lies over its position instead of its belly. FishShape's sideShift copies it (the smoke test checks).
+     */
+    public FishRenderer withSideShift(float blocks) {
+        this.sideShift = blocks;
+        return this;
+    }
+
+    public float sideShift() {
+        return sideShift;
     }
 
     /** The texture this renderer draws the fish with. */
@@ -85,18 +105,25 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
         super.extractRenderState(fish, state, partialTick);
         if (state instanceof FishRenderState fishState) {
             fishState.texture = textureFor(fish);
+            fishState.basking = fish instanceof MolaFish mola && mola.isBasking();
         }
     }
 
     @Override
     protected void setupRotations(LivingEntityRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
         super.setupRotations(state, poseStack, bodyRot, entityScale);
-        poseStack.rotateDegrees(Axis.YP, wiggle * Mth.sin(0.6F * state.ageInTicks));
+        boolean basking = state instanceof FishRenderState fish && fish.basking;
+        if (!basking) {
+            poseStack.rotateDegrees(Axis.YP, wiggle * Mth.sin(0.6F * state.ageInTicks));
+        }
         if (!state.isInWater && liesFlat) {
             poseStack.translate(0.0F, landLift, 0.0F);
-        } else if (!state.isInWater) {
+        } else if (!state.isInWater || basking) {
             poseStack.translate(0.1F, landLift, -0.1F);
-            poseStack.rotateDegrees(Axis.ZP, 90.0F);
+            // basking (the mola mola) it lies a little off flat, BASK_TILT degrees, so its upper fin breaks the
+            // surface at an angle; its hit boxes stay flat (the difference is at most about a quarter block at a fin tip)
+            poseStack.rotateDegrees(Axis.ZP, basking && state.isInWater ? 90.0F - BASK_TILT : 90.0F);
+            poseStack.translate(0.0F, -sideShift, 0.0F);
         }
     }
 }

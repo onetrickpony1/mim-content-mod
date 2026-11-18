@@ -4,9 +4,9 @@ kind: mob
 subject: Creatures and Plants
 status: built
 tier: A
-maltese: Lampuka, Tonn, Sardina, Ċerna, Awrata, Murina, Żiemel tal-Baħar, Pixxispad, Inċova, Ċawl, Ħuta Kaħla, Boll, Skorfna
-english: dolphinfish, Atlantic bluefin tuna, sardine, dusky grouper, gilthead sea bream, Mediterranean moray, seahorse, swordfish, anchovy, Mediterranean damselfish, blue shark, common stingray, black and red scorpionfish
-id: mimcontent:lampuka, tonn, sardina, cerna, awrata, murina, ziemel, pixxispad, incova, cawl, huta_kahla, boll, skorfna, skorfna_red
+maltese: Lampuka, Tonn, Sardina, Ċerna, Awrata, Murina, Żiemel tal-Baħar, Pixxispad, Inċova, Ċawl, Ħuta Kaħla, Boll, Skorfna, Pixxiluna
+english: dolphinfish, Atlantic bluefin tuna, sardine, dusky grouper, gilthead sea bream, Mediterranean moray, seahorse, swordfish, anchovy, Mediterranean damselfish, blue shark, common stingray, black and red scorpionfish, ocean sunfish
+id: mimcontent:lampuka, tonn, sardina, cerna, awrata, murina, ziemel, pixxispad, incova, cawl, huta_kahla, boll, skorfna, skorfna_red, mola_mola
 ---
 # Fish
 
@@ -35,6 +35,7 @@ The tier A fish from [[Content mod list]] section 6, built on the owner's go-ahe
 | `cawl` | Ċawl (tier B) | in small groups | 0.35 x 0.4 | 3 boxes, 0.88 long, 0.28 wide, 0.5 tall | 3 | 3-6 | `cawl` |
 | `huta_kahla` | Ħuta Kaħla (tier B) | alone; neutral, bites for 4 (2 hearts) | 1.3 x 0.7 | 8 boxes, 2.69 long, 0.81 wide with the fins, 0.77 tall | 16 | 1 | `huta_kahla` (shark meat) |
 | `boll` | Boll (tier B) | alone or in twos, near the sea floor; stings (below) | 1.25 x 0.25 (flat) | 7 boxes, 2.63 long with the tail, 1.25 wide (the disc), 0.19 thick; flat on land too | 10 | 1-2 | `boll` |
+| `mola_mola` | Pixxiluna (mola mola, tier C) | alone, slow (speed 0.35); basks on its side at the surface; harmless; **extremely rare** (below) | 1.3 x 1.8 (1.7 x 0.5 while basking) | 5 boxes, 1.63 long, 0.71 wide with the pectoral fins, 2.38 tall fin tip to fin tip; on its side when basking | 20 | 1 | `mola_mola` (a proposal) |
 | `skorfna` | Skorfna (tier B) | alone; rests on a rock floor, moves in short hops; venomous spines (below) | 0.5 x 0.4 | 3 boxes, 0.84 long, 0.63 wide with the fins, 0.5 tall | 6 | 1 | `skorfna` (black), `skorfna_red` (red) |
 
 Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
@@ -74,6 +75,13 @@ Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
 - **It only spawns over a rock floor:** any solid block that isn't sand, gravel, clay or mud, no more than 16 blocks below the spawn point, at any depth below sea level. A skorfna that spawns naturally is set down on the floor. The Malta world has no sea-cave biome, so caves aren't listed separately; it spawns in sea caves inside the biomes below wherever their floor is rock.
 - Sources: [Falzon (2011), *Naturalista sicil.* 35: 419-423](https://www.sssn.it/PDF/PDF%20NS%2035/419-423.pdf); [Borg, Dandria, Evans, Knittweis and Schembri (2023), *Diversity* 15: 225](https://um.edu.mt/library/oar/bitstream/123456789/106136/1/A_critical_checklist_of_the_marine_fishes_of_Malta_and_surrounding_waters%282023%29.pdf); the Maltese name *Skorfna sewda*: [EU fish names database](https://fish-commercial-names.ec.europa.eu/fish-names/species/scorpaena-porcus_en); rocky bottoms and venomous spines: [MaltaToday](https://www.maltatoday.com.mt/environment/nature/111247/critters_by_the_seashore_watch_out_for_these_dangerous_sea_creatures).
 
+**The mola mola** (ocean sunfish, *Mola mola*, shown as **Pixxiluna**, tier C) was started on [[2026-11-18 Mola mola - start]]; the research, numbers and owner questions are in [[Mola mola]]. It is confirmed in Maltese waters and seen now and then off Malta and Gozo, often at the surface.
+- **Extremely rare** (owner, 2026-11-18: "the mola mola must be EXTREMELY rare, with fishing it with the required bait being practically the only way to find it unless you are super lucky"; [[2026-11-18 Mola mola - extremely rare]]). It spawns only in the deep sea, at the lowest weight (1), alone, and even then only 1 natural spawn try in 400 goes ahead: roughly one every 2 to 6 hours of deep-sea sailing (an estimate). **Fishing with jellyfish meat**, once fishing is overhauled, will be practically the only way to get one. No fishing or bait is built yet.
+- **Slow, calm and harmless.** It doesn't shy away from players. Now and then it rises to the surface and lies on its side for 10 to 30 seconds, its upper side just breaking the water; its box lies flat and its hit boxes turn with it. Hurt it and it stops basking and swims off.
+- **It sculls:** its tall dorsal and anal fins swing from side to side together, as the real fish swims. It has no tail, only the clavus.
+- Life size, like the tonn and the shark: 1.63 blocks long and 2.4 tall fin tip to fin tip. It has a bucket like every fish. It drops itself (a proposal waiting for the owner).
+- **Art:** the 3D model is the first piece, waiting for the owner; the icon, bucket and egg are placeholders until then.
+
 The żiemel is drawn about five times life size, 0.81 blocks tall, so its crown, snout, pot belly and curled tail show at vanilla's pixel size ([[2026-11-18 Ziemel - start, bigger than life]]).
 
 ### Tonn sizes
@@ -102,6 +110,7 @@ Like vanilla fish, near the surface (within 13 blocks of sea level) in water; th
 | Ħuta kaħla | deep sea (`fond_deep_sea`, `fond_band_1`-`8`), rare | 1 | lukewarm, deep lukewarm, deep ocean | 1 |
 | Boll | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; `posidonia_meadows`, `dwejra_posidonia_meadows` (the sand patches); deep sea. Only over sand, gravel, clay or mud, at any depth (above) | 5; 4; 2 | warm, lukewarm | 2 |
 | Skorfna | `bahar_sea`, `dwejra_bahar_sea`; `fond_deep_sea`, `dwejra_fond_deep_sea`. Only over a rock floor, at any depth (above) | 4; 2 | warm, lukewarm (only where the floor is rock) | 2 |
+| Mola mola | deep sea (`fond_deep_sea`, `fond_band_1`-`8`, `dwejra_fond_deep_sea`); extremely rare: only 1 natural try in 400 goes ahead | 1 | warm, deep lukewarm (the same extra roll) | 1 |
 
 The `fond_band_1`-`8` biomes are the deep-sea copies in the blend toward vanilla's ocean.
 
@@ -112,3 +121,4 @@ The `fond_band_1`-`8` biomes are the deep-sea copies in the blend toward vanilla
 - Murina: bites when disturbed, hides in rock holes, comes out at night.
 - Lampuka: only in season (15 Aug to Dec), under floating rafts.
 - Food values and recipes, once food gameplay is decided.
+- Mola mola: caught with jellyfish meat as bait, once fishing is overhauled.

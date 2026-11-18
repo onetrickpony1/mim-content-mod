@@ -52,6 +52,7 @@ import org.joml.Vector3f;
  * <li>a water bucket used on a part (the murina's tail, the swordfish's sword) catches the fish;</li>
  * <li>an arrow dropped on the tail of a shark lying on land hurts it;</li>
  * <li>the boll (flat) lies flat on land: its boxes stay on the ground, as thin as its disc;</li>
+ * <li>the mola mola lying on its side on land: its boxes lie flat on the ground and centred over it (the side shift);</li>
  * <li>screenshots with hit boxes shown (F3+B): fish-hitbox-*.</li>
  * </ol>
  */
@@ -99,6 +100,8 @@ final class FishHitboxCheck {
             arrow(context, server, x, y, z);
             server.runCommand("kill @e[type=!minecraft:player]");
             flatOnLand(context, server, x, y, z);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            molaOnLand(context, server, x, y, z);
             server.runCommand("attribute @a minecraft:gravity base reset");
             server.runCommand("gamemode creative @a");
             server.runCommand("kill @e[type=!minecraft:player]");
@@ -119,7 +122,7 @@ final class FishHitboxCheck {
                 model.root().visit(new PoseStack(), (pose, path, index, cube) -> cubes.add(bounds(pose.pose(), cube)));
                 float[][] measured = FishShape.slice(cubes);
                 FishShape shape = FishShape.of(f.id());
-                String problem = shape == null ? "no shape" : compare(shape, measured, renderer.landLift(), renderer.liesFlat());
+                String problem = shape == null ? "no shape" : compare(shape, measured, renderer.landLift(), renderer.liesFlat(), renderer.sideShift());
                 float length = measured[0][0] * (measured.length - 1);
                 log(String.format(Locale.ROOT, "%s model: %.1f px long; %d hit boxes of %.2f px; table %s", f.id(), length,
                     measured.length - 1, measured[0][0], problem == null ? "matches" : "WRONG: " + problem));
@@ -132,9 +135,12 @@ final class FishHitboxCheck {
         check(result.equals("ok"), "FishShape's table is out of date: " + result);
     }
 
-    private static String compare(FishShape shape, float[][] measured, float landLift, boolean liesFlat) {
+    private static String compare(FishShape shape, float[][] measured, float landLift, boolean liesFlat, float sideShift) {
         if (Math.abs(shape.landLift() - landLift) > 1.0E-5F) {
             return "land lift " + shape.landLift() + ", the renderer's is " + landLift;
+        }
+        if (Math.abs(shape.sideShift() - sideShift) > 1.0E-5F) {
+            return "side shift " + shape.sideShift() + ", the renderer's is " + sideShift;
         }
         if (shape.flat() != liesFlat) {
             return "flat " + shape.flat() + ", the renderer's liesFlat is " + liesFlat;
@@ -489,6 +495,39 @@ final class FishHitboxCheck {
     }
 
     /** Side views of the big fish with hit boxes shown (F3+B): the white box moves the fish, the green-yellow chain is hit. */
+    /**
+     * The mola mola on land lies on its side like the other fish, but its middle (not its belly) over its position (the
+     * side shift): its boxes lie on the ground, no thicker than the fish with its pectoral fins, and their middle is
+     * within half a block of its position.
+     */
+    private static void molaOnLand(ClientGameTestContext context, TestServerContext server, int x, int y, int z) {
+        UUID uuid = spawn(server, "mola_mola", x + 0.5, y + 1, z + 0.5, 30.0F, true);
+        context.waitTicks(20);
+        String result = server.computeOnServer(s -> {
+            AbstractFish fish = (AbstractFish) s.overworld().getEntity(uuid);
+            double low = Double.MAX_VALUE, high = -Double.MAX_VALUE, minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+            double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+            for (FishPart part : ((FishParts.Holder) fish).mimcontent$parts().parts()) {
+                AABB b = part.getBoundingBox();
+                low = Math.min(low, b.minY - fish.getY());
+                high = Math.max(high, b.maxY - fish.getY());
+                minX = Math.min(minX, b.minX);
+                maxX = Math.max(maxX, b.maxX);
+                minZ = Math.min(minZ, b.minZ);
+                maxZ = Math.max(maxZ, b.maxZ);
+            }
+            double off = Math.hypot((minX + maxX) / 2 - fish.getX(), (minZ + maxZ) / 2 - fish.getZ());
+            return String.format(Locale.ROOT, "on land=%s, boxes from %.3f to %.3f above its feet, middle %.3f off its position",
+                !fish.isInWater(), low, high, off);
+        });
+        log("the mola mola on land: " + result);
+        check(result.contains("on land=true"), "the mola mola should be on land: " + result);
+        String[] nums = result.replaceAll(".*from ([-0-9.]+) to ([-0-9.]+) above.*middle ([0-9.]+) off.*", "$1 $2 $3").split(" ");
+        double low = Double.parseDouble(nums[0]), high = Double.parseDouble(nums[1]), off = Double.parseDouble(nums[2]);
+        // its thickest slice is 11.4 px (the pectoral fins), lying on its side round its land lift (5 px)
+        check(low > -0.1 && low < 0.1 && high < 0.75 && off < 0.5, "the mola mola's boxes on land should lie flat and centred: " + result);
+    }
+
     private static void shots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int gx, int gy, int gz) {
         int x = gx, y = gy, z = gz - 30;
         fill(server, x - 24, y, z - 8, x + 24, y + 10, z + 10, "minecraft:air");
@@ -506,6 +545,9 @@ final class FishHitboxCheck {
         spawn(server, "huta_kahla", x + 15.5, y, z - 3.0, 90.0F, true);
         spawn(server, "boll", x + 10.5, y, z + 5.5, 90.0F, true);
         spawn(server, "boll", x + 5.5, y, z - 3.0, 90.0F, true);
+        // a mola mola in the tank and one on land, on its side
+        spawn(server, "mola_mola", x - 10.5, y + 0.4, z + 5.5, 90.0F, true);
+        spawn(server, "mola_mola", x - 10.5, y, z - 3.5, 90.0F, true);
         context.runOnClient(mc -> {
             if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.debugEntries.setStatus(DebugScreenEntries.ENTITY_HITBOXES, DebugScreenEntryStatus.ALWAYS_ON);
@@ -523,6 +565,8 @@ final class FishHitboxCheck {
         look(context, server, at[0] + 1.5, y + 0.3, z - 6.0, at[0], y + 0.2, z - 3.0, "fish-hitbox-huta-kahla-on-land");
         look(context, server, x + 10.5, y + 0.2, z + 3.4, x + 10.5, y + 0.1, z + 5.5, "fish-hitbox-boll");
         look(context, server, x + 6.5, y + 0.6, z - 5.5, x + 5.5, y, z - 3.0, "fish-hitbox-boll-on-land");
+        look(context, server, x - 10.5, y - 0.3, z + 3.4, x - 10.5, y + 1.6, z + 5.5, "fish-hitbox-mola");
+        look(context, server, x - 9.5, y + 1.0, z - 7.0, x - 10.5, y, z - 3.5, "fish-hitbox-mola-on-land");
         server.runCommand("gamemode creative @a");
         context.runOnClient(mc -> {
             mc.debugEntries.setStatus(DebugScreenEntries.ENTITY_HITBOXES, DebugScreenEntryStatus.NEVER);

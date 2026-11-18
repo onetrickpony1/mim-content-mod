@@ -20,6 +20,9 @@ import sys
 
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from egg_pool import vanilla_pool  # noqa: E402
+
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent")
 JAVA = os.path.join(ROOT, "mod", "src", "main", "java", "com", "maltaminecraft", "mimcontent", "client", "fish")
@@ -178,6 +181,18 @@ FISH = {
             ("tail_fin", None, (0, 21, 4), [(0, -2.5, 0, 0, 5, 3, "fin")]),
         ],
     },
+    # tier C (2026-11-18, "Mola mola - start"): the ocean sunfish, a tall flat disc with no tail, very tall dorsal and anal
+    # fins far back and the clavus as a rim behind. Extremely rare (owner 2026-11-18). Only its icon, bucket and egg are
+    # placeholders: the model and its texture are drawn by art/src/fish_mola_model.py.
+    "mola_mola": {
+        "name": "MolaMola",
+        "about": "ocean sunfish: tall flat disc cut off behind, tall dorsal and anal fins far back, silver-grey",
+        "back": "#6a675f", "side": "#a3a196", "belly": "#d8d6cc", "fin": "#57534c", "accent": None,
+        "parts": [
+            ("body", None, (0, 14, 0), [(-2, -5, -6, 4, 10, 10, "body eye")]),
+            ("tail_fin", None, (0, 14, 4), [(0, -9, 0, 0, 18, 2, "fin")]),
+        ],
+    },
 }
 
 
@@ -334,10 +349,31 @@ def icon_ray(fish):
     return img
 
 
+def icon_mola(fish):
+    """The sunfish placeholder: a round grey disc with a fin above and below at the back, an eye at the front."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for x in range(16):
+        for y in range(16):
+            nx, ny = (x + 0.5 - 7.0) / 5.0, (y + 0.5 - 8.0) / 4.6
+            if nx * nx + ny * ny <= 1:
+                px[x, y] = rgb(fish["back"] if ny < -0.45 else (fish["belly"] if ny > 0.45 else fish["side"])) + (255,)
+    for (x, y) in ((9, 1), (10, 1), (9, 2), (10, 2), (11, 2), (9, 3), (10, 3), (11, 3),
+                   (9, 12), (10, 12), (11, 12), (9, 13), (10, 13), (11, 13), (9, 14), (10, 14)):
+        px[x, y] = rgb(fish["fin"]) + (255,)
+    for y in range(5, 11):
+        px[12, y] = rgb(fish["fin"]) + (255,)
+    outline(img)
+    px[4, 6] = (16, 16, 16, 255)
+    return img
+
+
 def icon_fish(fish, fid):
     """The caught fish in vanilla's pose: head bottom left, tail top right."""
     if fid == "boll":
         return icon_ray(fish)
+    if fid == "mola_mola":
+        return icon_mola(fish)
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
     thick = {"sardina": 1.6, "incova": 1.3, "cawl": 3.0, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4}.get(fid, 2.5)
@@ -452,7 +488,10 @@ def main(ids):
         for kind, make in (("_bucket", icon_bucket), ("_spawn_egg", icon_egg)):
             out = os.path.join(RES, "textures/item", fid + kind + ".png")
             if fresh(out):
-                make(fish).save(out)
+                icon = make(fish)
+                if kind == "_spawn_egg" and fid == "mola_mola":
+                    icon = vanilla_pool(icon, [])     # vanilla's own pool under the egg (owner 2026-11-18)
+                icon.save(out)
         out = os.path.join(RES, "textures/item", fid + ".png")
         if fid not in ("lampuka", "ziemel") and fresh(out):     # the żiemel has no item
             icon_fish(fish, fid).save(out)

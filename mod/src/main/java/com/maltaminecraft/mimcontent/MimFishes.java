@@ -4,6 +4,7 @@ import com.maltaminecraft.mimcontent.entity.fish.BollFish;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimSchoolingFish;
+import com.maltaminecraft.mimcontent.entity.fish.MolaFish;
 import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
 import java.util.ArrayList;
@@ -94,6 +95,12 @@ public final class MimFishes {
     });
     /** The red skorfna's item, dropped by a red skorfna ({@link SkorfnaFish.Variant#RED}); same properties as skorfna. */
     public static final Item SKORFNA_RED = SKORFNA_RED_HOLDER[0];
+    // Owner, 2026-11-18: "begin on the mola mola". The ocean sunfish: a tall flat disc about 1.6 blocks long and 2.4
+    // tall fin tip to fin tip (a mature fish, life size like the tonn and shark); slow, harmless, basks at the surface
+    // (MolaFish). Extremely rare (owner 2026-11-18): weight 1, alone, and MolaFish's spawn rule lets only one try in
+    // 400 through; jellyfish meat will be its bait once fishing is overhauled. The body box (1.3 x 1.8) holds the disc
+    // without the fins. Drops itself (a proposal, waiting for the owner).
+    public static final Fish MOLA_MOLA = mola("mola_mola", 1.3F, 1.8F, 20.0, () -> MimContent.item("mola_mola", Item::new, new Item.Properties()));
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
     static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
@@ -127,6 +134,8 @@ public final class MimFishes {
         // the skorfna only spawns over a rock floor (SkorfnaFish), at any depth
         spawn(SKORFNA, 4, 1, 1, malta("bahar_sea", "dwejra_bahar_sea"));
         spawn(SKORFNA, 2, 1, 1, malta("fond_deep_sea", "dwejra_fond_deep_sea"));
+        // the mola mola: extremely rare, the deep sea only (and MolaFish's spawn rule lets one try in 400 through)
+        spawn(MOLA_MOLA, 1, 1, 1, malta(concat(MALTA_DEEP, "dwejra_fond_deep_sea")));
         if (MimConfig.fishInVanillaOceans) {
             ResourceKey<Biome> warm = Biomes.WARM_OCEAN, luke = Biomes.LUKEWARM_OCEAN, deepLuke = Biomes.DEEP_LUKEWARM_OCEAN;
             spawn(SARDINA, 10, 4, 8, List.of(warm, luke, deepLuke));
@@ -142,6 +151,8 @@ public final class MimFishes {
             spawn(HUTA_KAHLA, 1, 1, 1, List.of(luke, deepLuke, Biomes.DEEP_OCEAN));
             spawn(BOLL, 2, 1, 2, List.of(warm, luke));
             spawn(SKORFNA, 2, 1, 1, List.of(warm, luke));
+            // vanilla has no deep warm ocean: the warm ocean and the deep lukewarm one
+            spawn(MOLA_MOLA, 1, 1, 1, List.of(warm, deepLuke));
         }
 
         // Besides the mod's own tab: spawn eggs in vanilla's Spawn Eggs tab, buckets beside vanilla's fish buckets.
@@ -216,6 +227,18 @@ public final class MimFishes {
                 b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SkorfnaFish::checkSkorfnaSpawnRules)
                     .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)))
             .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** The ocean sunfish: a slow solitary fish of its own kind (MolaFish) with its own, extremely rare, spawn rule. */
+    private static Fish mola(String id, float width, float height, double health, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<MolaFish> type = MimContent.entity(id, FabricEntityType.Builder.<MolaFish>createMob(
+                (t, level) -> new MolaFish(t, level, () -> bucket[0], 1), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, MolaFish::checkMolaSpawnRules)
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)
+                        .add(Attributes.MOVEMENT_SPEED, MolaFish.SPEED)))
+            .sized(width, height).eyeHeight(height * 0.5F).clientTrackingRange(6));
         return finish(id, type, bucket, item);
     }
 

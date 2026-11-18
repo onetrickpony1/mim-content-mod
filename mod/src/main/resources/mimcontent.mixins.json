@@ -14,7 +14,8 @@
     "client.AvatarRenderStateMixin",
     "client.EntityHitboxDebugRendererMixin",
     "client.HumanoidModelMixin",
-    "client.MultiPlayerGameModeMixin"
+    "client.MultiPlayerGameModeMixin",
+    "client.SelectItemModelPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

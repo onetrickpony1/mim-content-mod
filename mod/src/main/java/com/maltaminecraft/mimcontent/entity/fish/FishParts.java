@@ -53,10 +53,12 @@ public final class FishParts {
     public void update() {
         float scale = fish.getScale();
         boolean inWater = fish.isInWater();
+        // on its side out of water, and the mola mola while it basks at the surface
+        boolean onSide = !inWater || fish instanceof MolaFish mola && mola.isBasking();
         AABB own = fish.getBoundingBox();
         double far = 0.0;
         for (FishPart part : parts) {
-            AABB box = shape.box(part.index, fish.position(), fish.yBodyRot, scale, inWater, fish.tickCount);
+            AABB box = shape.box(part.index, fish.position(), fish.yBodyRot, scale, inWater, onSide, fish.tickCount);
             part.setOldPosAndRot();
             part.place(box);
             far = Math.max(far, Math.max(Math.max(own.minX - box.minX, box.maxX - own.maxX),

@@ -26,8 +26,12 @@ import net.minecraft.world.phys.Vec3;
  * murina's boxes follow the travelling wave of its five-section body ({@code MurinaModel}). A flat fish (the boll,
  * {@code flat}) lies flat on land too, as in water, only lifted by its land lift. The whole-body wiggle of the other
  * fish (a few degrees) is left out.
+ *
+ * <p>A fish much taller than it is thick (the mola mola) has a {@code sideShift}: lying on its side (on land, or basking
+ * at the surface) it is moved back along its own height by that many blocks, so its middle lies over its position
+ * instead of its belly (the renderer does the same; the smoke test checks they agree). 0 for every other fish.
  */
-public record FishShape(float sliceLength, float[][] slices, float landLift, Wave wave, boolean flat) {
+public record FishShape(float sliceLength, float[][] slices, float landLift, Wave wave, boolean flat, float sideShift) {
     /** The most slices a fish gets. */
     public static final int MAX_PARTS = 8;
     /** The slice length the count aims for, in px. */
@@ -62,10 +66,14 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         // 35 px long, 6.3 wide, 11 tall
         shape("lampuka", 5.833F, 0.1F, new float[][] {{-14.08F, 3.15F, 13F, 23F}, {-8.25F, 3.15F, 13F, 23F}, {-2.42F, 1.5F, 13F, 24F}, {3.42F, 1F, 15F, 24F},
             {9.25F, 1F, 15F, 24F}, {15.08F, 0F, 16F, 24F}}),
+        // 26 px long (mouth to clavus), 11.4 wide (the pectoral fins), 38 tall (dorsal fin tip to anal fin tip); its middle
+        // (y 4.5) lies over its position when it lies on its side (on land, or basking): side shift 1.501 - 4.5 / 16
+        tallShape("mola_mola", 5.2F, 0.3125F, 1.21975F, new float[][] {{-10.4F, 3F, -5F, 14F}, {-5.2F, 4F, -6F, 15F},
+            {0F, 5.705F, -7.5F, 16.5F}, {5.2F, 3F, -14.5F, 23.5F}, {10.4F, 2.5F, -14.5F, 23.5F}}),
         // 32 px long, 4 wide, 6 tall; bends with its wave (MurinaModel: sections body, seg1, seg2, seg3, tail)
         new AbstractMap.SimpleEntry<>("murina", new FishShape(5.333F, new float[][] {{-11.33F, 1.5F, 18F, 23F}, {-6F, 2F, 18F, 23F},
             {-0.667F, 1.5F, 18F, 23F}, {4.667F, 1.5F, 18F, 24F}, {10F, 1F, 18F, 24F}, {15.33F, 1F, 18.5F, 23.5F}}, 0.1875F,
-            new Wave(new float[] {0F, 0F, 5F, 10F, 14F}, new float[] {0.05F, 0.15F, 0.26F, 0.36F, 0.46F}, 0.33F, 1.05F, 1.2F, 1.8F), false)),
+            new Wave(new float[] {0F, 0F, 5F, 10F, 14F}, new float[] {0.05F, 0.15F, 0.26F, 0.36F, 0.46F}, 0.33F, 1.05F, 1.2F, 1.8F), false, 0.0F)),
         // 45 px long (the sword included), 14 wide (the pectoral fins), 18 tall (dorsal fin to tail fin)
         shape("pixxispad", 5.625F, 0.21875F, new float[][] {{-20.19F, 1F, 19F, 20F}, {-14.56F, 1.5F, 18.5F, 21.5F}, {-8.94F, 2.5F, 16.5F, 23.5F},
             {-3.31F, 6.99F, 9F, 26.7F}, {2.31F, 6.99F, 9F, 26.7F}, {7.94F, 3F, 16.5F, 26F}, {13.56F, 2F, 13F, 27F}, {19.19F, 0F, 13F, 27F}}),
@@ -80,12 +88,17 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         shape("ziemel", 4.5F, 0.1F, new float[][] {{-1.75F, 1.5F, 12F, 24F}, {2.75F, 1.5F, 11F, 24F}}));
 
     private static Map.Entry<String, FishShape> shape(String id, float slice, float landLift, float[][] rows) {
-        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false));
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, 0.0F));
+    }
+
+    /** A tall fish (the mola mola) whose middle, not its belly, lies over its position when it lies on its side. */
+    private static Map.Entry<String, FishShape> tallShape(String id, float slice, float landLift, float sideShift, float[][] rows) {
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, sideShift));
     }
 
     /** A flat fish (the boll): it lies flat on land as in water (its renderer doesn't turn it on its side). */
     private static Map.Entry<String, FishShape> flatShape(String id, float slice, float landLift, float[][] rows) {
-        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, true));
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, true, 0.0F));
     }
 
     /** The shape for one of our fish (by its id, e.g. "tonn"), or null. */
@@ -102,6 +115,14 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
      * (else it lies on its side) and, for the murina, its age in ticks (for the wave).
      */
     public AABB box(int i, Vec3 at, float bodyYaw, float scale, boolean inWater, float age) {
+        return box(i, at, bodyYaw, scale, inWater, !inWater, age);
+    }
+
+    /**
+     * As above, with whether it lies on its side given apart from being in water: the mola mola lies on its side while
+     * it basks at the surface, in the water.
+     */
+    public AABB box(int i, Vec3 at, float bodyYaw, float scale, boolean inWater, boolean onSide, float age) {
         float[] row = slices[i];
         float z = row[0], halfWidth = row[1], top = row[2], bottom = row[3];
         float x = 0.0F;
@@ -115,11 +136,13 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         float tall = (bottom - top) / 16.0F;
         // FishRenderer's frame before the body's yaw: scale(-1, -1, 1) then up 1.501
         double a = -x / 16.0, b = 1.501 - yMid / 16.0, c = z / 16.0;
-        if (!inWater && flat) {
+        if (onSide && flat) {
             // a flat fish lies on land as it swims, lifted a little
             b += landLift;
-        } else if (!inWater) {
-            // lying on its side: translate(0.1, landLift, -0.1), then rotate 90 degrees about z
+        } else if (onSide) {
+            // lying on its side: translate(0.1, landLift, -0.1), rotate 90 degrees about z, then back along its height
+            // by the side shift (a tall fish's middle over its position)
+            b -= sideShift;
             double a2 = 0.1 - b, b2 = landLift + a;
             a = a2;
             b = b2;
