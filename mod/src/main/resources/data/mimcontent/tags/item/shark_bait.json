@@ -1,0 +1,31 @@
+{
+  "values": [
+    "#minecraft:fishes",
+    "minecraft:cod_bucket",
+    "minecraft:salmon_bucket",
+    "minecraft:pufferfish_bucket",
+    "minecraft:tropical_fish_bucket",
+    "mimcontent:lampuka",
+    "mimcontent:lampuka_moqlija",
+    "mimcontent:tonn",
+    "mimcontent:sardina",
+    "mimcontent:cerna",
+    "mimcontent:awrata",
+    "mimcontent:murina",
+    "mimcontent:pixxispad",
+    "mimcontent:incova",
+    "mimcontent:cawl",
+    "mimcontent:huta_kahla",
+    "mimcontent:lampuka_bucket",
+    "mimcontent:tonn_bucket",
+    "mimcontent:sardina_bucket",
+    "mimcontent:cerna_bucket",
+    "mimcontent:awrata_bucket",
+    "mimcontent:murina_bucket",
+    "mimcontent:ziemel_bucket",
+    "mimcontent:pixxispad_bucket",
+    "mimcontent:incova_bucket",
+    "mimcontent:cawl_bucket",
+    "mimcontent:huta_kahla_bucket"
+  ]
+}

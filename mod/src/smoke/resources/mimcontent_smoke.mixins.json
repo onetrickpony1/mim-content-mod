@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.maltaminecraft.mimcontent.test.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "GameRendererGizmoMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

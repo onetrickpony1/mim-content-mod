@@ -10,10 +10,13 @@ Writes, for each fish:
   textures/item/<id>_bucket.png, textures/item/<id>_spawn_egg.png                (16 x 16 icons)
   textures/item/<id>.png                                                          (the caught fish; never the lampuka,
                                                                                    whose icon is accepted art)
-Run:  art/.venv/bin/python art/src/fish_placeholders.py
+Run:  art/.venv/bin/python art/src/fish_placeholders.py pixxispad      (only the fish named)
+Never overwrites a file that already exists: most of these files are now drawn, accepted art. Delete a file first to
+make its placeholder again.
 """
 import math
 import os
+import sys
 
 from PIL import Image
 
@@ -88,6 +91,52 @@ FISH = {
                                           (-0.5, -4.5, -3.5, 1, 1, 2, "body"), (-0.5, 2.5, 0, 1, 1, 2, "body"),
                                           (-0.5, 3.5, 1, 1, 0, 1, "fin")]),
             ("top_fin", None, (0, 19, 1), [(0, -1, 0, 0, 2, 1, "fin")]),
+        ],
+    },
+    # tier B (2026-11-18): about 2.7 blocks long with the sword, like a real 2-3 m fish scaled as the tonn is
+    "pixxispad": {
+        "name": "Pixxispad", "about": "swordfish: long flat sword, tall sickle dorsal fin, dark purple-brown back, "
+                                       "bronze-silver sides, crescent tail",
+        "back": "#2e2a40", "side": "#8e8790", "belly": "#d8d4cc", "fin": "#2a2738", "accent": None,
+        "parts": [
+            ("body", None, (0, 20, 0), [(-2, -3, -10, 4, 6, 20, "body"), (-1.5, -2.5, -14, 3, 5, 4, "body eye"),
+                                        (-0.5, -1.5, -27, 1, 1, 13, "fin"), (-1, -1.5, 10, 2, 3, 4, "body")]),
+            ("top_fin", None, (0, 17, -8), [(0, -5, 0, 0, 5, 4, "fin")]),
+            ("tail_fin", None, (0, 20, 14), [(0, -6, 0, 0, 12, 4, "fin fork")]),
+        ],
+    },
+    # tier B (2026-11-18): the inċova (a little smaller and slimmer than the sardina), the ċawl and the ħuta kaħla
+    "incova": {
+        "name": "Incova", "about": "anchovy: small and slim, blue-green back, a silver stripe along bright silver sides",
+        "back": "#3d6f86", "side": "#c7d0d4", "belly": "#eef2f2", "fin": "#9aaab2", "accent": None,
+        "parts": [
+            ("body", None, (0, 22.5, 0), [(-1, -1, -5, 2, 2, 9, "body eye")]),
+            ("top_fin", None, (0, 21.5, -1), [(0, -1, 0, 0, 1, 2, "fin")]),
+            ("tail_fin", None, (0, 22.5, 4), [(0, -1.5, 0, 0, 3, 3, "fin")]),
+        ],
+    },
+    "cawl": {
+        "name": "Cawl", "about": "Mediterranean damselfish: small, deep oval body, dark brown-black, deeply forked tail",
+        "back": "#2a2620", "side": "#4a4236", "belly": "#6e6352", "fin": "#3a342b", "accent": None,
+        "parts": [
+            ("body", None, (0, 20.5, 0), [(-1, -2.5, -4, 2, 5, 7, "body eye")]),
+            ("top_fin", None, (0, 18, -3), [(0, -1, 0, 0, 1, 5, "fin")]),
+            ("tail_fin", None, (0, 20.5, 3), [(0, -3, 0, 0, 6, 3, "fin fork")]),
+        ],
+    },
+    # about 2.6 blocks long (42 px): a slender blue body, long snout, tall dorsal fin, long pectorals and a heterocercal tail
+    # (the upper lobe much longer than the lower)
+    "huta_kahla": {
+        "name": "HutaKahla", "about": "blue shark: slender, deep blue back, bright blue sides, white belly, long "
+                                        "pectoral fins, tall dorsal fin, tail with a long upper lobe",
+        "back": "#2b4f9c", "side": "#4f7fd0", "belly": "#e8edf2", "fin": "#2f559e", "accent": None,
+        "parts": [
+            ("body", None, (0, 20, 0), [(-2.5, -3, -14, 5, 6, 20, "body"), (-1.5, -2, -20, 3, 4, 6, "body eye"),
+                                        (-1.5, -2, 6, 3, 4, 8, "body")]),
+            ("top_fin", None, (0, 17, -6), [(0, -6, 0, 0, 6, 5, "fin")]),
+            ("right_fin", None, (-2.5, 22, -10), [(-6, 0, 0, 6, 0, 5, "fin")]),
+            ("left_fin", None, (2.5, 22, -10), [(0, 0, 0, 6, 0, 5, "fin")]),
+            ("tail_fin", None, (0, 20, 14), [(0, -9, 0, 0, 8, 8, "fin"), (0, -1, 0, 0, 4, 3, "fin")]),
         ],
     },
 }
@@ -228,11 +277,13 @@ def icon_fish(fish, fid):
     """The caught fish in vanilla's pose: head bottom left, tail top right."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    thick = {"sardina": 1.6, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4}.get(fid, 2.5)
+    thick = {"sardina": 1.6, "incova": 1.3, "cawl": 3.0, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4}.get(fid, 2.5)
     a, b = (2.5, 13.5), (11.5, 4.5)
     if fid == "murina":
         a, b = (1.5, 14.5), (13.5, 2.5)
     back, side, belly = rgb(fish["back"]), rgb(fish["side"]), rgb(fish["belly"])
+    if fid == "pixxispad":                           # a shorter body, leaving room for the sword
+        a = (5.5, 10.5)
     for x in range(16):
         for y in range(16):
             cx, cy = x + 0.5, y + 0.5
@@ -250,6 +301,10 @@ def icon_fish(fish, fid):
             px[x, y] = rgb(fish["fin"]) + (255,)
     outline(img)
     ex, ey = (3, 11) if fid != "murina" else (2, 12)
+    if fid == "pixxispad":
+        ex, ey = (6, 9)
+        for i in range(5):                          # the sword, down to the bottom left corner
+            px[4 - i, 11 + i] = rgb(fish["fin"]) + (255,)
     px[ex, ey] = (16, 16, 16, 255)
     return img
 
@@ -302,26 +357,44 @@ def icon_egg(fish):
     return img
 
 
-def main():
+def fresh(path):
+    """True if the file doesn't exist yet; an existing file (drawn art) is kept and reported."""
+    if os.path.exists(path):
+        print("  kept", os.path.relpath(path, ROOT))
+        return False
+    return True
+
+
+def main(ids):
+    unknown = [i for i in ids if i not in FISH]
+    if not ids or unknown:
+        sys.exit("name the fish to make: " + " ".join(FISH) + ("" if not unknown else "  (unknown: " + " ".join(unknown) + ")"))
     os.makedirs(JAVA, exist_ok=True)
     for sub in ("textures/entity/fish", "textures/item"):
         os.makedirs(os.path.join(RES, sub), exist_ok=True)
-    for fid, fish in FISH.items():
+    for fid in ids:
+        fish = FISH[fid]
         boxes = [b for _, _, _, bs in fish["parts"] for b in bs]
         uvs = pack(boxes)
         img = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0))
         for uv, b in zip(uvs, boxes):
             paint_box(img, fish, uv, b)
-        img.save(os.path.join(RES, "textures/entity/fish", fid + ".png"))
+        # the model and its texture go together: the texture's layout only fits this model
+        tex = os.path.join(RES, "textures/entity/fish", fid + ".png")
         path = os.path.join(JAVA, fish["name"] + "Model.java")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(java_model(fid, fish, uvs))
-        icon_bucket(fish).save(os.path.join(RES, "textures/item", fid + "_bucket.png"))
-        icon_egg(fish).save(os.path.join(RES, "textures/item", fid + "_spawn_egg.png"))
-        if fid not in ("lampuka", "ziemel"):     # the lampuka icon is accepted art; the żiemel has no item
-            icon_fish(fish, fid).save(os.path.join(RES, "textures/item", fid + ".png"))
-        print("wrote", fid)
+        if fresh(tex) and fresh(path):
+            img.save(tex)
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(java_model(fid, fish, uvs))
+        for kind, make in (("_bucket", icon_bucket), ("_spawn_egg", icon_egg)):
+            out = os.path.join(RES, "textures/item", fid + kind + ".png")
+            if fresh(out):
+                make(fish).save(out)
+        out = os.path.join(RES, "textures/item", fid + ".png")
+        if fid not in ("lampuka", "ziemel") and fresh(out):     # the żiemel has no item
+            icon_fish(fish, fid).save(out)
+        print("done", fid)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

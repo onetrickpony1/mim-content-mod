@@ -7,17 +7,18 @@ sardina and ċerna eggs: the whole egg outline is kept (narrow top on row 3, wid
 pool) and the bream's features are painted onto it as a stylised token, not drawn as a whole fish.
 
 The awrata (gilthead sea bream, Sparus aurata) is a medium fish, so its egg is about the lampuka's size: rows 3 to 12,
-x 2 to 13, with small side fins at x 1 and 14 and the tail breaking the top outline.
+x 2 to 13, with small side fins at x 1 and 14 and the tail breaking the top outline (coverage 0.55, lampuka 0.60).
 At 1x it reads by:
 - a blue-grey back cap over the top, lit on its upper left, with a silver sheen just under it at the front;
 - a steep rounded forehead on the left (the outline drops almost straight from row 5 to row 9, rounding at both ends);
-- the GOLD band across the forehead, just above the eye, running in from the lit rim: a mark across the head, not
-  sticking out (so no beak) and well below the top (so no crown);
+- the GOLD band across the forehead, a row above the eye's top and in from the lit rim (so it reads as neither a
+  beak nor a brow), and well below the top (so no crown);
 - one small black eye in light silver, nothing dark around it;
-- the dark gill mark with its red-orange foot behind the eye and lower than it (core one row below the eye's row,
-  two pixels behind it, the foot under that), so it never sits level with the eye;
+- the dark gill mark with its red-orange foot behind the eye and lower than it: a short upright stroke three pixels
+  behind the eye, from a soft edge one row below the eye's row to the dark core, with the red-orange foot at the
+  core's side, touching it, so it reads as a gill slit and never sits level with the eye;
 - silver sides on a real light ramp, lit top left to shaded lower right, crossed by thin darker lengthwise lines
-  (one tone darker than the silver around them, kept away from the eye);
+  (rows 8 and 10 a tone darker than the rows around them, from behind the eye back; none touch the eye);
 - the forked tail at the upper right, two lobes with dark tips and a notch between, breaking the top outline;
 - small grey fins sticking out low on both sides, like vanilla's fish eggs.
 The pool is our own: a greener sea-blue ramp with its own widths and ripples; not vanilla's shared water-mob pool,
@@ -82,15 +83,37 @@ GRID = [
     "................",
     "............t...",
     "......KbbK..4.t.",
-    ".....KbWbbKO34t.",
-    "....KbWWbbbKo...",
+    ".....KbbbbKO34t.",
+    "....KbWWbbbo....",
+    "....bGGg1123o...",
+    "...KW1111223o...",
+    "...b1e123344o...",
+    "...b1122p2234o..",
+    ".3K12233PR455oO.",
+    ".Ob1222323344oO.",
+    "..O233444555o...",
+    ".xyoooooooooozx.",
+    ".yzvZzzZvzzZzZy.",
+    "..xy.yxxxy.xyx..",
+]
+
+# After the critic (2026-11-18): the gold band on the front edge read as a bird's beak and brow, so it moved up a row
+# and in from the edge (5-7, 6), with light silver refilled where it was; the lone red dot under the gill bar read as a
+# mouth at 2x, so the red now sits at the bar's side (9,10), touching it. The version before, for the compare sheet:
+GRID_BEFORE = [
+    "................",
+    "................",
+    "............t...",
+    "......KbbK..4.t.",
+    ".....KbbbbKO34t.",
+    "....KbWWbbbo....",
     "....bW1W1123o...",
-    "...KGGg12234o...",
-    "...b1e112334o...",
-    "...b112Pp3445o..",
-    ".3K1122R34445oO.",
-    ".Ob1223334455oO.",
-    "..O2233444555o..",
+    "...KGGg11223o...",
+    "...b1e123344o...",
+    "...b1122p2234o..",
+    ".3K12233P4455oO.",
+    ".Ob12223R3344oO.",
+    "..O233444555o...",
     ".xyoooooooooozx.",
     ".yzvZzzZvzzZzZy.",
     "..xy.yxxxy.xyx..",
@@ -196,6 +219,19 @@ def sheet(icon):
             band.paste(t.convert("RGB"), (x0 + (j % 2) * 44 + (j // 2) * 88, 156))
     d.text((10, 202), "8x, then 1x and 2x on light grey, 1x and 2x on dark grey", fill=ink, font=small)
     parts.append(("The egg at 8x and 1x beside vanilla's fish eggs, our accepted lampuka, tonn, sardina and cerna eggs, and the accepted awrata item icon and bucket", band))
+
+    band = Image.new("RGB", (W, 120), bg)
+    d = ImageDraw.Draw(band)
+    for i, (name, im) in enumerate((("before the critic", render(GRID_BEFORE)), ("NOW", icon))):
+        x0 = 10 + i * 260
+        d.text((x0, 2), name, fill=ink, font=small)
+        for j, (col, sc) in enumerate((((139, 139, 139), 1), ((139, 139, 139), 2), ((40, 40, 40), 1), ((40, 40, 40), 2))):
+            t = Image.new("RGBA", (40, 40), col + (255,))
+            t.alpha_composite(im.resize((16 * sc, 16 * sc), Image.NEAREST), (4, 4))
+            band.paste(t.convert("RGB"), (x0 + j * 50, 24))
+    d.text((10, 74), "1x and 2x on light grey, 1x and 2x on dark grey: gold band up a row and in from the edge, "
+           "red foot touching the gill bar", fill=ink, font=small)
+    parts.append(("Before and after the critic's fixes", band))
 
     lines = measure([os.path.join(VANILLA, n + "_spawn_egg.png") for n in ("cod", "salmon", "tropical_fish", "pufferfish")]
                     + [os.path.join(TEXTURES, "item", n + "_spawn_egg.png") for n in ("lampuka", "tonn", "sardina", "cerna")] + [OUT_ICON])

@@ -48,6 +48,8 @@ Each lesson came from an owner correction; the decision notes hold their exact w
   - No lone bright specks.
   - Gold or yellow beside the eye reads as a beak.
 - **Spawn eggs are stylised eggs.** Keep the egg outline in its own pool and paint the fish's features on it, the vanilla 26.x way: a cap, one eye, a pale belly patch, side fin flaps, and one or two signature parts breaking the outline. A whole fish squeezed into the egg read as "a fat version of the fish" ([[2026-11-18 Sardina egg - a representation, not a fat fish]]).
+- **Spawn eggs keep vanilla's EGG outline** ([[2026-11-18 Three eggs rejected - must be egg-shaped; cawl and shark buckets accepted]]): a narrow top widening downwards, about rows 3-15 with the pool. A round ball read as a pufferfish, a whole animal filling the slot read as the animal, and a band across the middle read as a Pokéball. Signature parts may poke out a little, but the silhouette stays an egg. Any pale point sticking out at eye height in front of the head reads as a bird's beak, even a swordfish's sword ([[2026-11-18 Seahorse and incova eggs accepted; swordfish egg reads as a bird]]).
+- **Blind reads settle hard icons.** When critics go round in circles, give the icon to a fresh viewer with no context, alone among vanilla items at 1x and 2x, and ask what animal it is. Send it to the owner only when the first word is the right animal ([[2026-11-18 Blue shark egg accepted]]).
 - **Buckets show the head**, rising out of the water, the vanilla way, and never the tail: a whole fish looked "snapped in half" ([[2026-11-18 Cerna bucket - head showing, not the whole fish]]).
   - The bucket is a layered model: the player's own vanilla `cod_bucket` with our fish-only layer on top.
   - The layer must cover every cod pixel, using our own water where the fish doesn't reach (`check_cover()` in the bucket scripts).
@@ -56,6 +58,7 @@ Each lesson came from an owner correction; the decision notes hold their exact w
 
 **3D models**
 - **Water greys every colour.** Use a palette a step lighter than the photos, and judge under water beside vanilla cod, which greys the same way.
+- **Stay close to the icon's colours.** Lift the icon's palette by about x1.2 at most and keep its hue. Bigger lifts drifted: the ċawl turned ċerna-orange and the inċova's back turned emerald ([[2026-11-18 Cawl model accepted]]).
 - **Every fin touches the body**, with solid edges.
 - **Upright animals need their own animation.** The seahorse should hover and bob, not wag like a fish.
 
@@ -71,11 +74,11 @@ Owner decision: [[2026-11-18 Icons previewed offline; in-game tests for models a
 
 
 ## Fish models (contract for the art makers, 2026-11-17)
-The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, made by `art/src/fish_placeholders.py`) so the mobs could be tested first. Real art replaces these files at the same paths:
+The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, made by `art/src/fish_placeholders.py`) so the mobs could be tested first; the pixxispad (tier B) too. The script takes the fish to make by name (`fish_placeholders.py pixxispad`) and never overwrites a file that already exists. Real art replaces these files at the same paths:
 
 | What | Path (under `mod/src/main/`) |
 |---|---|
-| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`) |
+| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`, `PixxispadModel`, `IncovaModel`, `CawlModel`, `HutaKahlaModel`) |
 | Mob texture | `resources/assets/mimcontent/textures/entity/fish/<id>.png` |
 | Caught fish icon | `resources/assets/mimcontent/textures/item/<id>.png` (none for the żiemel; the lampuka's is accepted art) |
 | Bucket icon | `resources/assets/mimcontent/textures/item/<id>_bucket.png` |
@@ -88,4 +91,6 @@ A model class must:
 - optionally have **`tail`**, a child of the root: the back half of a long fish (the murina), swaying more gently, like vanilla salmon's back; put `tail_fin` inside it so the fin follows;
 - face **-z** (head toward -z), with y 24 at the ground, like vanilla's `CodModel`. Any other parts (fins, head) are free.
 
-The swimming animation lives in `FishModel` and the body wiggle and flopping on land in `FishRenderer`, so a model only names its parts. Sizes: keep the model about the size of the hitbox (see [[Fish]]). Test with `SMOKE_ONLY=fish ART_RUN=<name> tools/run-art.sh`: the `fish-*` shots show all seven in a glass tank beside vanilla cod and salmon, on land, and the items, buckets and eggs in the hotbar.
+The swimming animation lives in `FishModel` and the body wiggle and flopping on land in `FishRenderer`, so a model only names its parts. Sizes: the model can be its real size; the body box in `MimFishes` is only for swimming (see [[Fish]]). Test with `SMOKE_ONLY=fish ART_RUN=<name> tools/run-art.sh`: the `fish-*` shots show all seven in a glass tank beside vanilla cod and salmon, on land, and the items, buckets and eggs in the hotbar.
+
+**Hit boxes come from the model** ([[2026-11-18 Fish hitboxes match their size]]). Each fish is hit through a chain of boxes measured from its model at rest, fins, sword and tail included: the length from snout to tail is cut into equal slices of about 6 px (at least 2, at most 8), and each slice gets a box as tall as the cubes reaching into it and as wide as they are or as long as the slice, whichever is more. The numbers live in a table in `entity/fish/FishShape.java`, because the server can't read client model classes. **After changing a model, run the fish test** (`SMOKE_ONLY=fish`, or only this part with `SMOKE_ONLY=fish-hitboxes`): it measures every baked model again and fails on any fish whose row no longer matches, printing the new row to paste in. It also checks the land lift in `MimContentClient` against the table (copy a changed lift into `FishShape` too), and the murina's boxes against its wave (a new long fish that bends needs its sections added to `FishShape`'s `Wave`). The `fish-hitbox-*` shots show the chains with F3+B.

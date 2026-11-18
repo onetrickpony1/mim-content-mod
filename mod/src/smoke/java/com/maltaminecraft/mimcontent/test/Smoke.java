@@ -9,6 +9,16 @@ final class Smoke {
     private Smoke() {
     }
 
+    /** True only if SMOKE_ONLY was given and names this check. */
+    static boolean listed(String name) {
+        try {
+            Path file = Path.of("smoke-only");
+            return Files.exists(file) && Arrays.stream(Files.readString(file).trim().split(",")).anyMatch(s -> s.trim().equals(name));
+        } catch (java.io.IOException e) {
+            return false;
+        }
+    }
+
     static boolean runs(String name) {
         try {
             Path file = Path.of("smoke-only");

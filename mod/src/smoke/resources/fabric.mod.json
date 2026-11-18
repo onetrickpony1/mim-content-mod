@@ -5,5 +5,6 @@
   "name": "MiM content mod: art screenshots",
   "environment": "client",
   "entrypoints": {"fabric-client-gametest": ["com.maltaminecraft.mimcontent.test.LuzzuBuffsCheck", "com.maltaminecraft.mimcontent.test.ArtShots", "com.maltaminecraft.mimcontent.test.FishCheck"]},
+  "mixins": ["mimcontent_smoke.mixins.json"],
   "depends": {"mimcontent": "*", "fabric-client-gametest-api-v1": "*"}
 }

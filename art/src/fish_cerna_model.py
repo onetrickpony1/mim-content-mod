@@ -33,6 +33,7 @@ with --preview DIR, and the compare sheet with --sheet SCREENSHOT_DIR.
 
 Run:  art/.venv/bin/python art/src/fish_cerna_model.py [--preview DIR] [--sheet SCREENSHOT_DIR]
 """
+import colorsys
 import glob
 import math
 import os
@@ -49,14 +50,24 @@ TEXTURE = os.path.join(RES, "textures", "entity", "fish", "cerna.png")
 TW, TH = 64, 64
 
 
+VALUE = 1.0    # brightness: the texture's mean luminance comes out at about 113 (the icon's 88)
+
+
 def hexc(s):
     return (int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16), 255)
 
 
-def lift(c, k=0.10):
-    """One step lighter than the icon, toward a warm pale tan: under water the game greys and darkens every colour."""
-    t = (242, 220, 192)
-    return tuple(int(round(c[i] + (t[i] - c[i]) * k)) for i in range(3)) + (255,)
+def tune(c, value=VALUE):
+    """The icon's colour made a little redder and richer for the model: hue 18 degrees, saturation up 10%, and the
+    brightness scaled so the texture's mean luminance sits a little above the icon's (the water greys and darkens)."""
+    h, s, v = colorsys.rgb_to_hsv(c[0] / 255.0, c[1] / 255.0, c[2] / 255.0)
+    r, g, b = colorsys.hsv_to_rgb(18.0 / 360.0, min(1.0, s * 1.1), min(1.0, v * value))
+    return (int(round(r * 255)), int(round(g * 255)), int(round(b * 255)), 255)
+
+
+def darker(c, k=0.85):
+    """One tone darker: grades the steps of the head into each other."""
+    return (int(round(c[0] * k)), int(round(c[1] * k)), int(round(c[2] * k)), c[3])
 
 
 # The palette of the accepted cerna item icon (art/src/fish_cerna_icon.py PAL), each lifted one step for the water.
@@ -71,9 +82,9 @@ ICON = {
     "A": "#5a3426",                                                 # pectoral and anal fins
     "T": "#9a5e48", "t": "#7a4838", "u": "#4a2a20",                 # the rounded tail: lit, mid, shaded rim
 }
-PAL = {k: lift(hexc(v), 0.14) for k, v in ICON.items()}
-# the blotches lifted further, so the pale pattern still stands out from the mottled body in the blue of the water
-PAL["C"], PAL["c"] = lift(hexc(ICON["C"]), 0.4), lift(hexc(ICON["c"]), 0.3)
+PAL = {k: tune(hexc(v)) for k, v in ICON.items()}
+# the pale blotches: cream (yellower than the icon's, which go grey in the water), lit and partly shaded
+PAL["C"], PAL["c"] = hexc("#ead2a0"), hexc("#ccaa7a")
 PAL["E"] = hexc("#0a0a0a")      # the small eye, high on the head (the only black, not lifted)
 PAL["."] = (0, 0, 0, 0)
 CLEAR = PAL["."]
@@ -127,9 +138,9 @@ FEATURES = [
     "......." "..CC...." ".........",   # y 16
     "....E.." "k..c...." "CC.......",   # y 17
     "......." "k...CC.." ".c..cC...",   # y 18
-    "....C.." "k...cC.." ".CC..c...",   # y 19
-    ".LLlc.k" "..C....." "..c......",   # y 20
-    "LLLM..k" "..c...CC" "......c..",   # y 21
+    ".LL.C.." "k...cC.." ".CC..c...",   # y 19
+    ".MMMc.k" "..C....." "..c......",   # y 20
+    "LLLlM.k" "..c...CC" "......c..",   # y 21
     "lll.l.." "......c." ".........",   # y 22
     "......." "........" ".........",   # y 23
 ]
@@ -199,17 +210,35 @@ FACE_SALT = {"top": 1, "bottom": 2, "north": 3, "south": 4, "west": 5, "east": 6
 def side_colour(y, z, face, x):
     yi, zi = int(math.floor(y)), int(math.floor(z))
     ch = FEATURES[yi - SIDE_Y0][zi - SIDE_Z0]
+    if ch == "E" and face in ("north", "south"):
+        ch = "."                        # the eye only on the sides, not on the hidden back face of the forehead
     if ch != ".":
         return PAL[ch]
     return mottle(ROW_SHADE[yi], FACE_SALT[face], int(math.floor(x * 2)), yi, zi)
 
 
+STEPS = ("jaw_tip", "jaw", "lip_tip", "snout", "head_front", "head")
+
+
 def body_colour(name, face, x, y, z, x0, y0, z0, w, h, d):
-    """The colour of one texel of a body section, from where it sits on the fish."""
+    """The colour of one texel of a body section; the steps of the face have their outer edges one tone darker, so
+    the mouth and forehead grade round instead of reading as a stack of flat squares."""
+    col = body_texel(name, face, x, y, z, x0, y0, z0, w, h, d)
+    if name in STEPS and col != PAL["E"]:
+        if face == "north" and w >= 3 and (x - x0 < 1 or x0 + w - x < 1):
+            return darker(col)
+        if face in ("west", "east") and d >= 2 and z - z0 < 1:
+            return darker(col)
+        if face in ("west", "east", "north") and name in ("jaw_tip", "jaw") and y0 + h - y < 1:
+            return darker(col)          # the underside edge of the jutting jaw
+    return col
+
+
+def body_texel(name, face, x, y, z, x0, y0, z0, w, h, d):
     zi, xi = int(math.floor(z)), int(math.floor(x * 2))
     if face == "top":
-        if name in ("jaw_tip", "jaw"):
-            return PAL["L"]
+        if name in ("jaw_tip", "jaw", "lip_tip"):
+            return PAL["L"]             # pale lips on top
         # the back seen from above: darkest along the spine, mottled, with a few pale blotches
         r = hash01(7, xi, zi)
         if name in ("head", "trunk", "rear") and r > 0.88:

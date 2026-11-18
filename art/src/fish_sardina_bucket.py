@@ -32,6 +32,8 @@ import os
 
 from PIL import Image
 
+from fish_bucket_rim import check_rim
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 OUT = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures", "item",
@@ -81,6 +83,10 @@ GRID = [
     "................",
     "................",
 ]
+
+
+# The back-rim outline pixels (art/src/fish_bucket_rim.py) that the whole sardine lying across the mouth, its tail over the right side cover; every other one stays dark
+FISH_OVER_RIM = [(5, 2), (6, 2), (7, 2), (8, 2), (9, 2), (10, 2), (3, 3), (4, 3), (11, 3), (12, 3), (13, 4)]
 
 
 def build():
@@ -227,6 +233,7 @@ if __name__ == "__main__":
     import sys
     layer = build()
     check_cover(layer)
+    check_rim(layer, os.path.join(VANILLA, "cod_bucket.png"), FISH_OVER_RIM)
     layer.save(OUT, optimize=False)
     print("wrote", os.path.relpath(OUT, ROOT))
     if "--sheet" in sys.argv[1:]:

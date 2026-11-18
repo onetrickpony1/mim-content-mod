@@ -12,10 +12,19 @@ The mod is in its art phase. Everything below can be seen in the game, but has n
 - **Stews and dips** in a Maltese terracotta bowl: stuffat tal-fenek, aljotta, stuffat tal-qarnit and bigilla.
 - **Oven dishes you set on a table and eat in slices**, like a cake: ross il-forn, imqarrun il-forn, timpana and torta tal-lampuki.
 - **A kitchen:** the kenur (a stone stove) and the borma (a clay stew pot).
-- **Fish:** lampuka, tonn, sardina, ċerna, awrata, murina and żiemel tal-baħar (seahorse) swim in the sea, drop themselves as items (the seahorse drops nothing), and have spawn eggs and buckets. The tonn comes in mixed sizes. The lampuka, tonn and sardina have their final art; the others are being drawn.
+- **Fish:** eleven Maltese fish swim in the sea, each with its final art: lampuka, tonn, sardina, ċerna, awrata, murina, żiemel tal-baħar (seahorse), pixxispad (swordfish), inċova (anchovy), ċawl (damselfish) and ħuta kaħla (blue shark). They drop themselves as items (the seahorse drops nothing) and have spawn eggs and buckets. The tonn comes in mixed sizes, the seahorse hovers, and the blue shark leaves you alone unless you hurt it or carry fish.
 - **The luzzu**, Malta's fishing boat, in three colour schemes. Unlike the food it already plays: 3 seats, a fish hold, faster on open sea, and a little faster heading back to its harbour.
 
-The full list with item ids is in [docs/Food/Food in the mod.md](docs/Food/Food%20in%20the%20mod.md).
+## Progress
+
+Where everything stands, with pictures:
+
+- [Fish progress](docs/Creatures%20and%20Plants/Fish%20progress.md): every fish, its icon, spawn egg and in-game look, and what is left.
+- [Food progress](docs/Food/Food%20progress.md): every dish, drawn or still to draw.
+- [Food in the mod](docs/Food/Food%20in%20the%20mod.md): the full food list with item ids.
+- [Fish](docs/Creatures%20and%20Plants/Fish.md): how each fish behaves, where it lives and its size.
+- [Status](docs/STATUS.md): where the whole mod stands and what waits on a decision.
+- [Decisions](docs/Decisions/): every design decision, dated, in the owner's own words.
 
 ## Install
 

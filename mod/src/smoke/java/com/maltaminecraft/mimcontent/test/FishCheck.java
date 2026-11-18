@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.maltaminecraft.mimcontent.MimConfig;
 import com.maltaminecraft.mimcontent.MimFishes;
+import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -21,12 +22,15 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.fish.AbstractFish;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +38,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -48,6 +53,12 @@ import net.minecraft.world.phys.Vec3;
 public class FishCheck implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
+        if (Smoke.listed("fish-hitboxes")) {
+            // SMOKE_ONLY=fish-hitboxes: only the hit box check (it is also part of the whole fish check, below)
+            FishHitboxCheck.run(context);
+            System.out.println("[smoke] fish: hit boxes passed, screenshots written");
+            return;
+        }
         if (!Smoke.runs("fish")) {
             return;
         }
@@ -79,11 +90,12 @@ public class FishCheck implements FabricClientGameTest {
             context.waitTicks(10);
             AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
 
-            // 2. each fish lives and swims: all seven at once, positions sampled for 200 ticks
+            // 2. each fish lives and swims: all eleven at once (the tier A seven, the pixxispad, the inċova, ċawl and ħuta
+            // kaħla), positions sampled for 200 ticks
             List<MimFishes.Fish> all = MimFishes.ALL;
-            check(all.size() == 7, "expected 7 fish, found " + all.size());
+            check(all.size() == 11, "expected 11 fish, found " + all.size());
             for (int i = 0; i < all.size(); i++) {
-                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 5.5 + 2 * i, y - 3, z + 0.5));
+                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 1.2 * i, y - 3, z + 0.5));
             }
             context.waitTicks(2);
             Map<String, Vec3> start = positions(server, pool);
@@ -106,6 +118,12 @@ public class FishCheck implements FabricClientGameTest {
                 check(state.startsWith("ok") && state.contains("inWater=true"), f.id() + " not alive in water: " + state);
                 check(moved.getOrDefault(f.id(), 0.0) > 0.5, f.id() + " did not swim");
             }
+            // the pixxispad is a fast swimmer: twice vanilla's fish speed
+            double[] speeds = server.computeOnServer(s -> new double[] {
+                MimFishes.PIXXISPAD.type().create(s.overworld(), EntitySpawnReason.COMMAND).getAttributeValue(Attributes.MOVEMENT_SPEED),
+                MimFishes.CERNA.type().create(s.overworld(), EntitySpawnReason.COMMAND).getAttributeValue(Attributes.MOVEMENT_SPEED)});
+            log(String.format(Locale.ROOT, "swim speed: pixxispad %.2f, cerna %.2f", speeds[0], speeds[1]));
+            check(speeds[0] == 1.4 && speeds[1] == 0.7, "the pixxispad should swim at 1.4 and the others at 0.7");
 
             // 3. drops: kill each one in turn, count what lands
             for (MimFishes.Fish f : all) {
@@ -176,6 +194,9 @@ public class FishCheck implements FabricClientGameTest {
                 log(f.id() + ": bucket and egg " + result);
                 check(result.equals("ok"), f.id() + ": " + result);
             }
+            server.runCommand("kill @e[type=!minecraft:player]");
+            vanillaOceanSpawns(server);
+            shark(context, server, x, y, z, pool);
             server.runCommand("gamemode creative @a");
             server.runCommand("kill @e[type=!minecraft:player]");
             log("all checks passed");
@@ -183,7 +204,130 @@ public class FishCheck implements FabricClientGameTest {
             shots(context, server, world, p[0], p[1], p[2]);
         }
         tonnSizes(context);
+        FishHitboxCheck.run(context);
         System.out.println("[smoke] fish: all checks passed, screenshots written");
+    }
+
+    /**
+     * The inċova, ċawl and ħuta kaħla are in vanilla's oceans (the switch is on): each in the oceans picked for it.
+     * (The Malta world's biomes aren't in a test world.)
+     */
+    private static void vanillaOceanSpawns(TestServerContext server) {
+        Map<MimFishes.Fish, List<net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome>>> want = Map.of(
+            MimFishes.INCOVA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.OCEAN, Biomes.DEEP_OCEAN),
+            MimFishes.CAWL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
+            MimFishes.HUTA_KAHLA, List.of(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_OCEAN));
+        String result = server.computeOnServer(s -> {
+            var biomes = s.registryAccess().lookupOrThrow(Registries.BIOME);
+            StringBuilder out = new StringBuilder();
+            for (var e : want.entrySet()) {
+                for (var key : e.getValue()) {
+                    boolean found = spawnsIn(biomes.getValue(key)).getMobsToSpawn(MobCategory.WATER_AMBIENT).unwrap().stream()
+                        .anyMatch(w -> w.value().type() == e.getKey().type());
+                    if (!found) {
+                        out.append(e.getKey().id()).append(" missing from ").append(key.identifier()).append("; ");
+                    }
+                }
+                // and never in a cold ocean
+                if (spawnsIn(biomes.getValue(Biomes.COLD_OCEAN)).getMobsToSpawn(MobCategory.WATER_AMBIENT).unwrap().stream()
+                    .anyMatch(w -> w.value().type() == e.getKey().type())) {
+                    out.append(e.getKey().id()).append(" in cold ocean; ");
+                }
+            }
+            return out.isEmpty() ? "ok" : out.toString();
+        });
+        log("inċova, ċawl and ħuta kaħla spawns in vanilla oceans: " + result);
+        check(result.equals("ok"), "spawns: " + result);
+    }
+
+    /** A biome's natural spawns (in 26.3 an environment attribute of the biome). */
+    private static net.minecraft.world.level.biome.MobSpawnSettings spawnsIn(net.minecraft.world.level.biome.Biome biome) {
+        var attribute = net.minecraft.world.attribute.EnvironmentAttributes.NATURAL_MOB_SPAWNS;
+        return biome.getAttributes().applyModifier(attribute, attribute.defaultValue());
+    }
+
+    /**
+     * The ħuta kaħla's behaviour (owner 2026-11-18: "blue shark should ignore you unless you hurt it OR you have fish
+     * in your inventory"), with the player in survival in the water beside it: an idle player without fish is left
+     * alone; a cod in the hotbar, or a lampuka deep in the inventory, draws it; it gives up once the fish are gone;
+     * hurting it makes it bite back.
+     */
+    private static void shark(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool) {
+        server.runCommand("clear @a");
+        server.runCommand("effect give @a minecraft:water_breathing 120 0 true");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:huta_kahla %.1f %d %.1f {PersistenceRequired:1b}", x + 0.5, y - 3, z + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %d %.1f", x - 3.5, y - 5, z + 0.5));
+        context.waitTicks(5);
+        // idle, no fish: 5 seconds, never a target
+        boolean everTargeted = false;
+        for (int t = 0; t < 10; t++) {
+            context.waitTicks(10);
+            everTargeted |= sharkState(server, pool).startsWith("target=player");
+        }
+        String idle = sharkState(server, pool);
+        log("shark beside an idle player without fish: " + idle + (everTargeted ? " (but targeted the player at some point)" : ""));
+        check(!everTargeted && idle.startsWith("target=none") && idle.contains("angry=false"), "the shark should ignore a player without fish: " + idle);
+
+        String[][] baits = {{"hotbar.0", "minecraft:cod"}, {"inventory.10", "mimcontent:lampuka"}};
+        for (String[] bait : baits) {
+            server.runCommand("item replace entity @a " + bait[0] + " with " + bait[1]);
+            String state = waitForShark(context, server, pool, "target=player", 100);
+            log("player carrying " + bait[1] + " (" + bait[0] + "): " + state);
+            check(state.startsWith("target=player") && state.contains("bait=true") && state.contains("angry=false"),
+                "the shark should hunt a player carrying " + bait[1] + ": " + state);
+            server.runCommand("clear @a");
+            String gaveUp = waitForShark(context, server, pool, "target=none", 140);
+            log("fish gone: " + gaveUp);
+            check(gaveUp.startsWith("target=none"), "the shark should give up once the fish are gone: " + gaveUp);
+        }
+
+        // hurt it: it turns on the player and bites (resistance keeps the player safe; the hit still counts)
+        server.runOnServer(s -> {
+            ServerLevel level = s.overworld();
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setLastHurtByMob(null);
+            HutaKahlaFish shark = (HutaKahlaFish) level.getEntities(MimFishes.HUTA_KAHLA.type(), pool, e -> true).getFirst();
+            shark.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+        });
+        String angry = waitForShark(context, server, pool, "target=player", 40);
+        log("after being hurt: " + angry);
+        check(angry.startsWith("target=player") && angry.contains("angry=true") && angry.contains("bait=false"),
+            "a hurt shark should turn on the player: " + angry);
+        boolean bitten = false;
+        for (int t = 0; t < 30 && !bitten; t++) {
+            context.waitTicks(10);
+            bitten = server.computeOnServer(s -> {
+                ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                return player.getLastHurtByMob() != null && player.getLastHurtByMob().getType() == MimFishes.HUTA_KAHLA.type();
+            });
+        }
+        log("the hurt shark bit the player: " + bitten);
+        check(bitten, "a hurt shark should bite the player");
+        server.runCommand("effect clear @a minecraft:water_breathing");
+        server.runCommand("clear @a");
+    }
+
+    /** Waits up to the given ticks until the shark's state starts with the prefix; returns the last state. */
+    private static String waitForShark(ClientGameTestContext context, TestServerContext server, AABB pool, String prefix, int ticks) {
+        String state = sharkState(server, pool);
+        for (int t = 0; t < ticks && !state.startsWith(prefix); t += 5) {
+            context.waitTicks(5);
+            state = sharkState(server, pool);
+        }
+        return state;
+    }
+
+    private static String sharkState(TestServerContext server, AABB pool) {
+        return server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            List<? extends AbstractFish> sharks = level.getEntities(MimFishes.HUTA_KAHLA.type(), pool, e -> true);
+            if (sharks.size() != 1) {
+                return "found " + sharks.size() + " sharks";
+            }
+            HutaKahlaFish shark = (HutaKahlaFish) sharks.getFirst();
+            String target = shark.getTarget() == null ? "none" : shark.getTarget() instanceof ServerPlayer ? "player" : shark.getTarget().getType().toString();
+            return String.format(Locale.ROOT, "target=%s angry=%s bait=%s", target, shark.isAngry(), shark.isChasingBait());
+        });
     }
 
     /** The art review scene, on the ground near spawn: a long glass tank seen side on, fish on land, the hotbar. */
@@ -223,6 +367,12 @@ public class FishCheck implements FabricClientGameTest {
         sardinaShots(context, server, world, x + 30, y, z + 25);
         cernaShots(context, server, world, x - 30, y, z + 50);
         ziemelShots(context, server, world, x + 30, y, z + 75);
+        pixxispadShots(context, server, world, x - 30, y, z + 75);
+        awrataShots(context, server, world, x + 30, y, z + 50);
+        murinaShots(context, server, world, x, y, z + 100);
+        incovaShots(context, server, world, x + 30, y, z + 125);
+        cawlShots(context, server, world, x - 30, y, z + 125);
+        hutaKahlaShots(context, server, world, x - 30, y, z + 150);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {
@@ -233,8 +383,10 @@ public class FishCheck implements FabricClientGameTest {
             {"minecraft:cod_spawn_egg", "mimcontent:lampuka_spawn_egg", "mimcontent:tonn_spawn_egg", "mimcontent:sardina_spawn_egg",
                 "mimcontent:cerna_spawn_egg", "mimcontent:awrata_spawn_egg", "mimcontent:murina_spawn_egg", "mimcontent:ziemel_spawn_egg",
                 "minecraft:salmon_spawn_egg"},
+            {"minecraft:cod", "mimcontent:pixxispad", "minecraft:cod_bucket", "mimcontent:pixxispad_bucket", "minecraft:cod_spawn_egg",
+                "mimcontent:pixxispad_spawn_egg", "mimcontent:tonn", "mimcontent:tonn_bucket", "mimcontent:tonn_spawn_egg"},
         };
-        String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs"};
+        String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad"};
         context.runOnClient(mc -> {
             if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.options.guiScale().set(4);
@@ -588,6 +740,54 @@ public class FishCheck implements FabricClientGameTest {
         look(context, server, x + 0.5, y, z - 1.3, x + 0.5, y + 0.2, z + 0.5, "fish-cerna-on-land");
     }
 
+    /** The cawl model's own review: one cawl alone in a small tank, close up from several sides, one beside a vanilla cod, and one on land. */
+    private static void cawlShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 7, y, z - 6, x + 7, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 6, x + 7, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 4, y, z + 4, x + 4, y + 4, z + 9, "minecraft:glass");
+        fill(server, x - 3, y, z + 5, x + 3, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cawl %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 5.6));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.4, y + 1.5, z + 5.6));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cawl %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.5, y, z + 4.3, x + 0.5, y + 1.5, z + 5.6, "fish-cawl-side");
+        look(context, server, x - 0.4, y + 0.6, z + 4.4, x + 0.5, y + 1.5, z + 5.6, "fish-cawl-three-quarter");
+        look(context, server, x + 0.5, y + 1.1, z + 4.85, x + 0.5, y + 1.5, z + 5.6, "fish-cawl-top");
+        look(context, server, x - 0.45, y, z + 4.3, x - 0.45, y + 1.5, z + 5.6, "fish-cawl-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 1.0, x + 0.5, y + 0.15, z + 0.5, "fish-cawl-on-land");
+    }
+
+    /** The awrata model's own review: one awrata alone in a small tank, close up from several sides, one beside a vanilla cod, and one on land. */
+    private static void awrataShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 7, y, z - 6, x + 7, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 6, x + 7, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 5, y, z + 4, x + 5, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 4, y, z + 5, x + 4, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:awrata %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 6.0));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.6, z + 6.0));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:awrata %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.5, y + 0.2, z + 4.3, x + 0.5, y + 1.8, z + 6.0, "fish-awrata-side");
+        look(context, server, x - 0.8, y + 0.6, z + 4.5, x + 0.4, y + 1.8, z + 6.0, "fish-awrata-three-quarter");
+        look(context, server, x + 0.5, y + 1.5, z + 4.75, x + 0.5, y + 1.8, z + 6.0, "fish-awrata-top");
+        look(context, server, x - 0.5, y + 0.2, z + 4.3, x - 0.5, y + 1.8, z + 6.0, "fish-awrata-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 1.1, x + 0.5, y + 0.15, z + 0.5, "fish-awrata-on-land");
+    }
+
     /** The ziemel model's own review: one seahorse alone in a small tank (side, three-quarter, and face on from inside
      *  the water), one beside a vanilla cod for its size, and one on land. */
     private static void ziemelShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
@@ -612,8 +812,114 @@ public class FishCheck implements FabricClientGameTest {
             x - 1.4, y + 1.5, z + 5.6));
         context.waitTicks(20);
         look(context, server, x - 0.45, y + 0.1, z + 4.3, x - 0.45, y + 1.6, z + 5.6, "fish-ziemel-beside-cod");
+        // side on, looking down through the water so the tank's sand floor is behind it: does it still show on sand?
+        look(context, server, x + 0.5, y + 1.4, z + 4.4, x + 0.5, y + 1.6, z + 5.6, "fish-ziemel-side-on-sand");
         server.runCommand("gamemode creative @a");
         look(context, server, x + 0.5, y, z - 1.0, x + 0.5, y + 0.15, z + 0.5, "fish-ziemel-on-land");
+    }
+
+    /** The pixxispad model's own review: one alone in a long tank (side, three-quarter, top), with a vanilla cod in
+     *  front of its sword for size, and one on land. */
+    private static void pixxispadShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 9, y, z - 6, x + 9, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 9, y - 1, z - 6, x + 9, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 6, y, z + 4, x + 6, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:pixxispad %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 2.6, y + 1.6, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:pixxispad %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 0.3, y + 0.2, z + 4.3, x - 0.3, y + 1.8, z + 6.5, "fish-pixxispad-side");
+        // front three-quarter from the sword's side; the cod (x - 2.6) stays behind the camera's left shoulder
+        look(context, server, x - 1.4, y + 0.7, z + 4.5, x + 0.4, y + 1.8, z + 6.5, "fish-pixxispad-three-quarter");
+        look(context, server, x - 0.65, y + 0.2, z + 4.3, x - 0.65, y + 1.8, z + 6.5, "fish-pixxispad-beside-cod");
+        // from above, still inside the glass wall: look() puts a barrier under the camera, which must not land in the
+        // water next to the fish (it would cut a hole in the water and hurt the fish, flashing it red)
+        look(context, server, x + 0.3, y + 2.6, z + 4.6, x + 0.3, y + 1.8, z + 6.5, "fish-pixxispad-top");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 2.6, x + 0.5, y + 0.2, z + 0.5, "fish-pixxispad-on-land");
+    }
+
+    /** The murina model's own review: one moray alone in a tank (it is 2 blocks long), close up from several sides,
+     *  one beside a vanilla cod, and one on land. */
+    private static void murinaShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 7, y, z - 6, x + 7, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 6, x + 7, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 5, y, z + 4, x + 5, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 4, y, z + 5, x + 4, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:murina %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 6.2));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.9, y + 1.5, z + 6.2));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:murina %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.6, y + 0.1, z + 4.3, x + 0.6, y + 1.7, z + 6.2, "fish-murina-side");
+        look(context, server, x - 1.0, y + 0.5, z + 4.5, x + 0.3, y + 1.7, z + 6.2, "fish-murina-three-quarter");
+        look(context, server, x + 0.6, y + 1.6, z + 4.7, x + 0.6, y + 1.7, z + 6.2, "fish-murina-top");
+        look(context, server, x - 0.3, y + 0.1, z + 4.3, x - 0.3, y + 1.7, z + 6.2, "fish-murina-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.6, y, z - 1.3, x + 0.6, y + 0.2, z + 0.5, "fish-murina-on-land");
+    }
+
+    /** The incova model's own review: one incova alone in a small tank, close up from several sides, one beside a vanilla cod, and one on land. */
+    private static void incovaShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 7, y, z - 6, x + 7, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 6, x + 7, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 4, y, z + 4, x + 4, y + 4, z + 9, "minecraft:glass");
+        fill(server, x - 3, y, z + 5, x + 3, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:incova %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 5.6));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.4, y + 1.5, z + 5.6));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:incova %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.5, y, z + 4.3, x + 0.5, y + 1.5, z + 5.6, "fish-incova-side");
+        look(context, server, x - 0.4, y + 0.6, z + 4.4, x + 0.5, y + 1.5, z + 5.6, "fish-incova-three-quarter");
+        look(context, server, x + 0.5, y + 1.1, z + 4.85, x + 0.5, y + 1.5, z + 5.6, "fish-incova-top");
+        look(context, server, x - 0.45, y, z + 4.3, x - 0.45, y + 1.5, z + 5.6, "fish-incova-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 1.0, x + 0.5, y + 0.15, z + 0.5, "fish-incova-on-land");
+    }
+
+    /** The huta kahla model's own review: one blue shark alone in a long tank (it is 2.6 blocks long), close up from
+     *  several sides, one with a vanilla cod in front of its snout, and one on land. */
+    private static void hutaKahlaShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        fill(server, x - 9, y, z - 6, x + 9, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 9, y - 1, z - 6, x + 9, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 6, y, z + 4, x + 6, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 5, y, z + 5, x + 5, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:huta_kahla %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 1.5, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.9, y + 1.7, z + 6.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:huta_kahla %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.7, y + 0.2, z + 4.3, x + 0.7, y + 1.85, z + 6.5, "fish-huta-kahla-side");
+        look(context, server, x - 2.0, y + 0.7, z + 4.5, x + 0.5, y + 1.85, z + 6.5, "fish-huta-kahla-three-quarter");
+        // from high in the front glass wall, looking steeply down: look() puts a barrier under the camera, and one
+        // inside the water would cut into the shark's hitbox and hurt it (it turns red)
+        look(context, server, x + 0.4, y + 2.6, z + 4.3, x + 0.4, y + 1.85, z + 6.5, "fish-huta-kahla-top");
+        look(context, server, x - 0.3, y + 0.2, z + 4.3, x - 0.3, y + 1.85, z + 6.5, "fish-huta-kahla-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 2.6, x + 0.5, y + 0.2, z + 0.5, "fish-huta-kahla-on-land");
     }
 
     private static Map<String, Vec3> positions(TestServerContext server, AABB area) {

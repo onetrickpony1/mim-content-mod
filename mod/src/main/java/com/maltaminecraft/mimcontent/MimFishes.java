@@ -1,5 +1,6 @@
 package com.maltaminecraft.mimcontent;
 
+import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimSchoolingFish;
 import com.maltaminecraft.mimcontent.entity.fish.TonnFish;
@@ -60,11 +61,21 @@ public final class MimFishes {
     public static final Fish LAMPUKA = schooling("lampuka", 1.0F, 0.45F, 6.0, 6, () -> MimContent.LAMPUKA);
     // Fish that swim alone. The last number is how many can spawn together.
     public static final Fish AWRATA = solitary("awrata", 0.7F, 0.45F, 4.0, 4, () -> MimContent.item("awrata", Item::new, new Item.Properties()));
-    public static final Fish CERNA = solitary("cerna", 0.9F, 0.6F, 10.0, 1, () -> MimContent.item("cerna", Item::new, new Item.Properties()));
+    public static final Fish CERNA = solitary("cerna", 0.9F, 0.7F, 10.0, 1, () -> MimContent.item("cerna", Item::new, new Item.Properties()));
     // TODO murina: bites when disturbed and hides in rock holes (later, with the other behaviours)
     public static final Fish MURINA = solitary("murina", 0.9F, 0.3F, 8.0, 1, () -> MimContent.item("murina", Item::new, new Item.Properties()));
     /** Protected in Malta: drops nothing, only to be looked at (or carried in a bucket). */
     public static final Fish ZIEMEL = solitary("ziemel", 0.4F, 0.8F, 2.0, 2, () -> null);
+    // Tier B (owner, 2026-11-18: "send a new agent to work on the swordfish"). Big like the tonn and fast: it swims at
+    // twice vanilla's fish speed (movement speed 1.4, vanilla 0.7).
+    public static final Fish PIXXISPAD = solitary("pixxispad", 1.3F, 0.6F, 12.0, 1, 1.4, () -> MimContent.item("pixxispad", Item::new, new Item.Properties()));
+    // Tier B (owner, 2026-11-18: "start on incova, cawl, and huta kahla/blue shark").
+    // The inċova (anchovy): a shoal like the sardina's, a little smaller and slimmer.
+    public static final Fish INCOVA = schooling("incova", 0.35F, 0.2F, 3.0, 12, () -> MimContent.item("incova", Item::new, new Item.Properties()));
+    // The ċawl (damselfish): small, deep-bodied, in small groups over shallow rock.
+    public static final Fish CAWL = solitary("cawl", 0.35F, 0.4F, 3.0, 6, () -> MimContent.item("cawl", Item::new, new Item.Properties()));
+    // The ħuta kaħla (blue shark): about 2.75 blocks long, alone, neutral (HutaKahlaFish); bites for 4 (2 hearts).
+    public static final Fish HUTA_KAHLA = shark("huta_kahla", 1.3F, 0.7F, 16.0, 0.9, 4.0, () -> MimContent.item("huta_kahla", Item::new, new Item.Properties()));
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
     private static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
@@ -86,6 +97,11 @@ public final class MimFishes {
         // TODO lampuka: only from mid August to December, once the mod has a calendar (the lampuka season)
         spawn(LAMPUKA, 6, 2, 4, malta(concat(MALTA_DEEP, "bahar_sea", "dwejra_fond_deep_sea")));
         spawn(ZIEMEL, 3, 1, 2, malta("posidonia_meadows", "dwejra_posidonia_meadows"));
+        spawn(PIXXISPAD, 1, 1, 1, malta(MALTA_DEEP));
+        spawn(INCOVA, 15, 4, 8, malta(MALTA_DEEP));
+        spawn(INCOVA, 10, 4, 8, malta("bahar_sea", "dwejra_bahar_sea"));
+        spawn(CAWL, 20, 3, 6, malta("bahar_sea", "qawra_inland_sea", "dwejra_bahar_sea"));
+        spawn(HUTA_KAHLA, 1, 1, 1, malta(MALTA_DEEP));
         if (MimConfig.fishInVanillaOceans) {
             ResourceKey<Biome> warm = Biomes.WARM_OCEAN, luke = Biomes.LUKEWARM_OCEAN, deepLuke = Biomes.DEEP_LUKEWARM_OCEAN;
             spawn(SARDINA, 10, 4, 8, List.of(warm, luke, deepLuke));
@@ -95,6 +111,10 @@ public final class MimFishes {
             spawn(TONN, 2, 3, 5, List.of(deepLuke));
             spawn(LAMPUKA, 4, 2, 4, List.of(warm, luke, deepLuke));
             spawn(ZIEMEL, 2, 1, 2, List.of(warm, luke));
+            spawn(PIXXISPAD, 1, 1, 1, List.of(warm, luke));
+            spawn(INCOVA, 8, 4, 8, List.of(warm, luke, deepLuke, Biomes.OCEAN, Biomes.DEEP_OCEAN));
+            spawn(CAWL, 8, 3, 6, List.of(warm, luke));
+            spawn(HUTA_KAHLA, 1, 1, 1, List.of(luke, deepLuke, Biomes.DEEP_OCEAN));
         }
 
         // Besides the mod's own tab: spawn eggs in vanilla's Spawn Eggs tab, buckets beside vanilla's fish buckets.
@@ -123,12 +143,29 @@ public final class MimFishes {
     }
 
     private static Fish solitary(String id, float width, float height, double health, int cluster, Supplier<Item> item) {
+        return solitary(id, width, height, health, cluster, 0.7, item);
+    }
+
+    /** speed: the movement speed attribute, which sets how fast it swims (vanilla's fish 0.7). */
+    private static Fish solitary(String id, float width, float height, double health, int cluster, double speed, Supplier<Item> item) {
         Item[] bucket = new Item[1];
         SpawnPlacements.SpawnPredicate<MimFish> rule = id.equals("murina") ? MimFishes::nearRock : WaterAnimal::checkSurfaceWaterAnimalSpawnRules;
         EntityType<MimFish> type = MimContent.entity(id, FabricEntityType.Builder.<MimFish>createMob(
                 (t, level) -> new MimFish(t, level, () -> bucket[0], cluster), MobCategory.WATER_AMBIENT,
                 b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, rule)
-                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)))
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health).add(Attributes.MOVEMENT_SPEED, speed)))
+            .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** The blue shark: a solitary fish with a bite (attack damage) that is neutral to players (HutaKahlaFish). */
+    private static Fish shark(String id, float width, float height, double health, double speed, double damage, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<HutaKahlaFish> type = MimContent.entity(id, FabricEntityType.Builder.<HutaKahlaFish>createMob(
+                (t, level) -> new HutaKahlaFish(t, level, () -> bucket[0], 1), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, WaterAnimal::checkSurfaceWaterAnimalSpawnRules)
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)
+                        .add(Attributes.MOVEMENT_SPEED, speed).add(Attributes.ATTACK_DAMAGE, damage)))
             .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
         return finish(id, type, bucket, item);
     }

@@ -3,33 +3,35 @@ swimming mob: its 3D model and its texture. This is the seahorse's first piece: 
 palette that the bucket and the spawn egg copy later.
 
 Drawn from the reference photos in art/references/fish_ziemel_refonly/ (list.tsv). What makes it a ziemel:
-  - it swims upright, the head bent forward on a neck, at an angle to the body like a horse's head,
-  - a long tubular snout, low on the head, with the mouth at its tip, and the eye above and behind its base,
-  - a small crown (the coronet) on top of the head, with a tuft of fleshy filaments behind it (the "mane" of
-    H. guttulatus) and another on the back of the neck,
-  - a pot belly bulging forward, the back nearly straight,
-  - bony rings all along the body and tail: a light ridge and a darker groove, row by row, with knobs at the edges,
-  - a thin tail curled forward under the belly into a hook with an open loop (it holds on to seagrass with it),
+  - it swims upright, a horse-like head on a bent neck (the throat set back behind the jaw),
+  - a long tubular snout coming out of the middle of a 3 px deep head, the eye high and back with a cheek below it,
+  - a small crown (the coronet) on top of the head, and single fleshy filaments (the "mane" of H. guttulatus) at
+    uneven heights on the back of the head and the neck,
+  - a pot belly bulging low and forward, the back nearly straight,
+  - bony rings all along the body and tail: a darker band every second row,
+  - a thin tail, tapering from 2 px to 1, that curls forward under the belly into a closed loop with an open centre
+    (it holds on to seagrass with it),
   - a small fan-shaped dorsal fin on the lower back, with rays and a solid edge, that flutters,
-  - golden ochre to orange-brown, with small pale dots (guttulatus means "spotted").
-The colours follow the golden-brown fish in the photos (Ria de Vigo, Arrabida, the Gervais plate), kept lighter than
-the photos on purpose: under water the game tints everything blue-grey and darkens it.
+  - brown-ochre, with small white dots (guttulatus means "spotted").
+The colours follow the golden-brown fish in the photos (Ria de Vigo, Arrabida, the Gervais plate): lighter than the
+photos, since under water the game tints everything blue-grey and darkens it, but not so light that it vanishes on
+sand. Every face is shaded like a rounded form: tops lightest, sides mid with a lit front and a darker lower edge,
+undersides darkest.
 
 Size: bigger than life, as the owner asked (decision 2026-11-18 "Ziemel - start, bigger than life"). A real
 H. guttulatus is at most about 15 to 18 cm, under 3 model pixels, so nothing of it would show. At vanilla's pixel
 (1/16 block, one texture pixel per model pixel, like cod and salmon) the smallest seahorse that still shows every
-feature and its S-shaped build is 13 px tall: a 1 px crown, a 3 px head (sloping forehead, eye row, snout row), a
-1 px neck bend, a 4 px trunk (taller than it is deep, with the pot belly low and forward) and a 4 px tail with an open
-curl. With a 12 px version the trunk came out wider than tall and read as a block, not a seahorse. That is 0.81
-blocks tall and 0.56 long (snout tip to dorsal fin), about five times life size: as tall as a vanilla cod is long,
-but slim (3 px at its widest, cod 2 px, salmon 3 px). Hitbox 0.4 wide x 0.8 tall (MimFishes.ZIEMEL), so it covers
-the whole animal.
+feature and its S-shaped build is 13 px tall: a 1 px crown, a 3 px head, a 4 px trunk (taller than it is deep, the
+throat notch on top and the pot belly low and forward) and a 5 px tail ending in a 3 x 3 loop. A 12 px version came
+out with a trunk wider than tall and read as a block, not a seahorse. That is 0.81 blocks tall and 0.56 long (snout
+tip to dorsal fin), about five times life size: as tall as a vanilla cod is long, but slim (3 px at its widest, cod
+2 px, salmon 3 px). Hitbox 0.4 wide x 0.8 tall (MimFishes.ZIEMEL), so it covers the whole animal.
 
 Model contract (docs/Tools and Process/Art pipeline.md, "Fish models"): head toward -z, y 24 at the ground, a root
-child "body". The dorsal fin is the "tail_fin" (FishModel swings it about the line where it joins the back, so it
-flutters to either side), and the curled tail is the "tail" (it sways gently about its own upright axis, so the curl
-swings a little from side to side, as a seahorse's tail drifts). The body stays upright in the water: the shared
-FishRenderer only turns it on its side out of water.
+child "body", the dorsal fin as the "tail_fin" and the curled tail as the "tail". The model has its own swimming on
+top of FishModel's: in the water it bobs slowly up and down, the dorsal fin flutters fast and narrow, and the tail
+curls in and out a little instead of swinging sideways. Its renderer wiggle is 0 (MimContentClient), so the body
+stays still and upright; out of water the shared FishRenderer turns it on its side and it flops like every fish.
 
 Writes (byte-identical on every run):
   mod/src/main/java/com/maltaminecraft/mimcontent/client/fish/ZiemelModel.java
@@ -77,9 +79,9 @@ CLEAR = (0, 0, 0, 0)
 # (+). Side profile, head to the left (rows y, columns z; C crown, H head, E eye, S snout, M filament, B body,
 # D dorsal fin, T tail, o the open centre of the tail's loop):
 #        z  -4 -3 -2 -1  0  1  2  3  4
-#   y 11                    C
-#     12                 H  H  E
-#     13     S  S  S     H  H  H  M
+#   y 11                       C
+#     12                 H  H  E  H
+#     13     S  S  S     H  H  H  H  M
 #     14                 H  H  H
 #     15                    B  B  B  M
 #     16              B  B  B  B  B
@@ -96,13 +98,14 @@ PARTS = {
     "tail_fin": (None, (0.0, 18.5, 3.0)),    # the line where the dorsal fin joins the back
 }
 CUBES = [
-    ("coronet", "body", (-0.5, 11.0, 0.0), (1, 1, 1)),
-    ("head", "body", (-1.0, 12.0, -1.0), (2, 3, 3)),
+    ("coronet", "body", (-0.5, 11.0, 1.0), (1, 1, 1)),
+    ("head", "body", (-1.0, 12.0, -1.0), (2, 2, 4)),
+    ("jaw", "body", (-1.0, 14.0, -1.0), (2, 1, 3)),
     ("snout", "body", (-0.5, 13.0, -4.0), (1, 1, 3)),
     ("chest", "body", (-1.0, 15.0, 0.0), (2, 1, 3)),
     ("belly", "body", (-1.5, 16.0, -2.0), (3, 2, 5)),
     ("belly_lo", "body", (-1.0, 18.0, -1.0), (2, 1, 4)),
-    ("mane", "body", (0.0, 11.0, 2.0), (0, 6, 2)),
+    ("mane", "body", (0.0, 11.0, 3.0), (0, 6, 1)),
     ("tail1", "tail", (-1.0, 19.0, 1.0), (2, 1, 2)),
     ("tail2", "tail", (-0.5, 20.0, 1.0), (1, 1, 1)),
     ("loop_top", "tail", (-0.5, 21.0, -1.0), (1, 1, 3)),
@@ -114,16 +117,16 @@ CUBES = [
 SOLID = [c for c in CUBES if c[3][0] and c[3][1] and c[3][2]]
 RINGED = ("chest", "belly", "belly_lo", "tail1", "tail2", "loop_top", "loop_front", "loop_back", "loop_bottom")
 
-# Plane outlines by absolute row (y) and column (z), one character per pixel. Mane: rows 11..16, columns z 2..3:
+# Plane outlines by absolute row (y) and column (z), one character per pixel. Mane: rows 11..16, column z 3:
 # single wisps at uneven heights with gaps between them, one on the back of the head, one on the neck.
 #   m filament, l a lighter filament, . clear (texels inside the head and body are cleared anyway)
 MANE_MAP = [
-    "..",
-    "..",
-    "l.",
-    "..",
-    ".m",
-    "..",
+    ".",
+    ".",
+    "l",
+    ".",
+    "m",
+    ".",
 ]
 # The dorsal fin: rows 17..19, columns z 3..4: rays from the base, a solid darker outer edge, the lower outer corner
 # rounded off.   f membrane, r ray, e edge
@@ -159,13 +162,13 @@ def body_colour(cube, face, x, y, z):
             v += 0.4                               # the front of the flank catches the light
         elif d >= 3 and zi == int(z0 + d - 1):
             v -= 0.4                               # its back edge turns into shade
-        if h >= 2 and yi == int(y0 + h - 1):
+        if h >= 2 and yi == int(y0 + h - 1) and name not in RINGED:
             v -= 0.6                               # the lower edge of a deep part turns under
     elif face in ("north", "south", "top", "bottom") and w >= 3:
         v += 0.3 if abs(x - (x0 + w / 2.0)) < 0.5 else -0.2   # a wide face: lighter down its middle
-    if name in RINGED and face not in ("top", "bottom") and yi % 2 == 0:
+    if name in RINGED and face not in ("top", "bottom") and yi % 2 == 1:
         v -= 0.8                                   # the bony rings: a darker band every second row
-    if name == "head" and side and (yi, zi) in ((12, 0), (13, 1)):
+    if name in ("head", "jaw") and side and (yi, zi) in ((12, 0), (12, 2), (13, 1)):
         v += 0.8                                   # light round the eye, so nothing dark sits beside it
     if name == "coronet":
         v += 0.5
@@ -179,7 +182,7 @@ def plane_colour(cube, y, z):
     name = cube[0]
     yi, zi = int(math.floor(y)), int(math.floor(z))
     if name == "mane":
-        ch = MANE_MAP[yi - 11][zi - 2]
+        ch = MANE_MAP[yi - 11][zi - 3]
         return {"m": MANE, "l": MANE_L, ".": CLEAR}[ch]
     ch = DORSAL_MAP[yi - 17][zi - 3]
     return {"f": FIN, "r": RAY, "e": EDGE, ".": CLEAR}[ch]
@@ -297,18 +300,50 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.util.Mth;
 
 /**
- * The ziemel tal-bahar (seahorse), upright: a horse-like head bent forward on its neck, a long tubular snout, a small
- * crown with a tuft of filaments behind it, a pot belly, bony rings along the body and a thin tail curled forward
- * into a hook. Golden ochre with small pale dots. Bigger than life so its detail shows: 13 px tall (0.81 blocks),
- * 9 px from snout tip to dorsal fin, head toward -z, the ground at y 24.
- * The dorsal fin is the "tail_fin" (it flutters from side to side), the curled tail is the "tail" (it sways gently).
+ * The ziemel tal-bahar (seahorse), upright: a horse-like head on a bent neck, a long tubular snout from the middle of
+ * the head, a small crown, single filaments on the back of the head and neck, a pot belly, bony rings along the body
+ * and a thin tail curled forward into a closed loop. Brown-ochre with small white dots. Bigger than life so its detail
+ * shows: 13 px tall (0.81 blocks), 9 px from snout tip to dorsal fin, head toward -z, the ground at y 24.
+ * Its own swimming: in the water it bobs slowly up and down (0.04 blocks, every 2.5 s), the dorsal fin ("tail_fin")
+ * flutters quickly and the tail curls in and out a little; the body doesn't swing (its renderer wiggle is 0).
+ * Out of water the shared fish animation flops it as usual.
  * Made by art/src/fish_ziemel_model.py (don't edit by hand). Texture: textures/entity/fish/ziemel.png (%d x %d).
  */
 public class ZiemelModel extends FishModel {
+    private final ModelPart[] parts;
+    private final float[] restY;
+    private final ModelPart tail;
+    private final ModelPart dorsalFin;
+
     public ZiemelModel(ModelPart root) {
         super(root);
+        this.parts = new ModelPart[] {root.getChild("body"), root.getChild("tail"), root.getChild("tail_fin")};
+        this.restY = new float[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            restY[i] = parts[i].y;
+        }
+        this.tail = root.getChild("tail");
+        this.dorsalFin = root.getChild("tail_fin");
+    }
+
+    @Override
+    public void setupAnim(LivingEntityRenderState state) {
+        super.setupAnim(state);
+        if (!state.isInWater) {
+            return;
+        }
+        float t = state.ageInTicks;
+        float bob = 0.65F * Mth.sin(t * 0.1257F);
+        for (int i = 0; i < parts.length; i++) {
+            parts[i].y = restY[i] + bob;
+        }
+        dorsalFin.yRot = 0.2F * Mth.sin(t * 2.1F);
+        tail.yRot = 0.0F;
+        tail.xRot = -0.12F * (0.5F + 0.5F * Mth.sin(t * 0.1257F + 1.5F));
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -439,7 +474,7 @@ def previews(out_dir, texture):
     for view in ("side", "three", "front", "top"):
         out[view] = render(CUBES, fn, view, 16)
         out[view].save(os.path.join(out_dir, "ziemel_%s16.png" % view))
-    swing = {"tail": (PARTS["tail"][1], -0.25), "tail_fin": (PARTS["tail_fin"][1], -0.45)}
+    swing = {"tail_fin": (PARTS["tail_fin"][1], -0.2)}
     out["swing"] = render(CUBES, fn, "three", 16, yrots=swing)
     out["swing"].save(os.path.join(out_dir, "ziemel_swing16.png"))
     cod = vanilla_texture("cod")
@@ -493,7 +528,7 @@ def sheet(shots_dir, texture, prev_dir):
           "hippocampus; filaments; head; full body")
     row(refs[:3], h=280)
     row(refs[3:], h=280)
-    title("Offline model, 16x: side, three-quarter, front, top, three-quarter mid-swing (tail and dorsal fin turned)")
+    title("Offline model, 16x: side, three-quarter, front, top, three-quarter with the dorsal fin mid-flutter")
     row([pv["side"], pv["three"], pv["front"], pv["top"], pv["swing"]], align_bottom=True)
     if "scale" in pv:
         title("Same scale, 8x: ziemel (hitbox 0.4 x 0.8, 13 px tall) beside vanilla cod (0.5 x 0.3, 15 px long)")
@@ -508,11 +543,11 @@ def sheet(shots_dir, texture, prev_dir):
             return Image.open(found[-1]).convert("RGBA") if found else None
 
         names = ("fish-ziemel-side", "fish-ziemel-three-quarter", "fish-ziemel-front", "fish-ziemel-on-land",
-                 "fish-ziemel-beside-cod")
+                 "fish-ziemel-beside-cod", "fish-ziemel-side-on-sand")
         got = [(n, shot(n)) for n in names]
         got = [(n, i) for n, i in got if i]
         if got:
-            title("In the game: side, three-quarter, front, on land, beside vanilla cod (size)")
+            title("In the game: side, three-quarter, front, on land, beside vanilla cod (size), side on with the sand behind")
             row([i for _, i in got[:3]], h=330)
             row([i for _, i in got[3:]], h=330)
             title("The same, cropped to the fish")

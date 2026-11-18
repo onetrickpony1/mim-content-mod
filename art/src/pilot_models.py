@@ -115,9 +115,11 @@ def write(rel, data):
     print("wrote", rel)
 
 
-# The tier A fish (2026-11-17): the caught fish (the lampuka's item is above), a bucket and a spawn egg for each.
+# The fish (tier A 2026-11-17, then the pixxispad): the caught fish (the lampuka's item is above), a bucket and a spawn egg for each.
 FISH = {"lampuka": "Lampuka", "tonn": "Tonn", "sardina": "Sardina", "cerna": "Ċerna", "awrata": "Awrata",
-        "murina": "Murina", "ziemel": "Żiemel tal-Baħar"}
+        "murina": "Murina", "ziemel": "Żiemel tal-Baħar",
+        "pixxispad": "Pixxispad",   # tier B (2026-11-18)
+        "incova": "Inċova", "cawl": "Ċawl", "huta_kahla": "Ħuta Kaħla"}
 FISH_ITEMS = tuple(f for f in FISH if f not in ("lampuka", "ziemel")) + tuple(
     f"{f}_{kind}" for f in FISH for kind in ("bucket", "spawn_egg"))
 FISH_LANG = {}

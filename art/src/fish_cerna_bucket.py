@@ -34,6 +34,8 @@ import os
 
 from PIL import Image
 
+from fish_bucket_rim import check_rim
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 OUT = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures", "item",
@@ -47,6 +49,7 @@ def hx(h):
 PAL = {
     # water where the fish goes under: our own shades (as the lampuka, tonn and sardina buckets)
     "~": hx("#2a55c4"),
+    "#": hx("#383838"),  # the bucket's back-rim outline where we cover a cod pixel: our own grey (vanilla's is #353535)
     "v": hx("#1d3c96"),  # the shadow on the water beside the fish (as the sardina bucket's)
     "^": hx("#6a92ea"),  # a glint of light on the water (as the sardina bucket's)
     # the cerna: the owner-accepted item icon's palette (textures/item/cerna.png, art/src/fish_cerna_icon.py), same keys
@@ -75,7 +78,7 @@ GRID = [
     "................",
     "....k12fD.......",
     "...k1he2C3f.....",
-    "...M122C3c4~....",
+    "...M122C3c4#....",
     "...Ll3C45v~~~...",
     "....l45v~^~~....",
     "................",
@@ -100,6 +103,10 @@ REJECTED = [
     "...M3434c55ottu.",
     "...Ll4c55oo~tu..",
 ] + ["................"] * 10
+
+
+# The back-rim outline pixels (art/src/fish_bucket_rim.py) that the head and its dorsal fin cover; every other one stays dark
+FISH_OVER_RIM = [(5, 2), (7, 2), (8, 2), (9, 2), (10, 2), (3, 3), (4, 3)]
 
 
 def build(grid=GRID):
@@ -249,6 +256,7 @@ if __name__ == "__main__":
     import sys
     layer = build()
     check_cover(layer)
+    check_rim(layer, os.path.join(VANILLA, "cod_bucket.png"), FISH_OVER_RIM)
     layer.save(OUT, optimize=False)
     print("wrote", os.path.relpath(OUT, ROOT))
     if "--sheet" in sys.argv[1:]:

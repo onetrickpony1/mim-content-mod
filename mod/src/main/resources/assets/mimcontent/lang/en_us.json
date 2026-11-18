@@ -78,5 +78,21 @@
  "item.mimcontent.murina_spawn_egg": "Murina Spawn Egg",
  "entity.mimcontent.ziemel": "Żiemel tal-Baħar",
  "item.mimcontent.ziemel_bucket": "Bucket of Żiemel tal-Baħar",
- "item.mimcontent.ziemel_spawn_egg": "Żiemel tal-Baħar Spawn Egg"
+ "item.mimcontent.ziemel_spawn_egg": "Żiemel tal-Baħar Spawn Egg",
+ "item.mimcontent.pixxispad": "Pixxispad",
+ "entity.mimcontent.pixxispad": "Pixxispad",
+ "item.mimcontent.pixxispad_bucket": "Bucket of Pixxispad",
+ "item.mimcontent.pixxispad_spawn_egg": "Pixxispad Spawn Egg",
+ "item.mimcontent.incova": "Inċova",
+ "entity.mimcontent.incova": "Inċova",
+ "item.mimcontent.incova_bucket": "Bucket of Inċova",
+ "item.mimcontent.incova_spawn_egg": "Inċova Spawn Egg",
+ "item.mimcontent.cawl": "Ċawl",
+ "entity.mimcontent.cawl": "Ċawl",
+ "item.mimcontent.cawl_bucket": "Bucket of Ċawl",
+ "item.mimcontent.cawl_spawn_egg": "Ċawl Spawn Egg",
+ "item.mimcontent.huta_kahla": "Ħuta Kaħla",
+ "entity.mimcontent.huta_kahla": "Ħuta Kaħla",
+ "item.mimcontent.huta_kahla_bucket": "Bucket of Ħuta Kaħla",
+ "item.mimcontent.huta_kahla_spawn_egg": "Ħuta Kaħla Spawn Egg"
 }
