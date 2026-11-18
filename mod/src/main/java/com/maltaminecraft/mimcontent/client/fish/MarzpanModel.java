@@ -8,10 +8,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 /**
- * PLACEHOLDER model of the marzpan (Mediterranean parrotfish (female): oval, red with a yellow saddle, beak-like mouth): plain boxes until the art round.
- * Made by art/src/fish_placeholders.py; the art makers replace this file, keeping the fish model contract
- * (docs/Tools and Process/Art pipeline.md, "Fish models"). Texture: textures/entity/fish/marzpan.png.
- * Parts, for the art makers to replace: body, top_fin, tail_fin.
+ * The marzpan (Mediterranean parrotfish, the red female): an oblong, deep red body, dark along the back and pink below,
+ * a blunt snout with a short pale beak, a grey-lilac cheek patch with the eye at its front and a yellow stripe under it,
+ * a yellow saddle on the tail stalk, a long low dorsal fin, pale pectoral fins and a square-cut tail that sways as it
+ * swims. 17 px long, 7 px deep, 4 px thick, head toward -z, the ground at y 24.
+ * Made by art/src/fish_marzpan_model.py (don't edit by hand). Texture: textures/entity/fish/marzpan.png (64 x 64).
+ * Parts: body, top_fin, tail_fin, right_fin, left_fin.
  */
 public class MarzpanModel extends FishModel {
     public MarzpanModel(ModelPart root) {
@@ -22,15 +24,26 @@ public class MarzpanModel extends FishModel {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("body", CubeListBuilder.create()
-            .texOffs(0, 0).addBox(-1.5F, -3.0F, -6.0F, 3.0F, 6.0F, 10.0F)
-            .texOffs(26, 0).addBox(-1.0F, -1.0F, -7.0F, 2.0F, 2.0F, 1.0F),
-            PartPose.offset(0.0F, 20.5F, 0.0F));
+            /* snout */ .texOffs(40, 30).addBox(-1.0F, -1.0F, -7.0F, 2.0F, 2.0F, 1.0F)
+            /* head_front */ .texOffs(28, 30).addBox(-1.5F, -2.0F, -6.0F, 3.0F, 3.0F, 1.0F)
+            /* head */ .texOffs(0, 30).addBox(-2.0F, -3.0F, -5.0F, 4.0F, 5.0F, 2.0F)
+            /* trunk */ .texOffs(0, 0).addBox(-2.0F, -4.0F, -3.0F, 4.0F, 7.0F, 4.0F)
+            /* rear */ .texOffs(20, 0).addBox(-1.5F, -3.0F, 1.0F, 3.0F, 5.0F, 2.0F)
+            /* stalk */ .texOffs(36, 0).addBox(-1.0F, -2.0F, 3.0F, 2.0F, 3.0F, 2.0F)
+            /* anal */ .texOffs(52, 1).addBox(0.0F, 2.0F, 1.0F, 0.0F, 2.0F, 3.0F),
+            PartPose.offset(0.0F, 19.0F, 0.0F));
         root.addOrReplaceChild("top_fin", CubeListBuilder.create()
-            .texOffs(32, 0).addBox(0.0F, -1.0F, 0.0F, 0.0F, 1.0F, 7.0F),
-            PartPose.offset(0.0F, 17.5F, -4.0F));
+            /* dorsal */ .texOffs(0, 39).addBox(0.0F, -1.0F, -4.0F, 0.0F, 2.0F, 7.0F),
+            PartPose.offset(0.0F, 15.0F, 0.0F));
         root.addOrReplaceChild("tail_fin", CubeListBuilder.create()
-            .texOffs(46, 0).addBox(0.0F, -3.0F, 0.0F, 0.0F, 6.0F, 3.0F),
-            PartPose.offset(0.0F, 20.5F, 4.0F));
+            /* caudal */ .texOffs(20, 42).addBox(0.0F, -3.5F, -1.0F, 0.0F, 8.0F, 4.0F),
+            PartPose.offset(0.0F, 18.5F, 5.0F));
+        root.addOrReplaceChild("right_fin", CubeListBuilder.create()
+            /* pec_r */ .texOffs(30, 43).addBox(0.0F, -1.0F, 0.0F, 0.0F, 3.0F, 3.0F),
+            PartPose.offsetAndRotation(-2.0F, 19.0F, -3.0F, 0.0F, -0.3F, 0.0F));
+        root.addOrReplaceChild("left_fin", CubeListBuilder.create()
+            /* pec_l */ .texOffs(38, 43).addBox(0.0F, -1.0F, 0.0F, 0.0F, 3.0F, 3.0F),
+            PartPose.offsetAndRotation(2.0F, 19.0F, -3.0F, 0.0F, 0.3F, 0.0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
 }

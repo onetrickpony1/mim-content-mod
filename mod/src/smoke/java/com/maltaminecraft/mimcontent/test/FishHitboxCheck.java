@@ -67,7 +67,7 @@ final class FishHitboxCheck {
     static void run(ClientGameTestContext context) {
         try (TestSingleplayerContext world = context.worldBuilder().create()) {
             world.getConnection().waitForChunksRender();
-            tableMatchesModels(context);
+            tableMatchesModels(context, MimFishes.ALL);
             murinaWave(context);
             TestServerContext server = world.getServer();
             server.runCommand("gamemode creative @a");
@@ -116,11 +116,20 @@ final class FishHitboxCheck {
         log("all hitbox checks passed");
     }
 
+    /**
+     * SMOKE_ONLY=fish-one: only one fish's row of the table, checked against its model as above. Its measured row is
+     * always logged, ready to copy into FishShape.
+     */
+    static void runOne(ClientGameTestContext context, MimFishes.Fish fish) {
+        tableMatchesModels(context, List.of(fish));
+        log(fish.id() + ": table row checked");
+    }
+
     /** Measures every fish's baked model the way FishShape's table was made, and compares. */
-    private static void tableMatchesModels(ClientGameTestContext context) {
+    private static void tableMatchesModels(ClientGameTestContext context, List<MimFishes.Fish> fishes) {
         String result = context.computeOnClient(mc -> {
             StringBuilder bad = new StringBuilder();
-            for (MimFishes.Fish f : MimFishes.ALL) {
+            for (MimFishes.Fish f : fishes) {
                 FishRenderer renderer = renderer(mc, f);
                 FishModel model = renderer.getModel();
                 model.resetPose();
@@ -132,6 +141,10 @@ final class FishHitboxCheck {
                 float length = measured[0][0] * (measured.length - 1);
                 log(String.format(Locale.ROOT, "%s model: %.1f px long; %d hit boxes of %.2f px; table %s", f.id(), length,
                     measured.length - 1, measured[0][0], problem == null ? "matches" : "WRONG: " + problem));
+                if (fishes.size() == 1) {
+                    log(String.format(Locale.ROOT, "%s measured row: %s; land lift %sF, flat %s, side shift %sF", f.id(), row(measured),
+                        renderer.landLift(), renderer.liesFlat(), renderer.sideShift()));
+                }
                 if (problem != null) {
                     bad.append(f.id()).append(": ").append(problem).append("; the row should be ").append(row(measured)).append(". ");
                 }

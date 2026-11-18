@@ -26,3 +26,5 @@ All twelve are built and tested in the game with placeholder art; each choice is
 - [[Night log/gallinella|Gallinella]]: tub gurnard, within half a block of the sand, 1.13 blocks.
 - [[Night log/lionfish|Lionfish]]†: no sourced Maltese name; rare, bold, over rock, stings (1 heart + 6 s poison), 0.94 blocks.
 - **Bug found and fixed on the way:** the boll could hang up to about 2 blocks above the sand (and now and then swim to the surface), which made its test fail now and then.
+- **Lizz (barracuda):** model, icon and bucket all passed in 2 rounds each. A slim silver fish with a jutting jaw and a dark forked tail, 1.5 blocks long. **Look at the icon:** blind readers saw "a long thin silver fish, a garfish or needlefish", and none said barracuda. Details: [[Night log/lizz]].
+- **Kavall (mackerel):** model passed in 4 rounds, icon in 2, bucket in 1. Blue-green back with dark bars, silver sides, a forked yellow tail; made 1.3 blocks long (planned 1.06) so it's clearly longer than a cod. The chub mackerel's belly spots were left out (they read as specks). Blind readers said mackerel. Details: [[Night log/kavall]].

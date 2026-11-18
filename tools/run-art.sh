@@ -3,6 +3,9 @@
 #   tools/run-art.sh                -> mod/build/smoke-run/screenshots/*.png
 #   ART_RUN=fish tools/run-art.sh   -> .art-runs/fish/build/smoke-run/screenshots/*.png
 #   SMOKE_ONLY=fish tools/run-art.sh -> only the fish check (names: luzzu, art, fish; comma-separated)
+#   SMOKE_ONLY=fish-one FISH_ONLY=kavall tools/run-art.sh -> one fish only, quick, for the art makers: its review shots
+#     and hotbar (fish-kavall-*), its swim check and its FishShape row (the measured row is logged). The whole fish
+#     check (SMOKE_ONLY=fish) must still pass before the fish is done.
 # With ART_RUN set, the run works on its own copy of mod/ (the current files, copied at the start) with its own
 # desktop, so several runs can go at once. Each needs ~6 GB of free memory; a run waits until there is enough.
 # Needs: Java 25 (env.sh), KDE's kwin_wayland.
@@ -39,6 +42,8 @@ rm -rf build/smoke-run/saves build/smoke-run/screenshots
 # SMOKE_ONLY=fish (or a comma list: luzzu,art,fish) runs only those in-game checks; unset runs them all
 mkdir -p build/smoke-run
 if [ -n "${SMOKE_ONLY:-}" ]; then echo "$SMOKE_ONLY" > build/smoke-run/smoke-only; else rm -f build/smoke-run/smoke-only; fi
+# FISH_ONLY=<fish id> picks the fish for SMOKE_ONLY=fish-one
+if [ -n "${FISH_ONLY:-}" ]; then echo "$FISH_ONLY" > build/smoke-run/fish-only; else rm -f build/smoke-run/fish-only; fi
 bash ./gradlew build runSmoke --console=plain "$@" > build/smoke.log 2>&1 && status=0 || status=$?
 grep -E "\[smoke\]|AssertionError|Exception|error:|BUILD|FAILED" build/smoke.log | grep -v '	at ' | cut -c1-300 | tail -40 || true
 echo "screenshots: ${PROJECT#$ROOT/}/build/smoke-run/screenshots"

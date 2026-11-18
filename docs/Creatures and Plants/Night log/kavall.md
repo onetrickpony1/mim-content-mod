@@ -6,8 +6,8 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Species:** Atlantic chub mackerel, *Scomber colias* (listed in the species report under its old name *S. japonicus*). The report gives **Kavall** for it; the Atlantic mackerel is *Pizzintun*, so this is the right one for the name.
 
 ## Size
-- **Size in game:** 1.06 blocks long (17 px), body box 0.5 x 0.35. A little longer than a cod, a bit bigger than the sardina (0.88).
-- **Why:** a real one is about 25 to 30 cm† (up to about 50†). Life size would be smaller than a cod, so it is drawn about 3.5 times life size, like the other small fish.
+- **Size in game:** the model is 1.3 blocks long (21 px), body box 0.5 x 0.35 (unchanged). The first plan was 1.06 blocks (17 px), but beside the cod in the game it looked the same length, so the model was made longer and slimmer until it read clearly as a longer, slimmer fish than the cod.
+- **Why:** a real one is about 25 to 30 cm† (up to about 50†). Life size would be smaller than a cod, so it is drawn bigger than life, like the other small fish.
 
 ## Behaviour, spawns, rarity
 - **Behaviour:** swims in schools of up to 8, like the sardina (follows a leader, shies from players). Health 4 (2 hearts).
@@ -17,7 +17,36 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Drops:** itself (1 raw fish, `mimcontent:kavall`). Bucket, spawn egg. It is shark bait.
 
 ## Art
-- Placeholder only: plain boxes, a simple icon, bucket and spawn egg (`art/src/fish_placeholders.py`). The art makers replace them next.
+Made overnight by a maker, judged by a fresh critic each round from pictures only. Photos: free Wikimedia Commons ones (licences in `art/references/fish_kavall_refonly/list.tsv`), colour from fresh fish out of the water.
+
+**3D model** (`art/src/fish_kavall_model.py`): passed in round 4 of 8.
+- Three paint jobs tried: A blue-green back, B steel-blue back, C olive back. **A chosen**, as the brief asked for a blue-green back and it sits between the Mediterranean (bluer) and Atlantic (greener) photos.
+- **Looks:** a torpedo with a pointed snout and a big black eye ringed in pale silver. Dark tiger bars cross the back every third pixel, starting well behind the eye. Below them are a green-silver upper flank, silver sides and a near-white belly (dark back, pale belly). Two dorsal fins are set apart, with one small finlet on the back and one on the belly just before a deeply forked tail. The fins and tail are dusky olive-yellow, like the photos.
+- **Colours:** back #3c7a6e, bars #234a4e, head #4a7c72, cheek #d8dee0, belly #fbfcfa, tail #c2bb7a.
+- Round 1 FAIL: a dark bar pixel in the eye's row read as a second eye, the bars looked like a chequerboard, there was no silver band and the back had too many bumps. Round 2 FAIL: too deep, it read as a small tuna, and the fins under the belly looked like legs. Round 3 FAIL: not longer than the cod, the tail broke into specks and the belly was too grey under water. **Round 4 PASS.**
+- The critic's optional polish, not done (left for the owner): a lower second dorsal fin (it reads a bit like a stick under water), a lighter first dorsal fin, and bars that zig-zag one row down.
+- Spots on the lower flank (the chub mackerel's own mark) were left out: at this size they read as stray specks.
+- A new review shot, `fish-kavall-lineup` (kavall, cod, cerna, small tonn in one tank), was added to the fish test.
+
+**Item icon** (`art/src/fish_kavall_icon.py`): passed in round 2 of 8.
+- Head lower left, tail upper right, like vanilla's fish. Candidates: A (three bars), B (thinner bars), C (the third bar nearer the head). **A chosen** (the critic: B's bars vanish, C's spacing is uneven).
+- The silver and the fins are the model's colours lifted about 1.2x for out of the water. The back keeps the model's own tones, because lifted it read as pale mint at 1x.
+- The eye is the only near-black pixel, with soft grey-silver around it. The belly swells a little and shades from bright silver to pale. The first dorsal fin is grey-olive, not cream.
+- Round 1 FAIL: a straight tube, a flat white belly, a "googly" eye and bars like specks. Round 2 PASS. Two of its small polish fixes were then applied: no lone dark pixel by the head, and less pure white in the silver line.
+- **Blind reads** (three fresh readers, neutral file names, among vanilla items), first lines word for word:
+  1. "Slot 3: a slim silver-blue fish with a forked yellow tail. It looks like a mackerel, horse mackerel or sardine, lying on a diagonal like vanilla fish icons."
+  2. "Slot 3: a slim silver-blue fish, like a mackerel or sardine, lying diagonally with a pale belly, dark back and a forked yellowish tail at the top right."
+  3. "Slot 3: a silvery mackerel or tuna-type fish, dark blue-green back, pale belly, yellow tail and fin tips."
+
+**Bucket** (`art/src/fish_kavall_bucket.py`): passed in round 1 of 8.
+- On vanilla's cod bucket, the head rises out of the water facing up and left: steel crown, pointed snout, the ringed eye, pale cheek, then the back with one dark bar diving into the water. The back rim outline stays dark except behind the head. Candidates: A (head high), B (head a row lower), C (a second bar). **A chosen.**
+- Critic's optional polish, not done: one more pixel on the crown so the snout tapers.
+- **Blind reads**, first lines word for word:
+  1. "Slot 3: a bucket holding a pale silvery-teal fish, probably a mackerel- or sardine-like fish."
+  2. "Slot 3: a bucket holding a slim, silvery grey-green fish (it looks like a mackerel or sardine), lying diagonally with its head down in blue water."
+  3. "Slot 3: a water bucket holding a slim silver-grey fish with a pale green-blue tint."
+- Two readers said the species is hard to tell at the smallest size; all three saw a silvery mackerel-like fish.
+- The spawn egg is still a placeholder (not part of tonight's job).
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.

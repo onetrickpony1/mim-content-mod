@@ -43,9 +43,9 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 
 | Picture | Maltese          | English     | Where                   | Status  |
 | ------- | ---------------- | ----------- | ----------------------- | ------- |
-|         | Kavall           | Mackerel    | Shoals                  | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
-|         | Lizz             | Barracuda   | Near the coast, summer  | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
-|         | Marzpan          | Parrotfish  | Shallow rocks           | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Kavall           | Mackerel    | Shoals                  | night job: model passed in 4 rounds, icon in 2, bucket in 1; spawn egg placeholder; waits for the owner ([[Night fish log 2026-11-19]], [[Night log/kavall]]) |
+|         | Lizz             | Barracuda   | Near the coast, summer  | night job: model, icon and bucket each passed in 2 rounds; spawn egg placeholder; waits for the owner ([[Night fish log 2026-11-19]], [[lizz]]) |
+|         | Marzpan          | Parrotfish  | Shallow rocks           | night job: model passed in 5 rounds, icon in 2, bucket in 2; spawn egg placeholder; waits for the owner ([[Night fish log 2026-11-19]], [[Night log/marzpan|marzpan]]) |
 |         | Trilja           | Red mullet  | Sand, harbours          | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
 |         | Pixxi San Pietru | John Dory   | Mid-depth               | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
 |         | Petriċa          | Anglerfish  | Deep mud                | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |

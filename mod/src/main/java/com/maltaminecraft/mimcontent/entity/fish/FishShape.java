@@ -88,13 +88,13 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         shape("ziemel", 4.5F, 0.1F, new float[][] {{-1.75F, 1.5F, 12F, 24F}, {2.75F, 1.5F, 11F, 24F}}),
         // the night job's fish (2026-11-18), placeholder models (art/src/fish_placeholders.py)
         // 17 px long, 3 wide, 6.5 tall
-        shape("kavall", 5.667F, 0.125F, new float[][] {{-5.167F, 1.5F, 17F, 23F}, {0.5F, 1.5F, 17F, 23F}, {6.167F, 1.5F, 18.5F, 23.5F}}),
+        shape("kavall", 5.250F, 0.125F, new float[][] {{-7.375F, 2.122F, 17.000F, 23.000F}, {-2.125F, 2.122F, 17.000F, 24.000F}, {3.125F, 1.500F, 17.000F, 24.000F}, {8.375F, 0.500F, 18.000F, 24.000F}}),
         // 24 px long, 2 wide, 6 tall
-        shape("lizz", 6F, 0.1F, new float[][] {{-10F, 1F, 20F, 23F}, {-4F, 1F, 18F, 23F}, {2F, 1F, 18F, 23F}, {8F, 1F, 19F, 24F}}),
-        // 14 px long, 3 wide, 7 tall
-        shape("marzpan", 4.667F, 0.125F, new float[][] {{-4.667F, 1.5F, 16.5F, 23.5F}, {0F, 1.5F, 16.5F, 23.5F}, {4.667F, 1.5F, 16.5F, 23.5F}}),
-        // 11 px long, 2 wide, 4 tall
-        shape("tird", 5.5F, 0.1F, new float[][] {{-2.25F, 1F, 19F, 23F}, {3.25F, 1F, 19F, 23F}}),
+        shape("lizz", 6.000F, 0.1F, new float[][] {{-9.000F, 1.000F, 20.000F, 22.000F}, {-3.000F, 1.622F, 17.000F, 23.000F}, {3.000F, 1.000F, 17.000F, 23.000F}, {9.000F, 0.500F, 18.000F, 23.000F}}),
+        // 15 px long, 5.8 wide (the pectoral fins), 9 tall (the dorsal fin to the anal fin)
+        shape("marzpan", 5F, 0.125F, new float[][] {{-4.5F, 2.887F, 14F, 22F}, {0.5F, 2.887F, 14F, 23F}, {5.5F, 1F, 15F, 23F}}),
+        // 13 px long, 2 wide, 5 tall (art/src/fish_tird_model.py)
+        shape("tird", 4.333F, 0.1F, new float[][] {{-3.833F, 1.622F, 19.000F, 23.000F}, {0.500F, 1.622F, 19.000F, 23.000F}, {4.833F, 0.500F, 18.500F, 23.500F}}),
         // 13 px long, 2 wide, 6 tall (the barbels hang under the chin)
         shape("trilja", 4.333F, 0.1F, new float[][] {{-3.833F, 1F, 18F, 24F}, {0.5F, 1F, 18F, 23F}, {4.833F, 1F, 19.5F, 23.5F}}),
         // 9 px long, 2 wide, 4.5 tall

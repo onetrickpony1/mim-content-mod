@@ -65,6 +65,11 @@ public class FishCheck implements FabricClientGameTest {
             System.out.println("[smoke] fish: hit boxes passed, screenshots written");
             return;
         }
+        if (Smoke.listed("fish-one")) {
+            // SMOKE_ONLY=fish-one FISH_ONLY=<id>: one fish's review shots, its hit box row and its swim check, for the art makers
+            oneFish(context, Smoke.fishOnly());
+            return;
+        }
         if (!Smoke.runs("fish")) {
             return;
         }
@@ -101,31 +106,7 @@ public class FishCheck implements FabricClientGameTest {
             // skorfna, sawt and petriċa sink to the floor, which counts)
             List<MimFishes.Fish> all = MimFishes.ALL;
             check(all.size() == 26, "expected 26 fish, found " + all.size());
-            for (int i = 0; i < all.size(); i++) {
-                // spread across the pool's water (x - 7 to x + 7), however many fish there are
-                server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 12.0 * i / Math.max(1, all.size() - 1), y - 3, z + 0.5));
-            }
-            context.waitTicks(2);
-            Map<String, Vec3> start = positions(server, pool);
-            Map<String, Double> moved = new HashMap<>();
-            for (int t = 0; t < 20; t++) {
-                context.waitTicks(10);
-                positions(server, pool).forEach((id, pos) -> moved.merge(id, pos.distanceTo(start.getOrDefault(id, pos)), Math::max));
-            }
-            for (MimFishes.Fish f : all) {
-                String state = server.computeOnServer(s -> {
-                    List<? extends AbstractFish> found = s.overworld().getEntities(f.type(), pool, e -> true);
-                    if (found.size() != 1) {
-                        return "found " + found.size();
-                    }
-                    AbstractFish fish = found.getFirst();
-                    return String.format(Locale.ROOT, "%s alive=%s inWater=%s health=%.0f size=%.2fx%.2f",
-                        fish.isAlive() ? "ok" : "dead", fish.isAlive(), fish.isInWater(), fish.getHealth(), fish.getBbWidth(), fish.getBbHeight());
-                });
-                log(String.format(Locale.ROOT, "%s: %s, swam up to %.2f blocks", f.id(), state, moved.getOrDefault(f.id(), 0.0)));
-                check(state.startsWith("ok") && state.contains("inWater=true"), f.id() + " not alive in water: " + state);
-                check(moved.getOrDefault(f.id(), 0.0) > 0.5, f.id() + " did not swim");
-            }
+            swims(context, server, x, y, z, pool, all);
             // the pixxispad is a fast swimmer: twice vanilla's fish speed
             double[] speeds = server.computeOnServer(s -> new double[] {
                 MimFishes.PIXXISPAD.type().create(s.overworld(), EntitySpawnReason.COMMAND).getAttributeValue(Attributes.MOVEMENT_SPEED),
@@ -227,6 +208,144 @@ public class FishCheck implements FabricClientGameTest {
         skorfnaVariants(context);
         FishHitboxCheck.run(context);
         System.out.println("[smoke] fish: all checks passed, screenshots written");
+    }
+
+    /**
+     * Each fish lives and swims: summoned in the pool at once, spread across its water, positions sampled for 200 ticks;
+     * each must be alive, in the water, and have swum more than half a block. Logs each one's health and body box.
+     */
+    private static void swims(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool, List<MimFishes.Fish> all) {
+        for (int i = 0; i < all.size(); i++) {
+            // spread across the pool's water (x - 7 to x + 7), however many fish there are
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 12.0 * i / Math.max(1, all.size() - 1), y - 3, z + 0.5));
+        }
+        context.waitTicks(2);
+        Map<String, Vec3> start = positions(server, pool);
+        Map<String, Double> moved = new HashMap<>();
+        for (int t = 0; t < 20; t++) {
+            context.waitTicks(10);
+            positions(server, pool).forEach((id, pos) -> moved.merge(id, pos.distanceTo(start.getOrDefault(id, pos)), Math::max));
+        }
+        for (MimFishes.Fish f : all) {
+            String state = server.computeOnServer(s -> {
+                List<? extends AbstractFish> found = s.overworld().getEntities(f.type(), pool, e -> true);
+                if (found.size() != 1) {
+                    return "found " + found.size();
+                }
+                AbstractFish fish = found.getFirst();
+                return String.format(Locale.ROOT, "%s alive=%s inWater=%s health=%.0f size=%.2fx%.2f",
+                    fish.isAlive() ? "ok" : "dead", fish.isAlive(), fish.isInWater(), fish.getHealth(), fish.getBbWidth(), fish.getBbHeight());
+            });
+            log(String.format(Locale.ROOT, "%s: %s, swam up to %.2f blocks", f.id(), state, moved.getOrDefault(f.id(), 0.0)));
+            check(state.startsWith("ok") && state.contains("inWater=true"), f.id() + " not alive in water: " + state);
+            check(moved.getOrDefault(f.id(), 0.0) > 0.5, f.id() + " did not swim");
+        }
+    }
+
+    /**
+     * SMOKE_ONLY=fish-one FISH_ONLY=&lt;id&gt; (the art makers' quick run): only that fish. It swims in the pool (the swim
+     * check above, alone), then takes the review shots the whole fish check takes for it (ownShots) and its own hotbar
+     * (fish-&lt;id&gt;-hotbar: its item, bucket and egg beside vanilla's cod), and checks its row of FishShape's table against
+     * its model (FishHitboxCheck.runOne, which logs the measured row). Everything else is the whole check's
+     * (SMOKE_ONLY=fish), which still has to pass before a fish is done.
+     */
+    private static void oneFish(ClientGameTestContext context, String id) {
+        MimFishes.Fish f = MimFishes.ALL.stream().filter(g -> g.id().equals(id)).findFirst().orElse(null);
+        check(f != null, "FISH_ONLY: no fish called '" + id + "'; the ids are "
+            + MimFishes.ALL.stream().map(MimFishes.Fish::id).toList());
+        try (TestSingleplayerContext world = context.worldBuilder().create()) {
+            world.getConnection().waitForChunksRender();
+            TestServerContext server = world.getServer();
+            server.runCommand("gamemode creative @a");
+            server.runCommand("gamerule spawn_mobs false");
+            server.runCommand("gamerule advance_time false");
+            server.runCommand("time set 6000");
+            int[] p = context.computeOnClient(mc -> new int[] {mc.player.getBlockX(), mc.player.getBlockY(), mc.player.getBlockZ()});
+            int x = p[0], y = p[1] + 30, z = p[2];
+            // the same pool as the whole check's
+            fill(server, x - 10, y - 8, z - 10, x + 10, y + 4, z + 10, "minecraft:air");
+            fill(server, x - 8, y - 6, z - 8, x + 8, y, z + 8, "minecraft:stone");
+            fill(server, x - 7, y - 5, z - 7, x + 7, y - 1, z + 7, "minecraft:water");
+            server.runCommand(String.format("tp @a %d %d %d", x - 8, y + 1, z - 8));
+            world.getConnection().waitForChunksRender();
+            context.waitTicks(10);
+            AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
+            swims(context, server, x, y, z, pool, List.of(f));
+            server.runCommand("kill @e[type=!minecraft:player]");
+            FishHitboxCheck.runOne(context, f);
+
+            // the shots, on the ground near spawn as in shots()
+            server.runCommand(String.format("tp @a %d %d %d", p[0], p[1] + 3, p[2] + 16));
+            world.getConnection().waitForChunksRender();
+            context.runOnClient(mc -> {
+                if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+            });
+            ownShots(context, server, world, p[0], p[1], p[2] + 20, f);
+            context.runOnClient(mc -> {
+                if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+                mc.options.guiScale().set(4);
+            });
+            server.runCommand("gamemode creative @a");
+            server.runCommand(String.format("tp @a %d %d %d 0 -60", p[0], p[1], p[2] + 17));
+            List<String> bar = new ArrayList<>(List.of("minecraft:cod"));
+            if (f.item() != null) {
+                bar.add(BuiltInRegistries.ITEM.getKey(f.item()).toString());
+            }
+            if (f == MimFishes.SKORFNA) {
+                bar.add(BuiltInRegistries.ITEM.getKey(MimFishes.SKORFNA_RED).toString());
+            }
+            bar.addAll(List.of("minecraft:cod_bucket", BuiltInRegistries.ITEM.getKey(f.bucket()).toString(),
+                "minecraft:cod_spawn_egg", BuiltInRegistries.ITEM.getKey(f.spawnEgg()).toString()));
+            for (int i = 0; i < 9; i++) {
+                server.runCommand("item replace entity @a hotbar." + i + " with " + (i < bar.size() ? bar.get(i) : "minecraft:air"));
+            }
+            // until the game mode messages in the chat have faded (10 s)
+            context.waitTicks(210);
+            context.takeScreenshot("fish-" + id + "-hotbar");
+        }
+        if (f == MimFishes.TONN) {
+            tonnSizes(context);
+        }
+        if (f == MimFishes.SKORFNA) {
+            skorfnaVariants(context);
+        }
+        System.out.println("[smoke] fish: " + id + ": fish-one checks passed, screenshots written");
+    }
+
+    /**
+     * One fish's own review shots, the same ones shots() takes for it (the tank shots of all the fish together and the
+     * shared hotbars aren't here). When you add a shot for a fish in shots(), add it here too.
+     */
+    private static void ownShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z, MimFishes.Fish f) {
+        switch (f.id()) {
+            case "lampuka" -> lampukaShots(context, server, world, x, y, z);
+            case "tonn" -> tonnShots(context, server, world, x, y, z);
+            case "sardina" -> sardinaShots(context, server, world, x, y, z);
+            case "cerna" -> cernaShots(context, server, world, x, y, z);
+            case "ziemel" -> ziemelShots(context, server, world, x, y, z);
+            case "pixxispad" -> pixxispadShots(context, server, world, x, y, z);
+            case "awrata" -> awrataShots(context, server, world, x, y, z);
+            case "murina" -> murinaShots(context, server, world, x, y, z);
+            case "incova" -> incovaShots(context, server, world, x, y, z);
+            case "cawl" -> cawlShots(context, server, world, x, y, z);
+            case "huta_kahla" -> hutaKahlaShots(context, server, world, x, y, z);
+            case "boll" -> bollShots(context, server, world, x, y, z);
+            case "skorfna" -> skorfnaShots(context, server, world, x, y, z);
+            case "mola_mola" -> molaShots(context, server, world, x, y, z);
+            default -> {
+                // the night job's fish: the placeholder shots, then any of their own
+                check(java.util.Arrays.asList(NIGHT).contains(f), f.id() + " has no review shots in ownShots");
+                placeholderShots(context, server, world, x, y, z, f.id());
+                switch (f.id()) {
+                    case "lizz" -> lizzSizeShot(context, server, world, x + 30, y, z);
+                    case "marzpan" -> marzpanSizeShot(context, server, world, x + 30, y, z);
+                    case "kavall" -> kavallSizeShot(context, server, world, x + 30, y, z);
+                    case "tird" -> tirdSizeShot(context, server, world, x + 30, y, z);
+                    default -> {
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -843,6 +962,142 @@ public class FishCheck implements FabricClientGameTest {
         look(context, server, x + 0.5, y, z - 1.3, x + 0.5, y + 0.2, z + 0.5, "fish-" + id + "-on-land");
     }
 
+    /** The lizz's size review: in one tank, left to right as the camera sees them, a lizz, the cerna, a small (2 block) tonn and a vanilla cod. */
+    private static void lizzSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:lizz %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 2.5, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 0.2, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 3.3, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 5.8, y + 1.5, fz + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.5, y + 0.0, fz - 5.0, x - 1.5, y + 1.6, fz + 0.5, "fish-lizz-beside-cerna-tonn");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** The marzpan's size review: in one tank, left to right as the camera sees them, a marzpan, a vanilla cod, the cerna and a small (2 block) tonn. */
+    private static void marzpanSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:marzpan %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 1.5, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-marzpan-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** The kavall's size review: in one tank, left to right as the camera sees them, a kavall, a vanilla cod, the cerna and a small (2 block) tonn. */
+    /** The tird's size review: in one tank, left to right as the camera sees them, a tird, a vanilla cod, the cerna and a small (2 block) tonn. */
+    private static void tirdSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:tird %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 1.5, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-tird-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    private static void kavallSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:kavall %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 1.5, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-kavall-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
     private static String waitForSting(ClientGameTestContext context, TestServerContext server, int ticks) {
         String state = "";
         for (int t = 0; t < ticks; t += 2) {
@@ -917,6 +1172,7 @@ public class FishCheck implements FabricClientGameTest {
         look(context, server, x - 5.0, y, z + 1.5, x - 5.0, y + 1.6, z + 6.5, "fish-04-tank-tonn-murina-ziemel");
         look(context, server, x + 2.0, y + 2.5, z + 3.5, x, y + 1.6, z + 6.5, "fish-05-tank-above");
         look(context, server, x, y + 0.5, z - 2.5, x, y, z + 1.5, "fish-06-on-land");
+        // each fish's own shots; a shot added here also goes in ownShots, so SMOKE_ONLY=fish-one takes it too
         lampukaShots(context, server, world, x + 30, y, z);
         tonnShots(context, server, world, x - 30, y, z);
         sardinaShots(context, server, world, x + 30, y, z + 25);
@@ -935,6 +1191,10 @@ public class FishCheck implements FabricClientGameTest {
         for (int i = 0; i < NIGHT.length; i++) {
             placeholderShots(context, server, world, x - 30 + 30 * (i % 3), y, z + 225 + 25 * (i / 3), NIGHT[i].id());
         }
+        lizzSizeShot(context, server, world, x + 90, y, z + 250);
+        marzpanSizeShot(context, server, world, x + 90, y, z + 285);
+        kavallSizeShot(context, server, world, x + 90, y, z + 320);
+        tirdSizeShot(context, server, world, x + 130, y, z + 250);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {

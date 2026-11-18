@@ -8,10 +8,10 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 /**
- * PLACEHOLDER model of the lizz (European barracuda: long and slim, pointed jaw, grey-blue back, silver sides, forked tail): plain boxes until the art round.
- * Made by art/src/fish_placeholders.py; the art makers replace this file, keeping the fish model contract
- * (docs/Tools and Process/Art pipeline.md, "Fish models"). Texture: textures/entity/fish/lizz.png.
- * Parts, for the art makers to replace: body, top_fin, tail_fin.
+ * The lizz (European barracuda): a long slim torpedo with a long pointed head and a jutting lower jaw, two small dorsal
+ * fins set far apart, a dark slate back over silver sides with faint bars, a white belly and a dark forked tail that
+ * sways as it swims. 24 px long, 3 px deep, 2 px wide, head toward -z, the ground at y 24.
+ * Made by art/src/fish_lizz_model.py (don't edit by hand). Texture: textures/entity/fish/lizz.png (64 x 32).
  */
 public class LizzModel extends FishModel {
     public LizzModel(ModelPart root) {
@@ -22,16 +22,28 @@ public class LizzModel extends FishModel {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("body", CubeListBuilder.create()
-            .texOffs(0, 0).addBox(-1.0F, -1.5F, -11.0F, 2.0F, 3.0F, 18.0F)
-            .texOffs(40, 0).addBox(-0.5F, -0.5F, -13.0F, 1.0F, 1.5F, 2.0F),
-            PartPose.offset(0.0F, 21.5F, 0.0F));
+            /* jaw */ .texOffs(0, 0).addBox(-0.5F, 0.0F, -12.0F, 1.0F, 1.0F, 4.0F)
+            /* snout */ .texOffs(11, 0).addBox(-0.5F, -1.0F, -11.0F, 1.0F, 1.0F, 3.0F)
+            /* head */ .texOffs(20, 0).addBox(-1.0F, -1.0F, -8.0F, 2.0F, 2.0F, 3.0F)
+            /* trunk */ .texOffs(31, 0).addBox(-1.0F, -2.0F, -5.0F, 2.0F, 3.0F, 8.0F)
+            /* rear */ .texOffs(52, 0).addBox(-1.0F, -2.0F, 3.0F, 2.0F, 2.0F, 3.0F)
+            /* stalk */ .texOffs(0, 12).addBox(-0.5F, -1.5F, 6.0F, 1.0F, 2.0F, 1.0F)
+            /* pelvic */ .texOffs(5, 10).addBox(0.0F, 1.0F, -1.0F, 0.0F, 1.0F, 2.0F)
+            /* anal */ .texOffs(10, 9).addBox(0.0F, 0.0F, 3.0F, 0.0F, 1.0F, 3.0F),
+            PartPose.offset(0.0F, 21.0F, 0.0F));
         root.addOrReplaceChild("top_fin", CubeListBuilder.create()
-            .texOffs(46, 0).addBox(0.0F, -2.0F, 0.0F, 0.0F, 2.0F, 3.0F)
-            .texOffs(52, 0).addBox(0.0F, -2.0F, 6.0F, 0.0F, 2.0F, 2.0F),
-            PartPose.offset(0.0F, 20.0F, -3.0F));
+            /* dorsal1 */ .texOffs(17, 9).addBox(0.0F, -2.0F, 0.0F, 0.0F, 2.0F, 3.0F)
+            /* dorsal2 */ .texOffs(24, 10).addBox(0.0F, -1.0F, 5.0F, 0.0F, 1.0F, 2.0F),
+            PartPose.offset(0.0F, 19.0F, -2.0F));
         root.addOrReplaceChild("tail_fin", CubeListBuilder.create()
-            .texOffs(56, 0).addBox(0.0F, -2.5F, 0.0F, 0.0F, 5.0F, 4.0F),
-            PartPose.offset(0.0F, 21.5F, 7.0F));
-        return LayerDefinition.create(mesh, 64, 64);
+            /* caudal */ .texOffs(29, 7).addBox(0.0F, -2.5F, 0.0F, 0.0F, 5.0F, 5.0F),
+            PartPose.offset(0.0F, 20.5F, 7.0F));
+        root.addOrReplaceChild("right_fin", CubeListBuilder.create()
+            /* pec_r */ .texOffs(38, 12).addBox(-1.0F, 0.0F, 0.0F, 1.0F, 0.0F, 2.0F),
+            PartPose.offsetAndRotation(-1.0F, 22.0F, -5.0F, 0.0F, 0.0F, -0.9F));
+        root.addOrReplaceChild("left_fin", CubeListBuilder.create()
+            /* pec_l */ .texOffs(41, 12).addBox(0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 2.0F),
+            PartPose.offsetAndRotation(1.0F, 22.0F, -5.0F, 0.0F, 0.0F, 0.9F));
+        return LayerDefinition.create(mesh, 64, 32);
     }
 }

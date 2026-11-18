@@ -19,6 +19,16 @@ final class Smoke {
         }
     }
 
+    /** The fish id given as FISH_ONLY (tools/run-art.sh writes the file fish-only), for SMOKE_ONLY=fish-one; null if none. */
+    static String fishOnly() {
+        try {
+            Path file = Path.of("fish-only");
+            return Files.exists(file) && !Files.readString(file).isBlank() ? Files.readString(file).trim() : null;
+        } catch (java.io.IOException e) {
+            return null;
+        }
+    }
+
     static boolean runs(String name) {
         try {
             Path file = Path.of("smoke-only");
