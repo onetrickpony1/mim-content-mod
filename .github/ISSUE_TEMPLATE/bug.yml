@@ -1,0 +1,28 @@
+name: Bug
+description: Something in the mod doesn't work or looks wrong.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Mod version or build
+      description: The jar's name, or "built from main on <date>".
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods (optional)
+      description: The other mods in your game, or the modpack name.
+  - type: textarea
+    id: log
+    attributes:
+      label: Log (optional)
+      description: Paste the crash report or latest.log if there is one.
+      render: shell

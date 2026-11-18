@@ -1,0 +1,22 @@
+name: Idea
+description: Suggest something for the mod. No code needed; even one line is welcome.
+title: "Idea: "
+labels: ["idea"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What should the mod have or do? A food, an animal, a plant, a tradition, a sound, a change to something already in it.
+    validations:
+      required: true
+  - type: textarea
+    id: malta
+    attributes:
+      label: The Maltese side (optional)
+      description: The Maltese name, where in Malta or Gozo you find it, when (a season, a festa), or a link or photo that shows it.
+  - type: textarea
+    id: game
+    attributes:
+      label: How it could work in the game (optional)
+      description: Any thoughts on how players would find, make or use it.

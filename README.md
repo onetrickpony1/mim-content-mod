@@ -60,6 +60,10 @@ The first time the game starts, the mod writes `config/mimcontent.json`. Every g
 - The mod's id is `mimcontent`, a working name. The final name isn't chosen yet.
 - Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
+## Contributing
+
+Ideas are as welcome as code. Open an [issue](https://github.com/onetrickpony1/mim-content-mod/issues) with an idea (no code needed: even one line is read and considered), a bug, or a Maltese fact we got wrong, or send a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-Private for now. A licence will be added before any public release.
+[CC BY-NC-SA 4.0](LICENSE): you may share and change the mod if you credit Malta in Minecraft, don't use it commercially, and share your changes under the same licence. Videos, streams and free modpacks are fine, even if they earn ad money; selling the mod or putting it behind a paywall is not. Kinnie is a trademark of Simonds Farsons Cisk plc, and the reference photos in `art/references/` keep their own licences. Not an official Minecraft product; not approved by or associated with Mojang or Microsoft.

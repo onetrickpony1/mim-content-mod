@@ -1,0 +1,23 @@
+name: Malta fact
+description: Something Maltese the mod gets wrong, or a better name or spelling.
+title: "Malta fact: "
+labels: ["malta fact"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong
+      description: The item, creature or text, and what it says now.
+    validations:
+      required: true
+  - type: textarea
+    id: right
+    attributes:
+      label: What it should be
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source (optional)
+      description: A link, a book, or how you know (family recipe, local knowledge).
