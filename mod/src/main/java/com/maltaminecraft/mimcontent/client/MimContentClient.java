@@ -18,6 +18,18 @@ import com.maltaminecraft.mimcontent.client.fish.SardinaModel;
 import com.maltaminecraft.mimcontent.client.fish.SkorfnaModel;
 import com.maltaminecraft.mimcontent.client.fish.TonnModel;
 import com.maltaminecraft.mimcontent.client.fish.ZiemelModel;
+import com.maltaminecraft.mimcontent.client.fish.KavallModel;
+import com.maltaminecraft.mimcontent.client.fish.LizzModel;
+import com.maltaminecraft.mimcontent.client.fish.MarzpanModel;
+import com.maltaminecraft.mimcontent.client.fish.TirdModel;
+import com.maltaminecraft.mimcontent.client.fish.TriljaModel;
+import com.maltaminecraft.mimcontent.client.fish.SawtModel;
+import com.maltaminecraft.mimcontent.client.fish.PixxiSanPietruModel;
+import com.maltaminecraft.mimcontent.client.fish.PetricaModel;
+import com.maltaminecraft.mimcontent.client.fish.LingwataModel;
+import com.maltaminecraft.mimcontent.client.fish.HmarModel;
+import com.maltaminecraft.mimcontent.client.fish.GallinellaModel;
+import com.maltaminecraft.mimcontent.client.fish.LionfishModel;
 import com.maltaminecraft.mimcontent.entity.fish.SkorfnaFish;
 import com.maltaminecraft.mimcontent.MimJellyfish;
 import com.maltaminecraft.mimcontent.client.jelly.FriedEggJellyfishModel;
@@ -74,6 +86,21 @@ public class MimContentClient implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(mola, MolaMolaModel::createBodyLayer);
         EntityRenderers.register(MimFishes.MOLA_MOLA.type(), context -> new FishRenderer(context, new MolaMolaModel(context.bakeLayer(mola)),
             MimFishes.MOLA_MOLA.id(), 0.9F, 0.8F, MolaMolaModel.LAND_LIFT).withSideShift(MolaMolaModel.SIDE_SHIFT));
+        // the night job's fish (2026-11-18), placeholder models; the land lifts are copied in FishShape
+        fish(MimFishes.KAVALL, KavallModel::createBodyLayer, KavallModel::new, 0.25F, 4.3F, 0.125F);
+        fish(MimFishes.LIZZ, LizzModel::createBodyLayer, LizzModel::new, 0.3F, 3.0F, 0.1F);
+        fish(MimFishes.MARZPAN, MarzpanModel::createBodyLayer, MarzpanModel::new, 0.25F, 4.3F, 0.125F);
+        fish(MimFishes.TIRD, TirdModel::createBodyLayer, TirdModel::new, 0.15F, 4.3F, 0.1F);
+        fish(MimFishes.TRILJA, TriljaModel::createBodyLayer, TriljaModel::new, 0.2F, 4.3F, 0.1F);
+        // the sawt mostly lies still on the sand: a small wiggle
+        fish(MimFishes.SAWT, SawtModel::createBodyLayer, SawtModel::new, 0.15F, 2.0F, 0.1F);
+        fish(MimFishes.PIXXI_SAN_PIETRU, PixxiSanPietruModel::createBodyLayer, PixxiSanPietruModel::new, 0.3F, 2.0F, 0.1F);
+        // the petriċa and the lingwata are flat: no body wiggle, and they lie flat on land (no lift needed)
+        fish(MimFishes.PETRICA, PetricaModel::createBodyLayer, PetricaModel::new, 0.5F, 0.0F, 0.0F, true);
+        fish(MimFishes.LINGWATA, LingwataModel::createBodyLayer, LingwataModel::new, 0.35F, 0.0F, 0.0F, true);
+        fish(MimFishes.HMAR, HmarModel::createBodyLayer, HmarModel::new, 0.3F, 3.0F, 0.125F);
+        fish(MimFishes.GALLINELLA, GallinellaModel::createBodyLayer, GallinellaModel::new, 0.3F, 2.5F, 0.15625F);
+        fish(MimFishes.LIONFISH, LionfishModel::createBodyLayer, LionfishModel::new, 0.3F, 2.0F, 0.125F);
         // the jellyfish: model, shadow size (drawn translucent, JellyfishRenderer)
         jelly(MimJellyfish.MAUVE_STINGER, MauveStingerModel::createBodyLayer, MauveStingerModel::new, 0.25F);
         jelly(MimJellyfish.FRIED_EGG, FriedEggJellyfishModel::createBodyLayer, FriedEggJellyfishModel::new, 0.45F);

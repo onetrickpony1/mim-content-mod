@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.maltaminecraft.mimcontent.MimConfig;
 import com.maltaminecraft.mimcontent.MimFishes;
 import com.maltaminecraft.mimcontent.entity.fish.BollFish;
+import com.maltaminecraft.mimcontent.entity.fish.BottomFish;
 import com.maltaminecraft.mimcontent.entity.fish.FishPart;
 import com.maltaminecraft.mimcontent.entity.fish.FishParts;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
@@ -95,10 +96,11 @@ public class FishCheck implements FabricClientGameTest {
             context.waitTicks(10);
             AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
 
-            // 2. each fish lives and swims: all fourteen at once (the tier A seven, the pixxispad, the inċova, ċawl, ħuta
-            // kaħla, boll, skorfna and mola mola), positions sampled for 200 ticks (the skorfna sinks to the floor, which counts)
+            // 2. each fish lives and swims: all twenty-six at once (the tier A seven, the pixxispad, the inċova, ċawl, ħuta
+            // kaħla, boll, skorfna and mola mola, and the night job's twelve), positions sampled for 200 ticks (the
+            // skorfna, sawt and petriċa sink to the floor, which counts)
             List<MimFishes.Fish> all = MimFishes.ALL;
-            check(all.size() == 14, "expected 14 fish, found " + all.size());
+            check(all.size() == 26, "expected 26 fish, found " + all.size());
             for (int i = 0; i < all.size(); i++) {
                 // spread across the pool's water (x - 7 to x + 7), however many fish there are
                 server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f", all.get(i).id(), x - 6.0 + 12.0 * i / Math.max(1, all.size() - 1), y - 3, z + 0.5));
@@ -213,6 +215,8 @@ public class FishCheck implements FabricClientGameTest {
             skorfna(context, server, x, y, z, pool);
             server.runCommand("kill @e[type=!minecraft:player]");
             mola(context, server, x, y, z);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            nightFish(context, server, x, y, z, pool);
             server.runCommand("gamemode creative @a");
             server.runCommand("kill @e[type=!minecraft:player]");
             log("all checks passed");
@@ -237,10 +241,26 @@ public class FishCheck implements FabricClientGameTest {
             MimFishes.BOLL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
             MimFishes.SKORFNA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN),
             MimFishes.MOLA_MOLA, List.of(Biomes.WARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN));
+        // the night job's fish (2026-11-18)
+        Map<MimFishes.Fish, List<net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome>>> night = Map.ofEntries(
+            Map.entry(MimFishes.KAVALL, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.LIZZ, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.MARZPAN, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.TIRD, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.TRILJA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.SAWT, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.PIXXI_SAN_PIETRU, List.of(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.PETRICA, List.of(Biomes.DEEP_LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.LINGWATA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.HMAR, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.GALLINELLA, List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN)),
+            Map.entry(MimFishes.LIONFISH, List.of(Biomes.WARM_OCEAN)));
+        Map<MimFishes.Fish, List<net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome>>> both = new HashMap<>(want);
+        both.putAll(night);
         String result = server.computeOnServer(s -> {
             var biomes = s.registryAccess().lookupOrThrow(Registries.BIOME);
             StringBuilder out = new StringBuilder();
-            for (var e : want.entrySet()) {
+            for (var e : both.entrySet()) {
                 for (var key : e.getValue()) {
                     boolean found = spawnsIn(biomes.getValue(key)).getMobsToSpawn(MobCategory.WATER_AMBIENT).unwrap().stream()
                         .anyMatch(w -> w.value().type() == e.getKey().type());
@@ -261,7 +281,7 @@ public class FishCheck implements FabricClientGameTest {
             }
             return out.isEmpty() ? "ok" : out.toString();
         });
-        log("inċova, ċawl, ħuta kaħla, boll, skorfna and mola mola spawns in vanilla oceans: " + result);
+        log("inċova, ċawl, ħuta kaħla, boll, skorfna, mola mola and the night job's twelve: spawns in vanilla oceans: " + result);
         check(result.equals("ok"), "spawns: " + result);
     }
 
@@ -576,6 +596,253 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("clear @a");
     }
 
+    /** The night job's twelve fish (2026-11-18, "Night job - the rest of the fish, Claude decides"), in survival order. */
+    private static final MimFishes.Fish[] NIGHT = {MimFishes.KAVALL, MimFishes.LIZZ, MimFishes.MARZPAN, MimFishes.TIRD, MimFishes.TRILJA,
+        MimFishes.SAWT, MimFishes.PIXXI_SAN_PIETRU, MimFishes.PETRICA, MimFishes.LINGWATA, MimFishes.HMAR, MimFishes.GALLINELLA, MimFishes.LIONFISH};
+
+    /**
+     * The night job's twelve fish: each has the health and body box it was given (logged for the owner in
+     * docs/Creatures and Plants/Night log/); each bottom fish only spawns over its own kind of floor; the sawt and the
+     * petriċa sink to the floor and lie there, and the gallinella keeps close to it; the sawt's and the lionfish's
+     * stings (see stingCheck). Their hit box rows are checked against their models in FishHitboxCheck.
+     */
+    private static void nightFish(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool) {
+        // health, body box width and height
+        Map<MimFishes.Fish, double[]> want = Map.ofEntries(
+            Map.entry(MimFishes.KAVALL, new double[] {4, 0.5, 0.35}), Map.entry(MimFishes.LIZZ, new double[] {8, 0.7, 0.3}),
+            Map.entry(MimFishes.MARZPAN, new double[] {4, 0.5, 0.4}), Map.entry(MimFishes.TIRD, new double[] {3, 0.35, 0.3}),
+            Map.entry(MimFishes.TRILJA, new double[] {3, 0.45, 0.3}), Map.entry(MimFishes.SAWT, new double[] {3, 0.35, 0.2}),
+            Map.entry(MimFishes.PIXXI_SAN_PIETRU, new double[] {6, 0.6, 0.8}), Map.entry(MimFishes.PETRICA, new double[] {10, 0.9, 0.35}),
+            Map.entry(MimFishes.LINGWATA, new double[] {4, 0.6, 0.2}), Map.entry(MimFishes.HMAR, new double[] {6, 0.55, 0.7}),
+            Map.entry(MimFishes.GALLINELLA, new double[] {5, 0.6, 0.35}), Map.entry(MimFishes.LIONFISH, new double[] {4, 0.5, 0.55}));
+        for (MimFishes.Fish f : NIGHT) {
+            double[] w = want.get(f);
+            String got = server.computeOnServer(s -> {
+                AbstractFish fish = (AbstractFish) f.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+                return String.format(Locale.ROOT, "health %.1f, box %.2f x %.2f, speed %.2f%s", fish.getMaxHealth(), fish.getBbWidth(), fish.getBbHeight(),
+                    fish.getAttributeValue(Attributes.MOVEMENT_SPEED), fish instanceof BottomFish b ? ", floor " + b.habit().floor() : "");
+            });
+            String expected = String.format(Locale.ROOT, "health %.1f, box %.2f x %.2f", w[0], w[1], w[2]);
+            log(f.id() + ": " + got);
+            check(got.startsWith(expected), f.id() + " should have " + expected + ", has " + got);
+        }
+
+        // the spawn floor: sand under one spot of the pool, stone under the rest
+        server.runCommand(String.format(Locale.ROOT, "setblock %d %d %d minecraft:sand", x + 5, y - 6, z + 5));
+        String floors = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            BlockPos sand = new BlockPos(x + 5, y - 3, z + 5), stone = new BlockPos(x - 5, y - 3, z - 5);
+            StringBuilder out = new StringBuilder();
+            for (BottomFish.Floor floor : BottomFish.Floor.values()) {
+                out.append(floor).append(": sand ").append(BottomFish.floorBelow(floor, level, sand) != null)
+                    .append(", stone ").append(BottomFish.floorBelow(floor, level, stone) != null).append("; ");
+            }
+            // the full rule: the pool is above sea level here, so a natural spawn is refused; a spawner is not
+            out.append("rule above sea level: natural ").append(BottomFish.checkSpawnRules(BottomFish.Floor.SOFT, level, EntitySpawnReason.NATURAL, sand))
+                .append(", spawner ").append(BottomFish.checkSpawnRules(BottomFish.Floor.SOFT, level, EntitySpawnReason.SPAWNER, sand));
+            return out.toString();
+        });
+        log("night fish spawn floors: " + floors);
+        check(floors.equals("SOFT: sand true, stone false; ROCK: sand false, stone true; ANY: sand true, stone true; "
+            + "rule above sea level: natural false, spawner true"), "the bottom fish's spawn floors are off: " + floors);
+        String habits = server.computeOnServer(s -> {
+            StringBuilder out = new StringBuilder();
+            for (MimFishes.Fish f : NIGHT) {
+                if (f.type().create(s.overworld(), EntitySpawnReason.COMMAND) instanceof BottomFish b) {
+                    out.append(f.id()).append('=').append(b.habit().floor()).append(' ');
+                }
+            }
+            return out.toString().trim();
+        });
+        log("night fish floors: " + habits);
+        check(habits.equals("marzpan=ROCK tird=ANY trilja=SOFT sawt=SOFT petrica=SOFT lingwata=SOFT hmar=ROCK gallinella=SOFT lionfish=ROCK"),
+            "the night fish's floors: " + habits);
+        server.runCommand(String.format(Locale.ROOT, "setblock %d %d %d minecraft:stone", x + 5, y - 6, z + 5));
+
+        // near the floor: summoned 3.5 blocks above it, with a spectator far off so the shy ones don't flee
+        server.runCommand("gamemode spectator @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
+        MimFishes.Fish[] low = {MimFishes.SAWT, MimFishes.PETRICA, MimFishes.GALLINELLA};
+        for (int i = 0; i < low.length; i++) {
+            server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %.1f %.1f {PersistenceRequired:1b}", low[i].id(), x - 3.5 + 4 * i, y - 1.5, z + 0.5));
+        }
+        double floor = y - 5;
+        context.waitTicks(160);
+        int samples = 20;
+        double[] highest = new double[low.length], sum = new double[low.length];
+        int[] rests = new int[low.length];
+        for (int t = 0; t < samples; t++) {
+            context.waitTicks(10);
+            double[][] h = server.computeOnServer(s -> {
+                double[][] out = new double[low.length][];
+                for (int i = 0; i < low.length; i++) {
+                    BottomFish fish = (BottomFish) s.overworld().getEntities(low[i].type(), pool, e -> true).getFirst();
+                    out[i] = new double[] {fish.getY() - floor, fish.isResting() ? 1 : 0};
+                }
+                return out;
+            });
+            for (int i = 0; i < low.length; i++) {
+                highest[i] = Math.max(highest[i], h[i][0]);
+                sum[i] += h[i][0];
+                rests[i] += (int) h[i][1];
+            }
+        }
+        for (int i = 0; i < low.length; i++) {
+            log(String.format(Locale.ROOT, "%s summoned 3.5 blocks above the floor: after 8 s, over 10 s at most %.2f above it (on average %.2f); resting in %d of %d",
+                low[i].id(), highest[i], sum[i] / samples, rests[i], samples));
+        }
+        for (int i = 0; i < 2; i++) {
+            check(highest[i] <= 0.6 && sum[i] / samples <= 0.3 && rests[i] >= samples / 2, String.format(Locale.ROOT,
+                "the %s should lie on the bottom: at most %.2f above it, average %.2f, resting %d of %d", low[i].id(), highest[i], sum[i] / samples, rests[i], samples));
+        }
+        check(highest[2] <= 1.5 && sum[2] / samples <= 1.0, String.format(Locale.ROOT,
+            "the gallinella should keep near the bottom: at most %.2f above it, average %.2f", highest[2], sum[2] / samples));
+        server.runCommand("kill @e[type=!minecraft:player]");
+        server.runCommand("gamemode creative @a");
+
+        stingCheck(context, server, x, y, z, pool, MimFishes.SAWT);
+        server.runCommand("kill @e[type=!minecraft:player]");
+        stingCheck(context, server, x, y, z, pool, MimFishes.LIONFISH);
+        server.runCommand("kill @e[type=!minecraft:player]");
+    }
+
+    /**
+     * A venomous night fish (the sawt, the lionfish): hit it in melee and it stings the attacker (1 heart and Poison
+     * for 6 seconds); a survival player standing on it is stung; a creative player, or one under Jellyfish Ward, is
+     * not; a mob touching it (a pig) is stung; another fish (a cod) is not.
+     */
+    private static void stingCheck(ClientGameTestContext context, TestServerContext server, int x, int y, int z, AABB pool, MimFishes.Fish f) {
+        String id = f.id();
+        BottomFish.Sting sting = server.computeOnServer(s -> ((BottomFish) f.type().create(s.overworld(), EntitySpawnReason.COMMAND)).habit().sting());
+        check(sting != null && sting.damage() == 2.0F && sting.poisonSeconds() == 6, id + " should sting for 1 heart and 6 s of poison: " + sting);
+        double floor = y - 5;
+        server.runCommand("clear @a");
+        server.runCommand("effect clear @a");
+        server.runCommand("gamemode survival @a");
+        server.runCommand("effect give @a minecraft:water_breathing 120 0 true");
+        // hit it in melee, from beside it
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b}", id, x + 0.5, floor, z + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", x + 2.0, floor, z + 0.5));
+        context.waitTicks(5);
+        String hit = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+            player.removeEffect(net.minecraft.world.effect.MobEffects.POISON);
+            // a living one: the last one killed may still lie there in its death animation
+            AbstractFish fish = level.getEntities(f.type(), pool, e -> e.isAlive()).getFirst();
+            float before = fish.getHealth();
+            boolean hurt = fish.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+            return stingState(player) + String.format(Locale.ROOT, " (the hit %s: %s health %.1f -> %.1f, can be stung %s)",
+                hurt ? "counted" : "did not count", id, before, fish.getHealth(),
+                com.maltaminecraft.mimcontent.entity.fish.Venom.canSting(player));
+        });
+        log("hit the " + id + " in melee: " + hit);
+        check(hit.contains("poison=" + sting.poisonSeconds() * 20) && hit.contains("by " + id) && !hit.startsWith("health 20.0"),
+            "a " + id + " hit in melee should sting the attacker (2 damage and poison): " + hit);
+
+        // a survival player standing on one lying on the floor is stung
+        server.runCommand("kill @e[type=mimcontent:" + id + "]");
+        server.runCommand("effect clear @a minecraft:poison");
+        // past the player's hurt cooldown from the sting above (else the next sting's damage doesn't count)
+        context.waitTicks(25);
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b}", id, x + 3.5, floor, z - 3.5));
+        server.runOnServer(s -> {
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            player.setHealth(player.getMaxHealth());
+            player.setLastHurtByMob(null);
+        });
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String touched = waitForSting(context, server, 20);
+        log("a survival player standing on a " + id + ": " + touched);
+        check(touched.contains("poison=") && !touched.contains("poison=none") && touched.contains("by " + id),
+            "a survival player standing on a " + id + " should be stung: " + touched);
+
+        // then a creative one is not
+        server.runCommand("effect clear @a minecraft:poison");
+        server.runCommand("gamemode creative @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(sting.cooldown() + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String creative = waitForSting(context, server, 30);
+        log("a creative player standing on a " + id + ": " + creative);
+        check(creative.contains("poison=none") && !creative.contains("by " + id), "a creative player should not be stung by a " + id + ": " + creative);
+
+        // nor a survival player under Jellyfish Ward (Venom.canSting: the Ward blocks every sting)
+        server.runCommand("effect give @a mimcontent:jellyfish_ward 60 0 true");
+        server.runCommand("gamemode survival @a");
+        server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setLastHurtByMob(null));
+        context.waitTicks(sting.cooldown() + 5);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.2f %.1f", x + 3.5, floor + 0.1, z - 3.5));
+        String warded = waitForSting(context, server, 30);
+        log("a survival player under Jellyfish Ward standing on a " + id + ": " + warded);
+        check(warded.contains("poison=none") && !warded.contains("by " + id), "a player under Jellyfish Ward should not be stung by a " + id + ": " + warded);
+        server.runCommand("effect clear @a mimcontent:jellyfish_ward");
+        server.runCommand("gamemode creative @a");
+
+        // a mob touching it is stung (a pig pushed against it), another fish is not
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x - 8, y + 6, z - 8));
+        context.waitTicks(sting.cooldown() + 5);
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor + 0.1, z - 3.5));
+        context.waitTicks(10);
+        String cod = server.computeOnServer(s -> {
+            var found = s.overworld().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, pool,
+                e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath().equals("cod"));
+            return found.isEmpty() ? "no cod" : stingState(found.getFirst());
+        });
+        log("a cod touching a " + id + ": " + cod);
+        check(cod.contains("poison=none"), "another fish should not be stung by a " + id + ": " + cod);
+        server.runCommand("kill @e[type=minecraft:cod]");
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:pig %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b}", x + 3.5, floor + 0.1, z - 3.5));
+        String pig = "";
+        for (int t = 0; t < 20 && !pig.contains("by " + id); t += 2) {
+            context.waitTicks(2);
+            pig = server.computeOnServer(s -> {
+                var found = s.overworld().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, pool,
+                    e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath().equals("pig"));
+                return found.isEmpty() ? "no pig" : stingState(found.getFirst());
+            });
+        }
+        log("a pig touching a " + id + ": " + pig);
+        check(pig.contains("by " + id) && !pig.contains("poison=none"), "a mob touching a " + id + " should be stung: " + pig);
+        server.runCommand("kill @e[type=minecraft:pig]");
+        server.runCommand("effect clear @a");
+        server.runCommand("clear @a");
+    }
+
+    /**
+     * A placeholder fish's review shots, for the art makers to extend (like the cerna's): one alone in a small tank seen
+     * side on, three-quarter and from above, one beside a vanilla cod, and one on land. Names: fish-&lt;id&gt;-side,
+     * -three-quarter, -top, -beside-cod, -on-land.
+     */
+    private static void placeholderShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z, String id) {
+        // go there first, so the chunks are loaded before the tank is built
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        fill(server, x - 7, y, z - 6, x + 7, y + 12, z + 10, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 6, x + 7, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 5, y, z + 4, x + 5, y + 5, z + 9, "minecraft:glass");
+        fill(server, x - 4, y, z + 5, x + 4, y + 4, z + 8, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            id, x + 0.5, y + 1.5, z + 6.2));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.9, y + 1.6, z + 6.2));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:%s %.1f %d %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            id, x + 0.5, y, z + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        // the cameras sit inside the glass wall, so no glass frames cross the fish; in spectator mode nothing pushes them out
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x + 0.5, y + 0.2, z + 4.3, x + 0.5, y + 1.85, z + 6.2, "fish-" + id + "-side");
+        look(context, server, x - 1.0, y + 0.6, z + 4.6, x + 0.3, y + 1.85, z + 6.2, "fish-" + id + "-three-quarter");
+        look(context, server, x + 0.5, y + 1.6, z + 4.7, x + 0.5, y + 1.85, z + 6.2, "fish-" + id + "-top");
+        look(context, server, x - 0.6, y + 0.2, z + 4.3, x - 0.6, y + 1.85, z + 6.2, "fish-" + id + "-beside-cod");
+        server.runCommand("gamemode creative @a");
+        look(context, server, x + 0.5, y, z - 1.3, x + 0.5, y + 0.2, z + 0.5, "fish-" + id + "-on-land");
+    }
+
     private static String waitForSting(ClientGameTestContext context, TestServerContext server, int ticks) {
         String state = "";
         for (int t = 0; t < ticks; t += 2) {
@@ -664,6 +931,10 @@ public class FishCheck implements FabricClientGameTest {
         bollShots(context, server, world, x + 30, y, z + 150);
         skorfnaShots(context, server, world, x, y, z + 150);
         molaShots(context, server, world, x, y, z + 185);
+        // the night job's twelve (placeholder art): three tanks to a row, from z + 225
+        for (int i = 0; i < NIGHT.length; i++) {
+            placeholderShots(context, server, world, x - 30 + 30 * (i % 3), y, z + 225 + 25 * (i / 3), NIGHT[i].id());
+        }
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {
@@ -686,9 +957,25 @@ public class FishCheck implements FabricClientGameTest {
             // the two skorfna items, black and red, beside vanilla's fish and the accepted ones
             {"minecraft:cod", "mimcontent:skorfna", "mimcontent:skorfna_red", "minecraft:salmon", "mimcontent:cerna",
                 "mimcontent:awrata", "minecraft:pufferfish", "mimcontent:lampuka", "minecraft:tropical_fish"},
+            // the night job's twelve (placeholder icons, buckets and eggs), each row beside vanilla's cod
+            {"minecraft:cod", "mimcontent:kavall", "mimcontent:lizz", "mimcontent:marzpan", "mimcontent:tird", "mimcontent:trilja",
+                "mimcontent:sawt", "mimcontent:pixxi_san_pietru", "mimcontent:petrica"},
+            {"minecraft:cod", "mimcontent:lingwata", "mimcontent:hmar", "mimcontent:gallinella", "mimcontent:lionfish", "minecraft:salmon",
+                "minecraft:pufferfish", "minecraft:tropical_fish", "mimcontent:skorfna"},
+            {"minecraft:cod_bucket", "mimcontent:kavall_bucket", "mimcontent:lizz_bucket", "mimcontent:marzpan_bucket", "mimcontent:tird_bucket",
+                "mimcontent:trilja_bucket", "mimcontent:sawt_bucket", "mimcontent:pixxi_san_pietru_bucket", "mimcontent:petrica_bucket"},
+            {"minecraft:cod_bucket", "mimcontent:lingwata_bucket", "mimcontent:hmar_bucket", "mimcontent:gallinella_bucket", "mimcontent:lionfish_bucket",
+                "minecraft:salmon_bucket", "minecraft:pufferfish_bucket", "minecraft:tropical_fish_bucket", "mimcontent:skorfna_bucket"},
+            {"minecraft:cod_spawn_egg", "mimcontent:kavall_spawn_egg", "mimcontent:lizz_spawn_egg", "mimcontent:marzpan_spawn_egg",
+                "mimcontent:tird_spawn_egg", "mimcontent:trilja_spawn_egg", "mimcontent:sawt_spawn_egg", "mimcontent:pixxi_san_pietru_spawn_egg",
+                "mimcontent:petrica_spawn_egg"},
+            {"minecraft:cod_spawn_egg", "mimcontent:lingwata_spawn_egg", "mimcontent:hmar_spawn_egg", "mimcontent:gallinella_spawn_egg",
+                "mimcontent:lionfish_spawn_egg", "minecraft:salmon_spawn_egg", "minecraft:pufferfish_spawn_egg", "minecraft:tropical_fish_spawn_egg",
+                "mimcontent:skorfna_spawn_egg"},
         };
         String[] names = {"fish-07-hotbar-items", "fish-08-hotbar-buckets", "fish-09-hotbar-eggs", "fish-10-hotbar-pixxispad", "fish-11-hotbar-boll",
-            "fish-12-hotbar-skorfna", "fish-14-hotbar-mola", "fish-13-hotbar-skorfna-items"};
+            "fish-12-hotbar-skorfna", "fish-14-hotbar-mola", "fish-13-hotbar-skorfna-items", "fish-15-hotbar-night-items-1", "fish-15-hotbar-night-items-2",
+            "fish-16-hotbar-night-buckets-1", "fish-16-hotbar-night-buckets-2", "fish-17-hotbar-night-eggs-1", "fish-17-hotbar-night-eggs-2"};
         context.runOnClient(mc -> {
             if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
             mc.options.guiScale().set(4);

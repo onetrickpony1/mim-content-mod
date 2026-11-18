@@ -85,7 +85,32 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         shape("tonn", 5.571F, 0.1875F, new float[][] {{-16.21F, 2.5F, 15.5F, 22.5F}, {-10.64F, 4.73F, 11F, 24F}, {-5.07F, 3.5F, 11F, 24F},
             {0.5F, 3.5F, 11F, 26F}, {6.07F, 2.5F, 11F, 26F}, {11.64F, 2F, 15F, 23F}, {17.21F, 2F, 13.5F, 24.5F}}),
         // 9 px long, 3 wide, 13 tall (upright)
-        shape("ziemel", 4.5F, 0.1F, new float[][] {{-1.75F, 1.5F, 12F, 24F}, {2.75F, 1.5F, 11F, 24F}}));
+        shape("ziemel", 4.5F, 0.1F, new float[][] {{-1.75F, 1.5F, 12F, 24F}, {2.75F, 1.5F, 11F, 24F}}),
+        // the night job's fish (2026-11-18), placeholder models (art/src/fish_placeholders.py)
+        // 17 px long, 3 wide, 6.5 tall
+        shape("kavall", 5.667F, 0.125F, new float[][] {{-5.167F, 1.5F, 17F, 23F}, {0.5F, 1.5F, 17F, 23F}, {6.167F, 1.5F, 18.5F, 23.5F}}),
+        // 24 px long, 2 wide, 6 tall
+        shape("lizz", 6F, 0.1F, new float[][] {{-10F, 1F, 20F, 23F}, {-4F, 1F, 18F, 23F}, {2F, 1F, 18F, 23F}, {8F, 1F, 19F, 24F}}),
+        // 14 px long, 3 wide, 7 tall
+        shape("marzpan", 4.667F, 0.125F, new float[][] {{-4.667F, 1.5F, 16.5F, 23.5F}, {0F, 1.5F, 16.5F, 23.5F}, {4.667F, 1.5F, 16.5F, 23.5F}}),
+        // 11 px long, 2 wide, 4 tall
+        shape("tird", 5.5F, 0.1F, new float[][] {{-2.25F, 1F, 19F, 23F}, {3.25F, 1F, 19F, 23F}}),
+        // 13 px long, 2 wide, 6 tall (the barbels hang under the chin)
+        shape("trilja", 4.333F, 0.1F, new float[][] {{-3.833F, 1F, 18F, 24F}, {0.5F, 1F, 18F, 23F}, {4.833F, 1F, 19.5F, 23.5F}}),
+        // 9 px long, 2 wide, 4.5 tall
+        shape("sawt", 4.5F, 0.1F, new float[][] {{-1.75F, 1F, 19.5F, 24F}, {2.75F, 1F, 21F, 24F}}),
+        // 17 px long, 2 wide, 15 tall (the dorsal filaments)
+        shape("pixxi_san_pietru", 5.667F, 0.1F, new float[][] {{-6.167F, 1F, 8F, 23F}, {-0.5F, 1F, 8F, 23F}, {5.167F, 1F, 8F, 23F}}),
+        // 22 px long, 16 wide (the head and pectoral fins), 7 tall with the lure; flat: it lies flat on land
+        flatShape("petrica", 5.5F, 0.0F, new float[][] {{-8.25F, 5F, 17F, 24F}, {-2.75F, 8F, 20F, 24F}, {2.75F, 1.5F, 20.5F, 23.5F}, {8.25F, 1.5F, 20F, 24F}}),
+        // 18 px long, 8 wide, 1.5 thick; flat: it lies flat on land too
+        flatShape("lingwata", 6F, 0.0F, new float[][] {{-6F, 4F, 22.5F, 24F}, {0F, 4F, 22.5F, 24F}, {6F, 4F, 22.5F, 24F}}),
+        // 16 px long, 3 wide, 13 tall
+        shape("hmar", 5.333F, 0.125F, new float[][] {{-5.333F, 1.5F, 11F, 24F}, {0F, 1.5F, 11F, 24F}, {5.333F, 1.5F, 12F, 24F}}),
+        // 18 px long, 14 wide (the pectoral "wings"), 5.5 tall
+        shape("gallinella", 6F, 0.15625F, new float[][] {{-6F, 7F, 18F, 23F}, {0F, 7F, 18F, 23F}, {6F, 1.5F, 19.5F, 23.5F}}),
+        // 15 px long, 11 wide (the fan fins), 10 tall (the dorsal spines)
+        shape("lionfish", 5F, 0.125F, new float[][] {{-4.5F, 5.5F, 13F, 23F}, {0.5F, 5.5F, 13F, 23F}, {5.5F, 1.5F, 13F, 23F}}));
 
     private static Map.Entry<String, FishShape> shape(String id, float slice, float landLift, float[][] rows) {
         return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, 0.0F));

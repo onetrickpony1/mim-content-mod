@@ -51,7 +51,7 @@ import org.joml.Vector3f;
  * <li>client and server agree on every part's id;</li>
  * <li>a water bucket used on a part (the murina's tail, the swordfish's sword) catches the fish;</li>
  * <li>an arrow dropped on the tail of a shark lying on land hurts it;</li>
- * <li>the boll (flat) lies flat on land: its boxes stay on the ground, as thin as its disc;</li>
+ * <li>the boll, lingwata and petriċa (flat) lie flat on land: their boxes stay on the ground, as thin as the fish;</li>
  * <li>the mola mola lying on its side on land: its boxes lie flat on the ground and centred over it (the side shift);</li>
  * <li>screenshots with hit boxes shown (F3+B): fish-hitbox-*.</li>
  * </ol>
@@ -99,7 +99,13 @@ final class FishHitboxCheck {
             server.runCommand("kill @e[type=!minecraft:player]");
             arrow(context, server, x, y, z);
             server.runCommand("kill @e[type=!minecraft:player]");
-            flatOnLand(context, server, x, y, z);
+            // the boll's thickest point is 3 px (the raised eyes on the dome; art/src/fish_boll_model.py); the night job's
+            // flat placeholders: the lingwata 1.5 px, the petriċa 7 px with its lure (art/src/fish_placeholders.py)
+            flatOnLand(context, server, x, y, z, "boll", 3.0);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            flatOnLand(context, server, x, y, z, "lingwata", 1.5);
+            server.runCommand("kill @e[type=!minecraft:player]");
+            flatOnLand(context, server, x, y, z, "petrica", 7.0);
             server.runCommand("kill @e[type=!minecraft:player]");
             molaOnLand(context, server, x, y, z);
             server.runCommand("attribute @a minecraft:gravity base reset");
@@ -471,9 +477,9 @@ final class FishHitboxCheck {
         check(after < before, "an arrow on the shark's tail did no damage");
     }
 
-    /** The boll on land lies flat, as it swims: every box sits on the ground and is no taller than the disc. */
-    private static void flatOnLand(ClientGameTestContext context, TestServerContext server, int x, int y, int z) {
-        UUID uuid = spawn(server, "boll", x + 0.5, y + 1, z + 0.5, 30.0F, true);
+    /** A flat fish (the boll) on land lies flat, as it swims: every box sits on the ground and is no taller than the fish. */
+    private static void flatOnLand(ClientGameTestContext context, TestServerContext server, int x, int y, int z, String id, double thickPx) {
+        UUID uuid = spawn(server, id, x + 0.5, y + 1, z + 0.5, 30.0F, true);
         context.waitTicks(20);
         String result = server.computeOnServer(s -> {
             AbstractFish fish = (AbstractFish) s.overworld().getEntity(uuid);
@@ -485,13 +491,12 @@ final class FishHitboxCheck {
             }
             return String.format(Locale.ROOT, "on land=%s, boxes from %.3f to %.3f above its feet", !fish.isInWater(), low, high);
         });
-        log("the boll on land: " + result);
-        check(result.contains("on land=true"), "the boll should be on land: " + result);
+        log("the " + id + " on land: " + result);
+        check(result.contains("on land=true"), "the " + id + " should be on land: " + result);
         String[] nums = result.replaceAll(".*from ([-0-9.]+) to ([-0-9.]+).*", "$1 $2").split(" ");
         double low = Double.parseDouble(nums[0]), high = Double.parseDouble(nums[1]);
-        // flat on the ground: its boxes start at its feet and reach no higher than the model's thickest point (3 px at the
-        // raised eyes on the dome; art/src/fish_boll_model.py)
-        check(Math.abs(low) < 0.01 && high <= 3.0 / 16.0 + 0.01, "the boll's boxes on land should lie flat on the ground: " + result);
+        // flat on the ground: its boxes start at its feet and reach no higher than the model's thickest point
+        check(Math.abs(low) < 0.01 && high <= thickPx / 16.0 + 0.01, "the " + id + "'s boxes on land should lie flat on the ground: " + result);
     }
 
     /** Side views of the big fish with hit boxes shown (F3+B): the white box moves the fish, the green-yellow chain is hit. */

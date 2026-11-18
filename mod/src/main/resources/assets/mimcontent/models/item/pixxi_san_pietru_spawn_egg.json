@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "mimcontent:item/pixxi_san_pietru_spawn_egg"
+ }
+}

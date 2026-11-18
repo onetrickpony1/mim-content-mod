@@ -80,7 +80,7 @@ The tier A fish ([[Fish]]) were built with **placeholder art** (plain boxes, mad
 
 | What | Path (under `mod/src/main/`) |
 |---|---|
-| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`, `PixxispadModel`, `IncovaModel`, `CawlModel`, `HutaKahlaModel`, `BollModel`, `SkorfnaModel`) |
+| Model | `java/com/maltaminecraft/mimcontent/client/fish/<Name>Model.java` (`LampukaModel`, `TonnModel`, `SardinaModel`, `CernaModel`, `AwrataModel`, `MurinaModel`, `ZiemelModel`, `PixxispadModel`, `IncovaModel`, `CawlModel`, `HutaKahlaModel`, `BollModel`, `SkorfnaModel`; the night job's placeholders `KavallModel`, `LizzModel`, `MarzpanModel`, `TirdModel`, `TriljaModel`, `SawtModel`, `PixxiSanPietruModel`, `PetricaModel`, `LingwataModel`, `HmarModel`, `GallinellaModel`, `LionfishModel`) |
 | Mob texture | `resources/assets/mimcontent/textures/entity/fish/<id>.png` |
 | Caught fish icon | `resources/assets/mimcontent/textures/item/<id>.png` (none for the żiemel; the lampuka's is accepted art) |
 | Bucket icon | `resources/assets/mimcontent/textures/item/<id>_bucket.png` |
@@ -102,6 +102,8 @@ A model class must:
 - The ripple is gentle (0.1 radians) while it lies still and grows to about 0.32 as it swims; on land the wings only flutter a little. The renderer keeps a ray **flat on land** (`liesFlat`, not on its side), and its hit boxes are marked flat in `FishShape` to match; the test checks the two agree.
 
 **The skorfna** (black scorpionfish) is a normal `FishModel`. Its model names its parts for the makers: `body` (cubes: head with the eyes, jaw for the big mouth, trunk, and the stalk at the tail's base), `head_flaps` (a child of `body`: the fleshy flaps over the eyes), `top_fin` (the tall spiny dorsal fin), `left_fin` / `right_fin` (the fan-like pectoral fins, spread flat to rest on) and `tail_fin` (the rounded tail, which sways). It mostly lies still on the floor, so the model is seen at rest from above and the side more than swimming.
+
+**The night job's twelve** (2026-11-18) are placeholder `FishModel`s whose parts are named for the makers: `body`, `top_fin`, `tail_fin`, and where they matter `left_fin` / `right_fin` (the gurnard's blue wings, the lionfish's fans, the anglerfish's fins) and `lure` (the anglerfish's rod). The petriċa and the lingwata are flat (`liesFlat`, `flatShape`): they lie flat on land like the boll. Their review shots are `fish-<id>-side`, `-three-quarter`, `-top`, `-beside-cod` and `-on-land` (`placeholderShots` in `FishCheck`); extend them as the art needs. After a new model, paste the row the fish test prints into `FishShape`.
 
 **The mola mola** (ocean sunfish, 2026-11-18) is a `FishModel` with its own animation, like the seahorse: `MolaMolaModel` (made by `art/src/fish_mola_model.py`) has `body` (the disc, eyes, mouth), `dorsal_fin` and `anal_fin` (pivoted at their bases: they scull from side to side together, both tips to the same side), `clavus` (the scalloped rim behind, a slow rudder) and `left_fin` / `right_fin` (the pectorals). It has no `tail` or `tail_fin`. It is far taller than thick, so lying on its side (on land, or basking at the surface) its renderer moves it back along its height by `SIDE_SHIFT` (so its middle, y 4.5, lies over its position); `FishShape` copies that as `sideShift` and the fish test checks the two agree, as for the land lift.
 

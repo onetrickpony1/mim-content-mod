@@ -4,9 +4,9 @@ kind: mob
 subject: Creatures and Plants
 status: built
 tier: A
-maltese: Lampuka, Tonn, Sardina, Ċerna, Awrata, Murina, Żiemel tal-Baħar, Pixxispad, Inċova, Ċawl, Ħuta Kaħla, Boll, Skorfna, Pixxiluna
-english: dolphinfish, Atlantic bluefin tuna, sardine, dusky grouper, gilthead sea bream, Mediterranean moray, seahorse, swordfish, anchovy, Mediterranean damselfish, blue shark, common stingray, black and red scorpionfish, ocean sunfish
-id: mimcontent:lampuka, tonn, sardina, cerna, awrata, murina, ziemel, pixxispad, incova, cawl, huta_kahla, boll, skorfna, skorfna_red, mola_mola
+maltese: Lampuka, Tonn, Sardina, Ċerna, Awrata, Murina, Żiemel tal-Baħar, Pixxispad, Inċova, Ċawl, Ħuta Kaħla, Boll, Skorfna, Pixxiluna, Kavall, Lizz, Marzpan, Tird, Trilja, Sawt, Pixxi San Pietru, Petriċa, Lingwata, Ħmar, Gallinella, Lionfish
+english: dolphinfish, Atlantic bluefin tuna, sardine, dusky grouper, gilthead sea bream, Mediterranean moray, seahorse, swordfish, anchovy, Mediterranean damselfish, blue shark, common stingray, black and red scorpionfish, ocean sunfish, chub mackerel, European barracuda, Mediterranean parrotfish, ornate wrasse, striped red mullet, lesser weever, John Dory, anglerfish, common sole, grey triggerfish, tub gurnard, lionfish
+id: mimcontent:lampuka, tonn, sardina, cerna, awrata, murina, ziemel, pixxispad, incova, cawl, huta_kahla, boll, skorfna, skorfna_red, mola_mola, kavall, lizz, marzpan, tird, trilja, sawt, pixxi_san_pietru, petrica, lingwata, hmar, gallinella, lionfish
 ---
 # Fish
 
@@ -37,6 +37,18 @@ The tier A fish from [[Content mod list]] section 6, built on the owner's go-ahe
 | `boll` | Boll (tier B) | alone or in twos, near the sea floor; stings (below) | 1.25 x 0.25 (flat) | 7 boxes, 2.63 long with the tail, 1.25 wide (the disc), 0.19 thick; flat on land too | 10 | 1-2 | `boll` |
 | `mola_mola` | Pixxiluna (mola mola, tier C) | alone, slow (speed 0.35); basks on its side at the surface; harmless; **extremely rare** (below) | 1.3 x 1.8 (1.7 x 0.5 while basking) | 5 boxes, 1.63 long, 0.71 wide with the pectoral fins, 2.38 tall fin tip to fin tip; on its side when basking | 20 | 1 | `mola_mola` (a proposal) |
 | `skorfna` | Skorfna (tier B) | alone; rests on a rock floor, moves in short hops; venomous spines (below) | 0.5 x 0.4 | 3 boxes, 0.84 long, 0.63 wide with the fins, 0.5 tall | 6 | 1 | `skorfna` (black), `skorfna_red` (red) |
+| `kavall` | Kavall (night job) | in schools of up to 8 | 0.5 x 0.35 | 3 boxes, 1.06 long, 0.19 wide, 0.41 tall | 4 | 3-6 | `kavall` |
+| `lizz` | Lizz (night job) | in schools of up to 4 | 0.7 x 0.3 | 4 boxes, 1.5 long, 0.13 wide, 0.38 tall | 8 | 2-4 | `lizz` |
+| `marzpan` | Marzpan (night job) | small groups, 0.5 to 3 blocks over rock; shy | 0.5 x 0.4 | 3 boxes, 0.88 long, 0.19 wide, 0.44 tall | 4 | 1-3 | `marzpan` |
+| `tird` | Tird (night job) | small groups, 0.4 to 2.5 blocks over any floor; shy | 0.35 x 0.3 | 2 boxes, 0.69 long, 0.13 wide, 0.25 tall | 3 | 1-3 | `tird` |
+| `trilja` | Trilja (night job) | small groups, 0.2 to 1 block over sand; shy | 0.45 x 0.3 | 3 boxes, 0.81 long, 0.13 wide, 0.38 tall | 3 | 2-4 | `trilja` |
+| `sawt` | Sawt (night job) | alone; lies on shallow sand nearly all the time; stings (below) | 0.35 x 0.2 | 2 boxes, 0.56 long, 0.13 wide, 0.28 tall | 3 | 1 | `sawt` |
+| `pixxi_san_pietru` | Pixxi San Pietru (night job) | alone, slow (speed 0.45), mid-depth | 0.6 x 0.8 | 3 boxes, 1.06 long, 0.13 wide, 0.94 tall | 6 | 1 | `pixxi_san_pietru` |
+| `petrica` | Petriċa (night job) | alone; sits still on deep soft floors; flat on land too | 0.9 x 0.35 | 4 boxes, 1.38 long, 1.0 wide, 0.44 tall with the lure | 10 | 1 | `petrica` |
+| `lingwata` | Lingwata (night job) | alone; low over sand, rests often (like the boll); shy; flat on land too | 0.6 x 0.2 | 3 boxes, 1.13 long, 0.5 wide, 0.09 thick | 4 | 1 | `lingwata` |
+| `hmar` | Ħmar (night job) | alone or in twos, 0.5 to 3 blocks over rock; shy | 0.55 x 0.7 | 3 boxes, 1.0 long, 0.19 wide, 0.81 tall | 6 | 1-2 | `hmar` |
+| `gallinella` | Gallinella (night job) | alone or in twos, within half a block of the sand; shy | 0.6 x 0.35 | 3 boxes, 1.13 long, 0.88 wide with the "wings", 0.34 tall | 5 | 1-2 | `gallinella` |
+| `lionfish` | Lionfish† (night job) | alone, slow (speed 0.5), bold, over rock; stings (below) | 0.5 x 0.55 | 3 boxes, 0.94 long, 0.69 wide with the fans, 0.63 tall | 4 | 1 | `lionfish` |
 
 Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
 
@@ -49,7 +61,7 @@ Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
 - **Ċawl** (Mediterranean damselfish, *Chromis chromis*): a small, deep-bodied dark fish with a forked tail, in groups of 3 to 6 over the shallow rocky seas all round Malta. Common.
 - **Ħuta kaħla** (blue shark, *Prionace glauca*): a big, slender shark, alone and rare in the deep sea. It doesn't shy from players like the other fish do, and **ignores you unless you hurt it or carry fish** (owner, 2026-11-18: "blue shark should ignore you unless you hurt it OR you have fish in your inventory"):
   - **Hurt it** and it bites back (4 damage, 2 hearts) for 15 to 25 seconds, like vanilla's neutral mobs.
-  - **Carry fish** anywhere in your inventory, within 16 blocks of it, in survival or adventure, and it hunts you. "Fish" is the item tag `mimcontent:shark_bait`: vanilla's `#minecraft:fishes` (cod, salmon, pufferfish, tropical fish, cooked cod and salmon), our caught fish (lampuka, tonn, sardina, ċerna, awrata, murina, pixxispad, inċova, ċawl, ħuta kaħla, boll, both skorfna), the lampuka moqlija, and every fish bucket, vanilla's and ours. The tag is data, so a datapack can change it. The shark looks at inventories about once a second.
+  - **Carry fish** anywhere in your inventory, within 16 blocks of it, in survival or adventure, and it hunts you. "Fish" is the item tag `mimcontent:shark_bait`: vanilla's `#minecraft:fishes` (cod, salmon, pufferfish, tropical fish, cooked cod and salmon), our caught fish (lampuka, tonn, sardina, ċerna, awrata, murina, pixxispad, inċova, ċawl, ħuta kaħla, boll, both skorfna, the mola mola and the night job's twelve), the lampuka moqlija, and every fish bucket, vanilla's and ours. The tag is data, so a datapack can change it. The shark looks at inventories about once a second.
   - **Drop or put away the fish** and it gives up after about 3 seconds, unless you also hurt it.
   - Creative and spectator players, and peaceful difficulty, are left alone. It doesn't hunt other fish (yet).
 
@@ -82,6 +94,15 @@ Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
 - Life size, like the tonn and the shark: 1.63 blocks long and 2.4 tall fin tip to fin tip. It has a bucket like every fish. It drops itself (a proposal waiting for the owner).
 - **Art:** the 3D model is the first piece, waiting for the owner; the icon, bucket and egg are placeholders until then.
 
+**The night job's twelve** (owner, 2026-11-18: [[2026-11-18 Night job - the rest of the fish, Claude decides]]) were built overnight with **placeholder art**, every choice made for the owner and logged in `Night log/` (one note per fish: species, name, size, behaviour, spawns, sources) and summed up in [[Night fish log 2026-11-19]]. None of it is owner-accepted yet.
+- **Sizes** are bigger than life for the small fish so they read in game (about 2.5 to 4 times), as the house rule allows; the petriċa is kept near the size of a big one, like the tonn. From 0.56 blocks (sawt) to 1.5 (lizz); cod is about 0.6.
+- **Kavall** (*Scomber colias*) and **lizz** (*Sphyraena sphyraena*) school like the sardina. The lizz is rarer, near the coast; its summer season waits for the calendar.
+- **Bottom fish** share one way of living (`BottomFish`, with numbers per fish): each swims in its own band above its own kind of floor, may rest on the bottom, spawns only over that floor (within 16 blocks below, at any depth below sea level) and is set down near it when it spawns naturally. Over rock: marzpan, ħmar, lionfish. Over sand, gravel, clay or mud: trilja, gallinella, sawt, petriċa, lingwata. Over any floor: tird (rock and seagrass).
+- **The sawt and the lionfish sting** like the skorfna: touching one (bumping into it, standing or walking on it) or hitting it in melee gives 2 damage (1 heart) and Poison for 6 seconds, at most once every 2 seconds; mobs too, other fish not; arrows and tridents don't count. Creative, spectator, peaceful and Jellyfish Ward: never stung.
+- **The pixxi San Pietru** spawns in open water at least 5 blocks below sea level, any floor.
+- **The petriċa and the lingwata are flat**: no body wiggle, and on land they lie flat like the boll.
+- **The tird** is the ornate wrasse (*Thalassoma pavo*), picked to stand for the wrasses (*Tird* is the family's name). **The lionfish** has no sourced Maltese name, so it is shown as Lionfish†.
+
 The żiemel is drawn about five times life size, 0.81 blocks tall, so its crown, snout, pot belly and curled tail show at vanilla's pixel size ([[2026-11-18 Ziemel - start, bigger than life]]).
 
 ### Tonn sizes
@@ -93,7 +114,7 @@ Each tonn has its own size ([[2026-11-18 Tonn - mixed sizes]]: "Mixed sizes"), l
 - It uses vanilla's scale attribute (a modifier named `mimcontent:tonn_size`), so other mods and commands that change a mob's scale still work on top of it. Nothing changes for the other fish.
 
 ## Where they spawn
-Like vanilla fish, near the surface (within 13 blocks of sea level) in water; the boll instead near a soft sea floor at any depth, and the skorfna near a rock floor at any depth. Weights are relative to the other fish in the same biome.
+Like vanilla fish, near the surface (within 13 blocks of sea level) in water; the boll instead near a soft sea floor at any depth, the skorfna near a rock floor at any depth, the night job's bottom fish near their own floor at any depth, and the pixxi San Pietru at least 5 blocks below sea level. Weights are relative to the other fish in the same biome.
 
 | Fish | Malta world (`maltamc:`) | Weight | Vanilla oceans (switch on) | Weight |
 |---|---|---|---|---|
@@ -111,6 +132,18 @@ Like vanilla fish, near the surface (within 13 blocks of sea level) in water; th
 | Boll | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; `posidonia_meadows`, `dwejra_posidonia_meadows` (the sand patches); deep sea. Only over sand, gravel, clay or mud, at any depth (above) | 5; 4; 2 | warm, lukewarm | 2 |
 | Skorfna | `bahar_sea`, `dwejra_bahar_sea`; `fond_deep_sea`, `dwejra_fond_deep_sea`. Only over a rock floor, at any depth (above) | 4; 2 | warm, lukewarm (only where the floor is rock) | 2 |
 | Mola mola | deep sea (`fond_deep_sea`, `fond_band_1`-`8`, `dwejra_fond_deep_sea`); extremely rare: only 1 natural try in 400 goes ahead | 1 | warm, deep lukewarm (the same extra roll) | 1 |
+| Kavall | deep sea (`fond_deep_sea`, `fond_band_1`-`8`); `bahar_sea`, `dwejra_bahar_sea` | 10; 6 | warm, lukewarm, deep lukewarm | 5 |
+| Lizz | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea` | 2 | warm, lukewarm | 1 |
+| Marzpan | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; over rock | 8 | warm, lukewarm | 3 |
+| Tird | the shallow seas (`bahar_sea`, `posidonia_meadows`, `qawra_inland_sea`, `dwejra_bahar_sea`, `dwejra_posidonia_meadows`); any floor | 12 | warm, lukewarm | 6 |
+| Trilja | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; `posidonia_meadows`, `dwejra_posidonia_meadows`; over a soft floor | 8; 4 | warm, lukewarm | 4 |
+| Sawt | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; over a soft floor | 4 | warm, lukewarm | 2 |
+| Pixxi San Pietru | deep sea (`fond_deep_sea`, `fond_band_1`-`8`, `dwejra_fond_deep_sea`); 5+ blocks below sea level | 3 | lukewarm, deep lukewarm | 2 |
+| Petriċa | `fond_deep_sea`, `dwejra_fond_deep_sea`; over a soft floor | 2 | deep lukewarm | 1 |
+| Lingwata | `bahar_sea`, `dwejra_bahar_sea`, `qawra_inland_sea`; `posidonia_meadows`, `dwejra_posidonia_meadows`; deep sea; over a soft floor | 5; 3; 2 | warm, lukewarm | 2 |
+| Ħmar | `bahar_sea`, `dwejra_bahar_sea`; over rock | 5 | warm, lukewarm | 2 |
+| Gallinella | `bahar_sea`, `dwejra_bahar_sea`; `fond_deep_sea`, `dwejra_fond_deep_sea`; over a soft floor | 4; 3 | warm, lukewarm, deep lukewarm | 2 |
+| Lionfish | `bahar_sea`, `dwejra_bahar_sea`; over rock; rare | 1 | warm | 1 |
 
 The `fond_band_1`-`8` biomes are the deep-sea copies in the blend toward vanilla's ocean.
 
@@ -122,3 +155,5 @@ The `fond_band_1`-`8` biomes are the deep-sea copies in the blend toward vanilla
 - Lampuka: only in season (15 Aug to Dec), under floating rafts.
 - Food values and recipes, once food gameplay is decided.
 - Mola mola: caught with jellyfish meat as bait, once fishing is overhauled.
+- Lizz: only in summer, once the mod has a calendar. Lionfish: the "cull the invader" idea. Sawt: buried in the sand with only its eyes showing.
+- The night job's twelve: their real art (model, icon, bucket, egg).

@@ -46,8 +46,22 @@
 - **A Maltese kitchen.** The kenur, a limestone stove that can be lit and hold a pot, and the borma, a clay stew pot, empty or full of stuffat.
 - **Labels with Maltese letters.** Comparison pictures now show ħ, ż and ġ instead of boxes.
 - **The golden pastizz (art only).** A gold version of the Pastizz tal-Irkotta icon, turned gold the way vanilla turns the golden apple and golden carrot, in three candidates for the owner to choose from. It isn't in the game yet, and what it does is still an open question.
+- **Twelve more fish (placeholder art).** Each drops itself when killed, has a spawn egg and a bucket, draws the blue shark, and also lives in vanilla's oceans (behind `fish_in_vanilla_oceans`). Their looks are plain boxes and simple icons until the art round, and every choice is logged for the owner in `docs/Creatures and Plants/Night log/`:
+  - **Kavall (chub mackerel):** schools of up to 8 in open water, in the deep sea and the shallows, a little bigger than a cod.
+  - **Lizz (barracuda):** a long, slim hunter, 1.5 blocks, in small groups near the coast; uncommon.
+  - **Marzpan (parrotfish):** red and yellow, in small groups over the shallow rocks.
+  - **Tird (ornate wrasse):** a small, busy green wrasse over rock and seagrass all round the shallows.
+  - **Trilja (red mullet):** small groups that keep just above the sand.
+  - **Sawt (weever):** lies almost always on shallow sand, sand-coloured and hard to see. Step on it, touch it or hit it and it stings: 1 heart and poison for 6 seconds (mobs too).
+  - **Pixxi San Pietru (John Dory):** tall, thin and slow, alone in deeper open water.
+  - **Petriċa (anglerfish):** a big flat fish with a wide head that sits still on deep soft floors; it lies flat on land. Rare.
+  - **Lingwata (sole):** a flat fish that glides low over sand and often lies still on it, like the boll; it lies flat on land.
+  - **Ħmar (triggerfish):** deep-bodied and grey, alone or in twos over rock.
+  - **Gallinella (gurnard):** keeps within half a block of the sand, as if walking on its fins, with big blue "wings".
+  - **Lionfish:** rare, over rock, slow and bold (it doesn't swim away). Its spines sting what touches or hits it: 1 heart and poison for 6 seconds. Jellyfish Ward blocks it, as it blocks every sting.
 
 ### Fixes
+- **The boll stays near the bottom:** a stingray no longer sometimes hangs up to 2 blocks above the sand, and no longer now and then swims up to the surface; it keeps a block or two above the floor as meant.
 - **Spawn egg pools match vanilla:** the blue pool of water under every fish spawn egg of ours is now exactly the one under vanilla's cod, salmon, pufferfish and tropical fish eggs. The eggs themselves are unchanged. The boll (stingray) spawn egg is now the olive egg with a small cream patch showing its nostrils and mouth.
 - **Luzzu oars in the rower's hands:** the oars now sit on the gunwale beside the rower, and the rower's hands hold the handles all through the stroke, pushing forward with the blades in the water and drawing back with them lifted clear, rowing facing the bow. When you turn and only one oar rows, the other hand rests on your knee. Other players see the same.
 - **Thick fish on land:** a ċerna or tonn flopping on land no longer sinks into the ground; each fish is lifted by its own thickness. The ċerna's hitbox is a little taller to fit its fin.

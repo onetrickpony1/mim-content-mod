@@ -159,8 +159,11 @@ public class BollFish extends MimFish {
         }
         super.aiStep();
         if (!level().isClientSide() && isInWater() && !resting && getNavigation().isDone() && tickCount % 5 == 0
-            && heightAboveFloor(level(), position(), 6) > SWIM_HIGH + 0.5) {
-            // idle and too high: sink gently back toward the bottom
+            && heightAboveFloor(level(), position(), 6) > SWIM_HIGH) {
+            // idle and above its band: sink gently back toward the bottom. Vanilla's water navigation counts a spot as
+            // reached up to a block above it and the fish then floats where it is, so without this a boll aiming for
+            // the top of its band could park up to SWIM_HIGH + 1 blocks up until it next rested (the cause of the
+            // flaky "should stay near the bottom" check, 2026-11-18)
             setDeltaMovement(getDeltaMovement().add(0.0, -0.02, 0.0));
         }
     }
@@ -219,7 +222,9 @@ public class BollFish extends MimFish {
         @Override
         protected @Nullable Vec3 getPosition() {
             Vec3 spot = super.getPosition();
-            if (spot == null) {
+            // vanilla's pick gives up after ten tries and may hand back a spot out of the water (above the surface),
+            // which would send the boll up to the top: not one for it
+            if (spot == null || !level().getFluidState(BlockPos.containing(spot)).is(FluidTags.WATER)) {
                 return null;
             }
             double above = heightAboveFloor(level(), spot, 24);

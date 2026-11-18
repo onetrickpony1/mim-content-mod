@@ -193,7 +193,132 @@ FISH = {
             ("tail_fin", None, (0, 14, 4), [(0, -9, 0, 0, 18, 2, "fin")]),
         ],
     },
+    # ---- the night job (2026-11-18, "Night job - the rest of the fish, Claude decides"): twelve more fish, placeholder
+    # art only. Sizes and species are in docs/Creatures and Plants/Night log/<id>.md. Part names, for the art makers:
+    # body (the trunk, head and eye), top_fin (the dorsal fin or spines), tail_fin (sways), left_fin / right_fin (the
+    # pectorals, where they matter: the gurnard's blue "wings", the lionfish's fans, the anglerfish's fins) and lure
+    # (the anglerfish's fishing rod). Rename or add parts freely, keeping the fish model contract.
+    "kavall": {
+        "name": "Kavall", "about": "chub mackerel: torpedo body, blue-green back with dark wavy bars, silver sides, forked tail",
+        "back": "#2f5f6a", "side": "#a9b8b8", "belly": "#e8ece6", "fin": "#5d7a80", "accent": "#20343a",
+        "parts": [
+            ("body", None, (0, 21, 0), [(-1.5, -2, -8, 3, 4, 13, "body eye blotch")]),
+            ("top_fin", None, (0, 19, -4), [(0, -2, 0, 0, 2, 3, "fin")]),
+            ("tail_fin", None, (0, 21, 5), [(0, -2.5, 0, 0, 5, 4, "fin fork")]),
+        ],
+    },
+    "lizz": {
+        "name": "Lizz", "about": "European barracuda: long and slim, pointed jaw, grey-blue back, silver sides, forked tail",
+        "back": "#4a5a66", "side": "#b4bcc0", "belly": "#e6e9e8", "fin": "#6a7880", "accent": None,
+        "parts": [
+            ("body", None, (0, 21.5, 0), [(-1, -1.5, -11, 2, 3, 18, "body eye"), (-0.5, -0.5, -13, 1, 1.5, 2, "body")]),
+            ("top_fin", None, (0, 20, -3), [(0, -2, 0, 0, 2, 3, "fin"), (0, -2, 6, 0, 2, 2, "fin")]),
+            ("tail_fin", None, (0, 21.5, 7), [(0, -2.5, 0, 0, 5, 4, "fin fork")]),
+        ],
+    },
+    "marzpan": {
+        "name": "Marzpan", "about": "Mediterranean parrotfish (female): oval, red with a yellow saddle, beak-like mouth",
+        "back": "#8a3b33", "side": "#c0574a", "belly": "#d9a24e", "fin": "#a8453a", "accent": "#e0c040",
+        "parts": [
+            ("body", None, (0, 20.5, 0), [(-1.5, -3, -6, 3, 6, 10, "body eye accent"), (-1, -1, -7, 2, 2, 1, "body")]),
+            ("top_fin", None, (0, 17.5, -4), [(0, -1, 0, 0, 1, 7, "fin")]),
+            ("tail_fin", None, (0, 20.5, 4), [(0, -3, 0, 0, 6, 3, "fin")]),
+        ],
+    },
+    "tird": {
+        "name": "Tird", "about": "ornate wrasse: slim, green with blue-red bars on the head, a lyre-like tail",
+        "back": "#2f7a5a", "side": "#4fa37a", "belly": "#9fd0a8", "fin": "#3a6fa0", "accent": "#3060b0",
+        "parts": [
+            ("body", None, (0, 21.5, 0), [(-1, -1.5, -5, 2, 3, 9, "body eye blotch")]),
+            ("top_fin", None, (0, 20, -3), [(0, -1, 0, 0, 1, 6, "fin")]),
+            ("tail_fin", None, (0, 21.5, 4), [(0, -1.5, 0, 0, 3, 2, "fin")]),
+        ],
+    },
+    "trilja": {
+        "name": "Trilja", "about": "striped red mullet: steep head, two chin barbels, red-pink with a yellow stripe",
+        "back": "#a8453a", "side": "#d87a5c", "belly": "#f0d4b8", "fin": "#d8a070", "accent": None,
+        "parts": [
+            ("body", None, (0, 21.5, 0), [(-1, -1.5, -6, 2, 3, 10, "body eye"), (0, 1.5, -6, 0, 1, 1, "fin")]),
+            ("top_fin", None, (0, 20, -4), [(0, -2, 0, 0, 2, 3, "fin")]),
+            ("tail_fin", None, (0, 21.5, 4), [(0, -2, 0, 0, 4, 3, "fin fork")]),
+        ],
+    },
+    "sawt": {
+        "name": "Sawt", "about": "lesser weever: small, sandy, eyes on top, black venomous first dorsal fin",
+        "back": "#a89a78", "side": "#c8b994", "belly": "#e8e0cc", "fin": "#2a2a2a", "accent": "#8a7a58",
+        "parts": [
+            ("body", None, (0, 22.5, 0), [(-1, -1.5, -4, 2, 3, 7, "body eye blotch")]),
+            ("top_fin", None, (0, 21, -3), [(0, -1.5, 0, 0, 1.5, 2, "fin")]),
+            ("tail_fin", None, (0, 22.5, 3), [(0, -1.5, 0, 0, 3, 2, "fin")]),
+        ],
+    },
+    "pixxi_san_pietru": {
+        "name": "PixxiSanPietru", "about": "John Dory: tall, very thin, olive-grey with a dark St Peter's thumbprint spot, "
+                                          "long spiny dorsal filaments",
+        "back": "#6a6a52", "side": "#a8a48a", "belly": "#d8d4c0", "fin": "#5a5a48", "accent": "#202020",
+        "parts": [
+            ("body", None, (0, 17, 0), [(-1, -6, -7, 2, 12, 12, "body eye blotch"), (-0.5, -1, -9, 1, 2, 2, "body")]),
+            ("top_fin", None, (0, 11, -5), [(0, -3, 0, 0, 3, 9, "fin")]),
+            ("tail_fin", None, (0, 17, 5), [(0, -2.5, 0, 0, 5, 3, "fin")]),
+        ],
+    },
+    "petrica": {
+        "name": "Petrica", "about": "anglerfish: huge flat head and wide mouth, mottled brown, a fishing-rod lure on the head",
+        "back": "#5a4a3a", "side": "#7a6650", "belly": "#d8ccb8", "fin": "#4a3c2e", "accent": "#8c7a5c",
+        "parts": [
+            ("body", None, (0, 22, 0), [(-5, -2, -10, 10, 4, 10, "body eye blotch"), (-4, 0, -11, 8, 2, 1, "body"),
+                                        (-1.5, -1.5, 0, 3, 3, 8, "body blotch")]),
+            ("lure", None, (0, 20, -9), [(0, -3, 0, 0, 3, 1, "fin")]),
+            ("left_fin", None, (5, 23, -4), [(0, 0, 0, 3, 0, 3, "fin")]),
+            ("right_fin", None, (-5, 23, -4), [(-3, 0, 0, 3, 0, 3, "fin")]),
+            ("tail_fin", None, (0, 22, 8), [(0, -2, 0, 0, 4, 3, "fin")]),
+        ],
+    },
+    "lingwata": {
+        "name": "Lingwata", "about": "common sole: flat oval lying on its side, both eyes on top, brown above, white below",
+        "back": "#6a5a44", "side": "#7f6c52", "belly": "#ece6da", "fin": "#5a4c3a", "accent": None,
+        "parts": [
+            ("body", None, (0, 23.25, 0), [(-4, -0.75, -8, 8, 1.5, 14, "body eye"), (-2.5, -0.75, -9, 5, 1.5, 1, "body")]),
+            ("tail_fin", None, (0, 23.25, 6), [(-2.5, 0, 0, 5, 0, 3, "fin")]),
+        ],
+    },
+    "hmar": {
+        "name": "Hmar", "about": "grey triggerfish: deep, flat-sided, grey-brown, small mouth, a trigger spine on the back",
+        "back": "#5c5a52", "side": "#8a877a", "belly": "#b8b4a4", "fin": "#6a675c", "accent": "#3a5a8a",
+        "parts": [
+            ("body", None, (0, 19, 0), [(-1.5, -5, -6, 3, 10, 11, "body eye blotch"), (-1, -1, -8, 2, 3, 2, "body")]),
+            ("top_fin", None, (0, 14, -4), [(0, -3, 0, 0, 3, 2, "fin"), (0, -2, 3, 0, 2, 5, "fin")]),
+            ("tail_fin", None, (0, 19, 5), [(0, -3, 0, 0, 6, 3, "fin")]),
+        ],
+    },
+    "gallinella": {
+        "name": "Gallinella", "about": "tub gurnard: big bony head, red body, huge blue-edged pectoral 'wings', walks on "
+                                      "its fin rays",
+        "back": "#a84a3a", "side": "#cc6e52", "belly": "#ecd2c0", "fin": "#4a7ac8", "accent": None,
+        "parts": [
+            ("body", None, (0, 21.5, 0), [(-2, -2, -9, 4, 3.5, 4, "body eye"), (-1.5, -1.5, -5, 3, 3, 11, "body")]),
+            ("top_fin", None, (0, 20, -5), [(0, -2, 0, 0, 2, 6, "fin")]),
+            ("left_fin", None, (2, 22.5, -5), [(0, 0, 0, 5, 0, 5, "fin")]),
+            ("right_fin", None, (-2, 22.5, -5), [(-5, 0, 0, 5, 0, 5, "fin")]),
+            ("tail_fin", None, (0, 21.5, 6), [(0, -2, 0, 0, 4, 3, "fin")]),
+        ],
+    },
+    "lionfish": {
+        "name": "Lionfish", "about": "lionfish: red-brown and white bands, tall venomous dorsal spines, big fan pectoral fins",
+        "back": "#7a2a20", "side": "#c8705a", "belly": "#f0e0d0", "fin": "#d8a090", "accent": "#f4ece0",
+        "parts": [
+            ("body", None, (0, 20.5, 0), [(-1.5, -2.5, -6, 3, 5, 11, "body eye blotch"), (-1, -1, -7, 2, 2, 1, "body")]),
+            ("top_fin", None, (0, 18, -5), [(0, -5, 0, 0, 5, 9, "fin")]),
+            ("left_fin", None, (1.5, 21, -3), [(0, 0, 0, 4, 0, 6, "fin")]),
+            ("right_fin", None, (-1.5, 21, -3), [(-4, 0, 0, 4, 0, 6, "fin")]),
+            ("tail_fin", None, (0, 20.5, 5), [(0, -2.5, 0, 0, 5, 3, "fin")]),
+        ],
+    },
 }
+
+# the night job's fish: their spawn eggs sit on vanilla's own pool, like the other new eggs (owner 2026-11-18)
+NIGHT_FISH = ("kavall", "lizz", "marzpan", "tird", "trilja", "sawt", "pixxi_san_pietru", "petrica", "lingwata", "hmar",
+              "gallinella", "lionfish")
 
 
 def rgb(h):
@@ -296,7 +421,9 @@ def java_model(fid, fish, uvs):
         " * Made by art/src/fish_placeholders.py; the art makers replace this file, keeping the fish model contract",
         " * (docs/Tools and Process/Art pipeline.md, \"Fish models\"). Texture: textures/entity/fish/" + fid + ".png.",
     ] + ([f" * Extends {fish['base']}, which animates it; keep its part names: "
-          + ", ".join(p[0] for p in fish["parts"]) + "."] if fish.get("base") else []) + [
+          + ", ".join(p[0] for p in fish["parts"]) + "."] if fish.get("base")
+       else [" * Parts, for the art makers to replace: " + ", ".join(p[0] for p in fish["parts"]) + "."]
+       if fid in NIGHT_FISH else []) + [
         " */",
         f"public class {name}Model extends {fish.get('base', 'FishModel')} {{",
         f"    public {name}Model(ModelPart root) {{",
@@ -376,7 +503,9 @@ def icon_fish(fish, fid):
         return icon_mola(fish)
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    thick = {"sardina": 1.6, "incova": 1.3, "cawl": 3.0, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4}.get(fid, 2.5)
+    thick = {"sardina": 1.6, "incova": 1.3, "cawl": 3.0, "awrata": 3.2, "cerna": 3.4, "tonn": 3.6, "lampuka": 2.6, "murina": 1.4,
+             "kavall": 2.4, "lizz": 1.6, "marzpan": 3.0, "tird": 1.9, "trilja": 2.2, "sawt": 1.8,
+             "pixxi_san_pietru": 4.2, "petrica": 3.6, "lingwata": 3.0, "hmar": 3.8, "gallinella": 2.6, "lionfish": 2.8}.get(fid, 2.5)
     a, b = (2.5, 13.5), (11.5, 4.5)
     if fid == "murina":
         a, b = (1.5, 14.5), (13.5, 2.5)
@@ -489,7 +618,7 @@ def main(ids):
             out = os.path.join(RES, "textures/item", fid + kind + ".png")
             if fresh(out):
                 icon = make(fish)
-                if kind == "_spawn_egg" and fid == "mola_mola":
+                if kind == "_spawn_egg" and (fid == "mola_mola" or fid in NIGHT_FISH):
                     icon = vanilla_pool(icon, [])     # vanilla's own pool under the egg (owner 2026-11-18)
                 icon.save(out)
         out = os.path.join(RES, "textures/item", fid + ".png")

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mimcontent:pixxi_san_pietru"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mimcontent:entities/pixxi_san_pietru"
+}

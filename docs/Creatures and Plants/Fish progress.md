@@ -32,26 +32,26 @@ Every fish and sea creature planned for the mod, with a picture of each as it is
 | ![incova](images/incova.png) ![incova spawn egg](images/incova_spawn_egg.png) ![incova live](images/incova_live.png)                         | Inċova     | Anchovy                      | Shoals in open water              | done (art accepted 2026-11-18) |
 | ![pixxispad](images/pixxispad.png) ![pixxispad spawn egg](images/pixxispad_spawn_egg.png) ![pixxispad live](images/pixxispad_live.png)       | Pixxispad  | Swordfish                    | Open sea                          | done (art accepted 2026-11-18) |
 | ![cawl](images/cawl.png) ![cawl spawn egg](images/cawl_spawn_egg.png) ![cawl live](images/cawl_live.png)                                     | Ċawl       | Damselfish                   | Shallow rocks                     | done (art accepted 2026-11-18) |
-|                                                                                                                                              | Tird       | Wrasse                       | Shallow rocks, seagrass           | planned                        |
+|                                                                                                                                              | Tird       | Wrasse                       | Shallow rocks, seagrass           | building (placeholder art; night job, [[Night fish log 2026-11-19]])                        |
 |                                                                                                                                              | Skorfna    | Scorpionfish (black and red) | Rocks, caves; venomous spines     | building: model and icon accepted; bucket (black and red, shows the colour inside) accepted ([[2026-11-18 Skorfna bucket accepted]]); spawn egg (one for both colours) drawn, waiting for the owner |
-|                                                                                                                                              | Sawt       | Weever                       | Buried in beach sand; stings feet | planned                        |
+|                                                                                                                                              | Sawt       | Weever                       | Buried in beach sand; stings feet | building (placeholder art; night job, [[Night fish log 2026-11-19]])                        |
 | ![huta kahla](images/huta_kahla.png) ![huta kahla spawn egg](images/huta_kahla_spawn_egg.png) ![huta kahla live](images/huta_kahla_live.png) | Ħuta kaħla | Blue shark (all sharks)      | Open sea; rare near shore         | done (art accepted 2026-11-18) |
 |                                                                                                                                              | Boll       | Common stingray              | Sand bottom                       | building (placeholder art)     |
-|                                                                                                                                              | Lionfish   | Lionfish                     | Reefs; invasive since 2016        | planned                        |
+|                                                                                                                                              | Lionfish   | Lionfish                     | Reefs; invasive since 2016        | building (placeholder art; night job, [[Night fish log 2026-11-19]])                        |
 
 ## Tier C
 
 | Picture | Maltese          | English     | Where                   | Status  |
 | ------- | ---------------- | ----------- | ----------------------- | ------- |
-|         | Kavall           | Mackerel    | Shoals                  | planned |
-|         | Lizz             | Barracuda   | Near the coast, summer  | planned |
-|         | Marzpan          | Parrotfish  | Shallow rocks           | planned |
-|         | Trilja           | Red mullet  | Sand, harbours          | planned |
-|         | Pixxi San Pietru | John Dory   | Mid-depth               | planned |
-|         | Petriċa          | Anglerfish  | Deep mud                | planned |
-|         | Lingwata         | Sole        | Sand bottom             | planned |
-|         | Ħmar             | Triggerfish | Rocks                   | planned |
-|         | Gallinella       | Gurnard     | Sand; walks on its fins | planned |
+|         | Kavall           | Mackerel    | Shoals                  | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Lizz             | Barracuda   | Near the coast, summer  | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Marzpan          | Parrotfish  | Shallow rocks           | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Trilja           | Red mullet  | Sand, harbours          | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Pixxi San Pietru | John Dory   | Mid-depth               | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Petriċa          | Anglerfish  | Deep mud                | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Lingwata         | Sole        | Sand bottom             | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Ħmar             | Triggerfish | Rocks                   | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
+|         | Gallinella       | Gurnard     | Sand; walks on its fins | building (placeholder art; night job, [[Night fish log 2026-11-19]]) |
 |         | Pixxiluna (also qamar, pixxitanbur) | Ocean sunfish (mola mola) | Deep sea, basks at the surface; extremely rare, caught with jellyfish meat once fishing is overhauled ([[Mola mola]]) | building: 3D model accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]); item icon drawn (three poses, upright side view A installed; `art/src/fish_mola_icon.py`), waiting for the owner; placeholder bucket and egg |
 
 ## Other sea life

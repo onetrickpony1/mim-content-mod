@@ -1,6 +1,10 @@
 package com.maltaminecraft.mimcontent;
 
 import com.maltaminecraft.mimcontent.entity.fish.BollFish;
+import com.maltaminecraft.mimcontent.entity.fish.BottomFish;
+import com.maltaminecraft.mimcontent.entity.fish.BottomFish.Floor;
+import com.maltaminecraft.mimcontent.entity.fish.BottomFish.Habit;
+import com.maltaminecraft.mimcontent.entity.fish.BottomFish.Sting;
 import com.maltaminecraft.mimcontent.entity.fish.HutaKahlaFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimFish;
 import com.maltaminecraft.mimcontent.entity.fish.MimSchoolingFish;
@@ -102,6 +106,46 @@ public final class MimFishes {
     // without the fins. Drops itself (a proposal, waiting for the owner).
     public static final Fish MOLA_MOLA = mola("mola_mola", 1.3F, 1.8F, 20.0, () -> MimContent.item("mola_mola", Item::new, new Item.Properties()));
 
+    // ---- The night job (owner 2026-11-18, "Night job - the rest of the fish, Claude decides"): twelve more fish, every
+    // choice logged for the owner in docs/Creatures and Plants/Night log/<id>.md. Placeholder art. Sizes are bigger
+    // than life for the small fish so they read in game, as the house rule allows (the boll was too small at life size).
+    // The kavall (chub mackerel): a school in open water, a little bigger than a cod.
+    public static final Fish KAVALL = schooling("kavall", 0.5F, 0.35F, 4.0, 8, () -> MimContent.item("kavall", Item::new, new Item.Properties()));
+    // The lizz (European barracuda): long and slim; young ones in small groups near the coast, fewer spawns.
+    public static final Fish LIZZ = schooling("lizz", 0.7F, 0.3F, 8.0, 4, () -> MimContent.item("lizz", Item::new, new Item.Properties()));
+    // The marzpan (Mediterranean parrotfish): over shallow rock, in small groups, shy.
+    public static final Fish MARZPAN = bottom("marzpan", 0.5F, 0.4F, 4.0, 3, 0.7, new Habit(Floor.ROCK, 0.5, 3.0, 0.8, 60, 0, 0, 0, true, false, null),
+        () -> MimContent.item("marzpan", Item::new, new Item.Properties()));
+    // The tird (ornate wrasse, Thalassoma pavo): small and busy, over rock and seagrass (any floor), shy.
+    public static final Fish TIRD = bottom("tird", 0.35F, 0.3F, 3.0, 3, 0.7, new Habit(Floor.ANY, 0.4, 2.5, 1.0, 40, 0, 0, 0, true, false, null),
+        () -> MimContent.item("tird", Item::new, new Item.Properties()));
+    // The trilja (striped red mullet): in small groups just over sand, nosing the bottom, shy.
+    public static final Fish TRILJA = bottom("trilja", 0.45F, 0.3F, 3.0, 4, 0.7, new Habit(Floor.SOFT, 0.2, 1.0, 0.9, 40, 0, 0, 0, true, false, null),
+        () -> MimContent.item("trilja", Item::new, new Item.Properties()));
+    // The sawt (lesser weever): lies on shallow sand nearly all the time, hard to see; stings what touches it
+    // (1 heart and Poison for 6 seconds, as the skorfna).
+    public static final Fish SAWT = bottom("sawt", 0.35F, 0.2F, 3.0, 1, 0.7, new Habit(Floor.SOFT, 0.0, 0.4, 0.8, 400, 20, 400, 1200, false, false,
+        new Sting(2.0F, 6, 40)), () -> MimContent.item("sawt", Item::new, new Item.Properties()));
+    // The pixxi San Pietru (John Dory): tall and thin, alone, slow (movement speed 0.45), in deeper open water.
+    public static final Fish PIXXI_SAN_PIETRU = midwater("pixxi_san_pietru", 0.6F, 0.8F, 6.0, 0.45,
+        () -> MimContent.item("pixxi_san_pietru", Item::new, new Item.Properties()));
+    // The petriċa (anglerfish): lies still on deep soft floors for a minute or more at a time; flat, harmless.
+    public static final Fish PETRICA = bottom("petrica", 0.9F, 0.35F, 10.0, 1, 0.5, new Habit(Floor.SOFT, 0.0, 0.5, 0.6, 600, 20, 600, 1800, false, true, null),
+        () -> MimContent.item("petrica", Item::new, new Item.Properties()));
+    // The lingwata (common sole): flat on the sand like the boll, rests often, shy; lies flat on land.
+    public static final Fish LINGWATA = bottom("lingwata", 0.6F, 0.2F, 4.0, 1, 0.7, new Habit(Floor.SOFT, 0.0, 0.8, 0.8, 60, 160, 100, 400, true, true, null),
+        () -> MimContent.item("lingwata", Item::new, new Item.Properties()));
+    // The ħmar (grey triggerfish): deep-bodied, over rock, alone or in twos, shy.
+    public static final Fish HMAR = bottom("hmar", 0.55F, 0.7F, 6.0, 2, 0.7, new Habit(Floor.ROCK, 0.5, 3.0, 0.8, 60, 0, 0, 0, true, false, null),
+        () -> MimContent.item("hmar", Item::new, new Item.Properties()));
+    // The gallinella (tub gurnard): "walks" on its fin rays, so it keeps within half a block of the sand; shy.
+    public static final Fish GALLINELLA = bottom("gallinella", 0.6F, 0.35F, 5.0, 2, 0.7, new Habit(Floor.SOFT, 0.05, 0.5, 0.6, 40, 300, 60, 200, true, false, null),
+        () -> MimContent.item("gallinella", Item::new, new Item.Properties()));
+    // The lionfish (Pterois miles, invasive since 2016): slow (0.5), bold (doesn't shy), over rock; its spines sting
+    // what touches or hits it (1 heart and Poison for 6 seconds). Rare.
+    public static final Fish LIONFISH = bottom("lionfish", 0.5F, 0.55F, 4.0, 1, 0.5, new Habit(Floor.ROCK, 0.3, 2.0, 0.6, 80, 400, 100, 300, false, false,
+        new Sting(2.0F, 6, 40)), () -> MimContent.item("lionfish", Item::new, new Item.Properties()));
+
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
     static final String[] MALTA_SHALLOW = {"bahar_sea", "posidonia_meadows", "qawra_inland_sea", "dwejra_bahar_sea", "dwejra_posidonia_meadows"};
     static final String[] MALTA_DEEP = {"fond_deep_sea", "fond_band_1", "fond_band_2", "fond_band_3", "fond_band_4",
@@ -136,6 +180,24 @@ public final class MimFishes {
         spawn(SKORFNA, 2, 1, 1, malta("fond_deep_sea", "dwejra_fond_deep_sea"));
         // the mola mola: extremely rare, the deep sea only (and MolaFish's spawn rule lets one try in 400 through)
         spawn(MOLA_MOLA, 1, 1, 1, malta(concat(MALTA_DEEP, "dwejra_fond_deep_sea")));
+        // the night job's fish (2026-11-18); the bottom fish only spawn over their own kind of floor (BottomFish)
+        spawn(KAVALL, 10, 3, 6, malta(MALTA_DEEP));
+        spawn(KAVALL, 6, 3, 6, malta("bahar_sea", "dwejra_bahar_sea"));
+        spawn(LIZZ, 2, 2, 4, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(MARZPAN, 8, 1, 3, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(TIRD, 12, 1, 3, malta(MALTA_SHALLOW));
+        spawn(TRILJA, 8, 2, 4, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(TRILJA, 4, 2, 4, malta("posidonia_meadows", "dwejra_posidonia_meadows"));
+        spawn(SAWT, 4, 1, 1, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(PIXXI_SAN_PIETRU, 3, 1, 1, malta(concat(MALTA_DEEP, "dwejra_fond_deep_sea")));
+        spawn(PETRICA, 2, 1, 1, malta("fond_deep_sea", "dwejra_fond_deep_sea"));
+        spawn(LINGWATA, 5, 1, 1, malta("bahar_sea", "dwejra_bahar_sea", "qawra_inland_sea"));
+        spawn(LINGWATA, 3, 1, 1, malta("posidonia_meadows", "dwejra_posidonia_meadows"));
+        spawn(LINGWATA, 2, 1, 1, malta(MALTA_DEEP));
+        spawn(HMAR, 5, 1, 2, malta("bahar_sea", "dwejra_bahar_sea"));
+        spawn(GALLINELLA, 4, 1, 2, malta("bahar_sea", "dwejra_bahar_sea"));
+        spawn(GALLINELLA, 3, 1, 2, malta("fond_deep_sea", "dwejra_fond_deep_sea"));
+        spawn(LIONFISH, 1, 1, 1, malta("bahar_sea", "dwejra_bahar_sea"));
         if (MimConfig.fishInVanillaOceans) {
             ResourceKey<Biome> warm = Biomes.WARM_OCEAN, luke = Biomes.LUKEWARM_OCEAN, deepLuke = Biomes.DEEP_LUKEWARM_OCEAN;
             spawn(SARDINA, 10, 4, 8, List.of(warm, luke, deepLuke));
@@ -151,6 +213,18 @@ public final class MimFishes {
             spawn(HUTA_KAHLA, 1, 1, 1, List.of(luke, deepLuke, Biomes.DEEP_OCEAN));
             spawn(BOLL, 2, 1, 2, List.of(warm, luke));
             spawn(SKORFNA, 2, 1, 1, List.of(warm, luke));
+            spawn(KAVALL, 5, 3, 6, List.of(warm, luke, deepLuke));
+            spawn(LIZZ, 1, 2, 4, List.of(warm, luke));
+            spawn(MARZPAN, 3, 1, 3, List.of(warm, luke));
+            spawn(TIRD, 6, 1, 3, List.of(warm, luke));
+            spawn(TRILJA, 4, 2, 4, List.of(warm, luke));
+            spawn(SAWT, 2, 1, 1, List.of(warm, luke));
+            spawn(PIXXI_SAN_PIETRU, 2, 1, 1, List.of(luke, deepLuke));
+            spawn(PETRICA, 1, 1, 1, List.of(deepLuke));
+            spawn(LINGWATA, 2, 1, 1, List.of(warm, luke));
+            spawn(HMAR, 2, 1, 2, List.of(warm, luke));
+            spawn(GALLINELLA, 2, 1, 2, List.of(warm, luke, deepLuke));
+            spawn(LIONFISH, 1, 1, 1, List.of(warm));
             // vanilla has no deep warm ocean: the warm ocean and the deep lukewarm one
             spawn(MOLA_MOLA, 1, 1, 1, List.of(warm, deepLuke));
         }
@@ -228,6 +302,40 @@ public final class MimFishes {
                     .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)))
             .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
         return finish(id, type, bucket, item);
+    }
+
+    /** A fish that lives near the sea floor (BottomFish), with its habit and its own floor's spawn rule. */
+    private static Fish bottom(String id, float width, float height, double health, int cluster, double speed, Habit habit, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<BottomFish> type = MimContent.entity(id, FabricEntityType.Builder.<BottomFish>createMob(
+                (t, level) -> new BottomFish(t, level, () -> bucket[0], cluster, habit), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        (t, level, reason, pos, random) -> BottomFish.checkSpawnRules(habit.floor(), level, reason, pos))
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health).add(Attributes.MOVEMENT_SPEED, speed)))
+            .sized(width, height).eyeHeight(height * 0.65F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** A solitary fish of deeper open water (the John Dory): anywhere at least MIDWATER_DEPTH below sea level. */
+    private static Fish midwater(String id, float width, float height, double health, double speed, Supplier<Item> item) {
+        Item[] bucket = new Item[1];
+        EntityType<MimFish> type = MimContent.entity(id, FabricEntityType.Builder.<MimFish>createMob(
+                (t, level) -> new MimFish(t, level, () -> bucket[0], 1), MobCategory.WATER_AMBIENT,
+                b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, MimFishes::midwaterRule)
+                    .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health).add(Attributes.MOVEMENT_SPEED, speed)))
+            .sized(width, height).eyeHeight(height * 0.5F).clientTrackingRange(4));
+        return finish(id, type, bucket, item);
+    }
+
+    /** How far below sea level a midwater fish spawns at the least, in blocks. */
+    public static final int MIDWATER_DEPTH = 5;
+
+    /** Water here and above, at least MIDWATER_DEPTH below sea level (spawners aren't held to it). */
+    private static boolean midwaterRule(EntityType<MimFish> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        if (!level.getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER) || !level.getBlockState(pos.above()).is(net.minecraft.world.level.block.Blocks.WATER)) {
+            return false;
+        }
+        return reason == EntitySpawnReason.SPAWNER || reason == EntitySpawnReason.TRIAL_SPAWNER || pos.getY() <= level.getSeaLevel() - MIDWATER_DEPTH;
     }
 
     /** The ocean sunfish: a slow solitary fish of its own kind (MolaFish) with its own, extremely rare, spawn rule. */
