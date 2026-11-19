@@ -67,7 +67,35 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
   3. "Slot 3 is a modded bucket of fish: a water bucket with a pinkish-red and white fish poking out."
   (The third went on: "my best guess is a lionfish (Pterois)". The second guess of all three was a red scorpionfish.)
 - Round 1's blind reads (version A, replaced), first lines: "Slot 3 holds a modded bucket of fish (styled like vanilla's "Bucket of ..." items)." (a lizardfish), "Slot 3 is a modded fish bucket, a vanilla-style water bucket with a pale, silvery-white fish sticking out of the top." (a barracuda), "Slot 3 is a modded bucket of fish, a water bucket with a pale fish whose head sticks up out of it." (a moray).
-- The spawn egg is still a placeholder (not part of tonight's job).
+- The spawn egg was still a placeholder (not part of tonight's job); it was drawn on 2026-11-19, see "Egg" below.
+
+## Egg
+
+**Spawn egg** (`art/src/fish_lionfish_egg.py`, shared parts in `art/src/fish_egg_common.py`, the line-aware eye check in `art/src/fish_egg_lines.py`), 2026-11-19: **passed in round 3 of 3**; A4 installed, waiting for the owner. Started because the owner passed the redone model ([[2026-11-19 Redos pass - lionfish, lizz bucket, petrica, gallinella icon; John Dory bucket again]], [[2026-11-18 Approving a step starts the next; skorfna bucket]]).
+- **Design:** vanilla's fish-egg outline and vanilla's own pool, only the accepted icon's colours. Two features: the bands (wide rust-maroon with thin, broken cream lines wrapped round the egg, fading into a salmon belly) and the long, separate rust spines over the top. The side flaps are banded fan fins. No eye, no face.
+- **Candidates:** A diagonal bands, 2 px rust and 2 px cream; B 2 px rust and 1 px cream; C B with the fans breaking the outline. The maker's own first try, bands meeting at the top like a melon, read as a circus tent and was dropped before the critic.
+- **Critic round 1: FAIL, pick A:** "in both hotbars the first read is a red-and-white peppermint candy or circus tent with birthday candles on top. 'Lionfish' only comes second." Fixes, all applied (A2): rust spines instead of pale tips ("The pale J tips on the spines read as candle flames"), less white, a salmon belly "so the stripes fade out low down", uneven band widths.
+- **Critic round 2: FAIL on A2:** "Still candy. At 1x and in the x2 and x4 hotbars, the body is even, parallel, high-contrast diagonal stripes, all leaning the same way." "(6,2) J is a pale lone speck ... reads as a candle flame or spark." Fixes, all applied (A3): thin 1 px cream lines so the rust takes over, the lower bands bent toward upright, the spines all rust and joined to the outline, banded fans.
+- **Critic round 3: PASS on A3:** "it reads as a rust-red egg with pale streaks and thin spines on top. It's a lionfish-coloured spawn egg, not a candy." "Not a jellyfish: It has no dome-plus-tentacles look ... Not the skorfna: ... A3 is banded rust and cream with three separate, spaced spines." Its optional polish applied (A4): the tallest spine's pale tip rust, "This removes the lone pale speck."
+- **How the reads were done:** three fresh readers per round, no context, each shown one hotbar per fish at GUI scale 4 (light and dark backdrop) with the egg among vanilla water-mob eggs, under neutral file names. Rounds 1-3 used the usual readers; the final read of the installed egg used **Sonnet readers** (the owner's new rule, [[2026-11-19 Art rounds capped at 3; blind readers on Sonnet]]). In round 1 all three candidates sat in slots 2, 5 and 8; the readers could not tell them apart, so their reads cover all three.
+- **Blind reads, round 1** (A, B, C):
+  1. "a red/salmon and white egg with diagonal stripes and a few small white dots sticking up from the top. My first impression is a lionfish: red-white stripes plus spines. Second guess: a striped shell or a hermit crab, and if you don't think fish, a peppermint candy."
+  2. "My first impression was a candy-cane or peppermint sweet, or a striped circus tent. As an animal, my best guess is a lionfish"
+  3. "A spawn egg covered in red and white diagonal stripes, with white specks spraying out of the top like spines. My first guess is a lionfish (Pterois)."
+- **Blind reads, round 2** (A2):
+  1. "My first impression is a spawn egg for a striped, spiny sea fish. The red-and-white bands and the red spikes on top make me think of a lionfish. ... at a glance it reads as a candy-cane party hat or a striped traffic cone."
+  2. "It reads clearly as a lionfish, with the stripes as its bands and the tufts as its venomous spines. ... the clean diagonal candy-cane stripes and the 'bow' on top make it look a little like a candy cane, a wrapped present or a Christmas bag."
+  3. "My first impression is a spawn egg for a lionfish. The diagonal red-and-white stripes and the red spiky bits sticking up from the top read clearly as a striped fish with venomous spines."
+- **Blind reads, round 3** (A3):
+  1. "a red-and-white striped fish with spines, most likely a lionfish (Pterois). ... at hotbar size it also reads as a striped cone, a candy-cane tent or a striped pinecone."
+  2. "My first impression is a spawn egg for a lionfish. It is a tall cone with red-brown and white diagonal stripes and thin red spines sticking up and out at the top."
+  3. "a spawn egg for a red-and-white striped spiny fish. The diagonal stripes and the thin spines sticking up from the top make me think of a lionfish."
+- **Blind reads, final, Sonnet readers** (A4, installed):
+  1. "a cream/tan egg with red-brown diagonal stripes and a few small red spikes or antennae on top. It reads as a striped, spiky sea creature, maybe a striped crab or a banded shrimp or lobster. A second guess is a sea urchin or a striped fish."
+  2. "My first impression is a striped or banded creature, maybe a red-and-white striped fish (a lionfish-like fish with spines) or a striped shrimp."
+  3. "My first impression is a striped sea slug or a striped cone-shaped shell. My second guess is a lionfish."
+- Rounds 1-3: all nine readers named the lionfish first, though most also saw a candy or cone. The Sonnet readers were vaguer: one said lionfish first, one second, one a striped crab. No reader saw a jellyfish or the skorfna.
+- **Compare sheet:** `art/candidates/fish_lionfish_egg.png` (not in git).
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
@@ -79,3 +107,9 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - [MaltaToday, first sighting of devil firefish confirmed](https://www.maltatoday.com.mt/environment/nature/142885/scientists_confirm_first_sighting_of_devil_firefish_in_maltese_waters_)
 - [divinginfo.mt, reward 2019](https://www.divinginfo.mt/reward-spot-the-lionfish/)
 - Sizes marked † are from memory of FishBase's usual lengths, not re-checked tonight.
+
+## Owner's verdict (2026-11-19)
+- "All pass except john dory bucket. That needs a redo, consider very different possible version" ([[2026-11-19 Redos pass - lionfish, lizz bucket, petrica, gallinella icon; John Dory bucket again]]).
+
+## Owner's verdict (2026-11-19, later)
+- "John dory bucket: L, all eggs pass, switch back to opus guessers." ([[2026-11-19 John Dory bucket L; last four eggs pass; blind readers back to Opus]]).

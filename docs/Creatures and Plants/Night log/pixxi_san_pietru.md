@@ -97,3 +97,34 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - [[Maltese wildlife and flora]] (the species report)
 - [FishBase, *Zeus faber*](https://www.fishbase.se/summary/Zeus-faber.html)
 - Sizes marked † are from memory of FishBase's usual lengths, not re-checked tonight.
+
+## Owner's verdict (2026-11-19)
+- "All pass except john dory bucket. That needs a redo, consider very different possible version" ([[2026-11-19 Redos pass - lionfish, lizz bucket, petrica, gallinella icon; John Dory bucket again]]).
+
+## Bucket redo 3 (2026-11-19)
+- **What changed in-game:** the bucket now shows the John Dory **lying on the water**, its round side up and head to the left. A dark eye sits high on the head, a row of dark spines with light tips fans along its back and sweeps toward the tail, the dark thumbprint sits below the middle, and a small dark mouth angles up at the front. The bucket's dark back rim still shows at the right. Nothing pale sticks out in front of the head.
+- **Six very different versions were drawn** instead of another tweak of the old one. All six are on the sheet `art/candidates/fish_pixxi_san_pietru_bucket.png` (at 1x, 2x and 8x, beside the icon and the rejected redo 2), so the owner can pick any of them:
+  - **U, upright:** standing on its tail, head up, with the spines streaming down its side (like the sole's bucket). Critic: "a duck or bird head poking up". Dropped after round 1.
+  - **S, sail:** only the spiny fin and the top of the back break the water. A weak pass in round 1, then a fail in round 2: "a tan cap or wedge", with no head to see.
+  - **F, one-fin sail:** one big front spine. Critic: "a shark fin or a duckling". Dropped after round 1.
+  - **T, tilted tall oval:** the whole deep body, head up and to the right, half out of the water. A pass in round 1. Round 3 failed it ("a lumpy, crumpled pile").
+  - **L, lying on the water:** **installed.** Critics passed it in all three rounds and ranked it best each time ("clearly a fish head in a bucket at 1x and 2x ... the spiny fanned dorsal with its filaments is the John Dory signature").
+  - **D, wide disc:** the top of a big disc across the whole bucket. It failed rounds 1 and 2 ("a burger bun or a lid", "flat and fat"). Round 3 gave it a weak pass ("a round loaf", no mouth), and a mouth was added after that.
+- **Critic rounds:** 3, the new limit ([[2026-11-19 Art rounds capped at 3; blind readers on Sonnet]]). Fixes made along the way:
+  - the filaments sweep back;
+  - the rim shows beside the fish;
+  - the thumbprint is rounder but kept out of the eye's row;
+  - the mouth line is angled up;
+  - the lit pixel in front of the eye is toned down, so nothing glows there like a beak.
+- **Blind reads** were done by three fresh readers **on Sonnet**, the new rule. Each got neutral names and saw L in slot 3 and T in slot 6 among vanilla cod, salmon, pufferfish, tropical fish, water and axolotl buckets. Their answers, word for word, were given before the last small round 3 touch-ups:
+  1. "Slot 3: Small pale tan/olive spiny-finned fish with a spiky dorsal fin, likely a scorpionfish or a similar rockfish (possibly gallinella, a gurnard). About 30% sure." "Slot 6: Grey-brown fish with pale mottled patches and a dark head, possibly a lionfish or another spiny fish. About 25% sure."
+  2. "Slot 3: Probably a small spiny or crested fish (a scorpionfish/gallinella-type or a wrasse-like fish), pale grey-cream and spotted, about 30% sure." "Slot 6: Probably a grey-brown fish with a long, narrow, tilted head, such as a John Dory or a similar grey fish, about 25% sure."
+  3. "Slot 3: Looks like a pale tan or olive-grey, spiny-finned fish with a spiky dorsal fin and a dark eye, so my best guess is a small perch or scorpionfish type (for example a painted comber or a wrasse) at about 25% sure." "Slot 6: A grey-green, mottled fish with a pointed snout and a spiky back, so my best guess is a scorpionfish or goby type at about 20% sure."
+- **What the reads say:**
+  - For L, no reader saw a beak, bill, magnet or second eye ("no beak, bill, magnet or second eye"), and all three saw a spiny fish.
+  - No reader named the John Dory for L. One reader named it for T, but saw T's tilted head as "a pointed bill or snout".
+  - So L is the safest choice. As before, it is the icon beside it that names the species.
+- **Not decided (for the owner):** which of the six to keep. The script switches between them with one letter (`PICK` in `art/src/fish_pixxi_san_pietru_bucket.py`).
+
+## Owner's verdict (2026-11-19, later)
+- "John dory bucket: L, all eggs pass, switch back to opus guessers." ([[2026-11-19 John Dory bucket L; last four eggs pass; blind readers back to Opus]]).

@@ -17,7 +17,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Drops:** itself (1 raw fish, `mimcontent:lizz`). Bucket, spawn egg. It is shark bait.
 
 ## Art (night job, made in order: model, icon, bucket)
-Photos used (reference only, free licences, list in `art/references/fish_lizz_refonly/list.tsv`): a fresh fish on a plate and one on a board (for true colour out of water), the d'Orbigny plate, and divers' photos of schools. The spawn egg is still the placeholder (not asked for tonight).
+Photos used (reference only, free licences, list in `art/references/fish_lizz_refonly/list.tsv`): a fresh fish on a plate and one on a board (for true colour out of water), the d'Orbigny plate, and divers' photos of schools. The spawn egg was still the placeholder (not asked for tonight); it was drawn on 2026-11-19, see "Egg" below.
 
 **3D model: passed in 2 critic rounds**
 - Picked candidate C of three (A slim, B deeper, C slim with a longer head and visible bars), because the long head and bars read most like a barracuda.
@@ -101,6 +101,34 @@ The owner picked option 2: the bucket is the accepted icon's fish (`textures/ite
 - Installed: A (round 3's version). B on the sheet is round 2's passed version. The owner decides between them.
 - Not applied (3 rounds used): end the fish inside x14, drop the back half another row into the water, and a wider V tail at (14,4) and (14,6) with (14,5) left open. These go past the icon's own pixels.
 
+## Egg
+
+**Spawn egg** (`art/src/fish_lizz_egg.py`, shared parts in `art/src/fish_egg_common.py`, the line-aware eye check in `art/src/fish_egg_lines.py`), 2026-11-19: **passed in all 3 rounds, each time "only just"**; A4 installed, waiting for the owner. Started because the owner passed the bucket ([[2026-11-19 Redos pass - lionfish, lizz bucket, petrica, gallinella icon; John Dory bucket again]], [[2026-11-18 Approving a step starts the next; skorfna bucket]]).
+- **Design:** vanilla's fish-egg outline and vanilla's own pool, the icon's colours plus the model texture's dark back (#3c5662). It is countershaded: a dark slate back lit at the top left over a silver belly on the lower front, with a dark slate outline. It has a small dorsal fin raked back off the top and two short staggered dark bars on the upper back (the barracuda's oblique bars). The jutting jaw is left out: a pale point in front reads as a beak.
+- **Candidates:** A two small dorsal fins set far apart (top and shoulder); B a dark forked tail at the top right; C B with faint bars. An earlier try with dark bars on the silver read as a zig-zag mouth and was dropped before the critic.
+- **Critic round 1: PASS, pick A**, "but only just": "It reads as a slate-and-silver fish egg ... It does not read as a barracuda in particular." On B and C: "B and C put a dark forked tail at the top right over a pale lower-left belly. That is the same layout as the sardina egg." Fixes, all applied (A2): the top fin raked back (the level nub read as "an acorn stem or onion tip"), the shoulder fin removed ("just makes the right shoulder look lumpy"), the right flap shaded, the shoulder darkened with the model's dark back.
+- **Critic round 2: PASS on A2:** "It is still a generic slate-and-silver fish egg, not a barracuda in particular." Its fix applied (A3): "add one short slanted bar ahead of the existing k column", giving "two staggered bars of different lengths".
+- **Critic round 3: PASS on A3, "only just":** "The rear bar merges into the outline ... The bars stand straight up, not slanted." "Within the owner's rules, the jaw and the long, slim body are what make a barracuda, and neither fits an egg." Its fixes applied (A4): the rear bar moved one column in and slanted like the front one, with their tops on different rows so they never pair up as eyes.
+- **How the reads were done:** three fresh readers per round, no context, each shown one hotbar per fish at GUI scale 4 (light and dark backdrop) with the egg among vanilla water-mob eggs, under neutral file names. Rounds 1-3 used the usual readers; the final read of the installed egg used **Sonnet readers** (the owner's new rule, [[2026-11-19 Art rounds capped at 3; blind readers on Sonnet]]). In round 1 all three candidates sat in slots 2, 5 and 8; the readers could not tell them apart, so their reads cover all three.
+- **Blind reads, round 1** (A, B, C):
+  1. "a grey-blue egg with a white lower half and one thin dark line rising diagonally from the top right. My first impression is a grey fish with a pale belly ... I can't name a species."
+  2. "a blue-grey dome with a white lower half and a thin dark line curving up from the top-right. First impression: a grey fish with a pale belly, seen as a blob. It could be a lizardfish or some kind of shark or dogfish."
+  3. "A spawn egg with a blue-grey top and a pale white belly ... My first guess is a silvery-grey fish such as a mullet or sea bream."
+- **Blind reads, round 2** (A2):
+  1. "a spawn egg for a grey-blue fish ... I'd guess a silvery open-water fish like a mackerel or sardine, or possibly a shark ... Nothing about it says which species."
+  2. "It reads as a generic grey or silvery sea creature, maybe a fish such as a mullet or a small shark/dogfish."
+  3. "a spawn egg for a grey sea creature, maybe a grey fish such as a mullet or a bream ... It reads as a generic grey egg"
+- **Blind reads, round 3** (A3):
+  1. "a spawn egg for a grey-blue fish or marine mammal. ... My guess is a grey shark, or a dolphin or porpoise. Second guess: a silvery fish like a leerfish or amberjack."
+  2. "a spawn egg for a grey-blue fish seen from the side ... a bit like a mullet or sea bream head."
+  3. "a spawn egg for a grey sea creature. It has a blue-grey back, a pale whitish underside and a dark eye, so I'd guess a grey fish such as a mullet or a small shark." (The "dark eye" was the new front bar, which A4 then slanted and moved off the lit cap.)
+- **Blind reads, final, Sonnet readers** (A4, installed):
+  1. "It reads as a silvery fish, perhaps a sardine or a mackerel ... it could be taken for a rock, a crystal or a shard of ice instead of a creature."
+  2. "My first impression is a pale fish or a jellyfish, perhaps a ghostly or silvery one such as a moon jelly. ... It reads as an ice or crystal shard more than an animal."
+  3. "My first impression is a grey fish, maybe a tuna or a dolphinfish. ... Nothing in it points to one species."
+- Every reader saw a grey fish spawn egg, but **no reader named a barracuda**. The barracuda's features (its long slim body and jutting jaw) don't fit inside an egg under the owner's rules. The owner may want another approach.
+- **Compare sheet:** `art/candidates/fish_lizz_egg.png` (not in git).
+
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
 
@@ -109,3 +137,9 @@ The owner picked option 2: the bucket is the accepted icon's fish (`textures/ite
 - [UM, Dangerous creatures of the Maltese sea](https://www.um.edu.mt/library/oar/bitstream/123456789/4429/1/Dangerous%20creatures%20of%20the%20Maltese%20sea.pdf)
 - [FishBase, *Sphyraena sphyraena*](https://www.fishbase.se/summary/Sphyraena-sphyraena.html)
 - Sizes marked † are from memory of FishBase's usual lengths, not re-checked tonight.
+
+## Owner's verdict (2026-11-19)
+- "All pass except john dory bucket. That needs a redo, consider very different possible version" ([[2026-11-19 Redos pass - lionfish, lizz bucket, petrica, gallinella icon; John Dory bucket again]]).
+
+## Owner's verdict (2026-11-19, later)
+- "John dory bucket: L, all eggs pass, switch back to opus guessers." ([[2026-11-19 John Dory bucket L; last four eggs pass; blind readers back to Opus]]).

@@ -27,6 +27,11 @@ REDO 2 2026-11-19 (owner: icon C accepted; the bucket fails, "the mouth looks li
 from the accepted icon in its palette, two candidates. Mouth critic rounds: A PASS in round 1, then the blind readers
 still saw a pale bill (the head stuck out past the bucket), fixed, A PASS again in round 2.
 
+REDO 3 2026-11-19 (owner: "All pass except john dory bucket. That needs a redo, consider very different possible
+version"): six very different concepts instead of another tweak of the layout above, all kept selectable in GRIDS
+(U upright, S sail, F one-fin sail, T tilted tall oval, L lying on the water, D wide disc), refined by critic rounds
+(at most 3, owner 2026-11-19) and blind reads; PICK is installed and the sheet shows every concept for the owner.
+
 Writes: mod/src/main/resources/assets/mimcontent/textures/item/pixxi_san_pietru_bucket.png (byte-identical on rerun),
 the candidates in art/candidates/pixxi_san_pietru_bucket/ and the review sheet
 art/candidates/fish_pixxi_san_pietru_bucket.png.
@@ -50,7 +55,8 @@ OUT = os.path.join(ITEMS, "pixxi_san_pietru_bucket.png")
 VANILLA = os.path.join(ART, ".vanilla", "item")
 CAND = os.path.join(ART, "candidates", "pixxi_san_pietru_bucket")
 SHEET = os.path.join(ART, "candidates", "fish_pixxi_san_pietru_bucket.png")
-CHOSEN = "A"
+PICK = "L"      # the redo-3 concept installed (see REDO3 below); the owner chooses among them on the sheet
+CHOSEN = PICK
 
 
 def hx(h):
@@ -67,6 +73,7 @@ PAL.update({k: ICONS["A"][k] for k in "oHGObWSRXEmjfnd"})
 PAL["v"] = hx("#1d3c96")
 PAL_C = dict(PAL)
 PAL_C.update({k: ICONS["C"][k] for k in "oHGObWSRXEmjfnd"})   # C: the icon's greyer olive
+PAL_C.update({k: ICONS["C"][k] for k in "lwPs"})              # redo 3: the icon's pale belly, pelvic fin, spot edge
 
 GRIDS = {
     # Redo 2 (owner, 2026-11-19: icon C accepted; the bucket fails, "the mouth looks like a magnet or duck bill"):
@@ -102,12 +109,91 @@ GRIDS = {
 PAL_C["k"] = hx("#4a4230")                  # A's lip tip: dark olive-brown, not the outline's near-black (critic polish)
 PALS = {"A": PAL_C, "B": PAL_C}
 
+# Redo 3 (owner, 2026-11-19: "All pass except john dory bucket. That needs a redo, consider very different possible
+# version"). Six very different concepts, not another tweak of A. Keys as above, all the accepted icon C's colours;
+# W (the icon's dark shade) also serves as the fin membrane between the near-black spines f.
+REDO3 = {
+    # U upright: standing on its tail, head up, the spines streaming down its left side. Critic round 1: FAIL ("a
+    # duck or bird head poking up"), dropped; kept for the owner to see.
+    "U": [
+        "....ooom........",
+        "...oHGGmo.......",
+        "..ofEGGOOo#.....",
+        ".nfWGGOOOlo#....",
+        "n.fWGObSSlwo~...",
+        ".nfWOObSSlwwP...",
+    ],
+    # S sail: only the spiny dorsal fin and the top of the back break the water, the eye just above it at the left.
+    # Round 1: weak PASS (eye raised, the spine lattice thinned after it). Round 2: FAIL ("a tan cap or wedge", no
+    # head mass), dropped.
+    "S": [
+        ".....n..n.......",
+        "....fWWfWWn.....",
+        "...fWWWWWWWW....",
+        "..oEXGOObbbbo...",
+        ".oHGOObbv~~~~...",
+        "..oOb~vvvv~~~...",
+    ],
+    # F one-fin sail: one big front spine and its fin, the head at the left. Round 1: FAIL ("a shark fin or a
+    # duckling"), dropped; kept for the owner to see.
+    "F": [
+        "......f.........",
+        "....ofWfn.......",
+        "...ofWWWfn#.....",
+        "..oHXGGOOOo#....",
+        ".oHEGOObbv~~~...",
+        "..oob~vvvv~~~...",
+    ],
+    # T tilted tall oval: the whole deep body side on, head up and to the right, half out of the water, the
+    # thumbprint in the middle, the filaments trailing along the top. Round 1: PASS (filaments moved off the left
+    # end, where they read as a tail). Round 2: borderline FAIL (the dark top band a lid, the head too small); the
+    # band broken with two lit pixels and a dark lower jaw put under the eye. Round 3: FAIL ("a lumpy, crumpled
+    # pile"); its last fix applied (the dark top middle lit), kept for the owner to see.
+    "T": [
+        ".......n.n......",
+        "....fWfGGGGo....",
+        "...ofWWoHGGo....",
+        "...oHGGOOGGXEo..",
+        "...oGOSSOObbomo.",
+        "...oObSSbbWWWo..",
+    ],
+    # L lying on the water, seen from above: the round side up, head left, the spines fanned along the top edge and
+    # sweeping back, the thumbprint below the middle, the rim showing at the right of row 2. Round 1: PASS, the best.
+    # Round 2: PASS, best pick; the thumbprint rounded with its mid-dark edge s (kept out of the eye's row, owner
+    # lesson) and the mouth line angled up at (2,5). Round 3: PASS, best of three; the lit nose pixel (2,3)
+    # toned down so nothing glows in front of the eye.
+    "L": [
+        "......n.n.n.....",
+        "...fWfWfWfn.....",
+        "..oHGGGGOOo#....",
+        ".oGXEGOOOObbbo..",
+        ".omGGOOSSsbbbo..",
+        "..moOOsSSbWWo...",
+    ],
+    # D wide disc: the top of a big deep disc lying across the whole bucket. Round 1: FAIL ("a burger bun or a lid",
+    # the pale jaw a beak); the jaw removed and the right end rounded after it. Round 2: FAIL (a broader twin of L,
+    # "flat and fat"); the front edge darkened and the rim shown at the right of row 2. Round 3: weak PASS ("a
+    # round loaf", no mouth); a dark mouth added at (2,4) and the nose toned down.
+    "D": [
+        ".....n.n.n......",
+        "....ofWfWfo.....",
+        "..ooHGGGGOOb##..",
+        ".oGGXEGGOOObbbo.",
+        ".omGGOOOSSObbbo.",
+        ".oOOObbbSSbbWWo.",
+    ],
+}
+REDO3_NAMES = {"U": "upright", "S": "sail", "F": "one-fin sail", "T": "tilted tall oval", "L": "lying on the water",
+               "D": "wide disc"}
+GRIDS.update(REDO3)
+PALS.update({k: PAL_C for k in REDO3})
+
 
 def fish_over_rim(grid):
     """The rim outline pixels the fish sits in front of: those our layer paints with a fish colour, not a dark grey."""
     def dark(c):
         return max(c) < 0x40 and max(c) - min(c) < 6
-    return [(x, y) for (x, y) in OUTLINE if y < len(grid) and grid[y][x] not in ".~v^#" and not dark(PAL[grid[y][x]])]
+    return [(x, y) for (x, y) in OUTLINE if y < len(grid) and grid[y][x] not in ".~v^#" and not dark(PAL_C[grid[y][x]])]
 
 
 FISH_OVER_RIM = {v: fish_over_rim(g) for v, g in GRIDS.items()}
@@ -156,53 +242,68 @@ def hotbar(out, items, scale):
 
 
 def sheet(layers):
+    """Every redo-3 concept at 8x, 2x and 1x over vanilla's cod bucket beside the accepted icon and the rejected redo-2
+    bucket, the rim check of the pick, and the offline hotbar."""
     sys.path.insert(0, os.path.join(ART, "tools"))
     from font import label_font
     font, small = label_font(16), label_font(13)
     W = 1500
     bg, ink = (52, 52, 56), (235, 235, 235)
+    SLOT = (139, 139, 139, 255)
     parts = [("The accepted model, side on in game (spine close-up, and in the tank)", model_band(W, bg))]
-    band = Image.new("RGB", (W, 330), bg)
+    icon = Image.open(os.path.join(ITEMS, "pixxi_san_pietru.png")).convert("RGBA")
+    cells = [(f"{v} {REDO3_NAMES[v]}" + (" (PICK)" if v == PICK else ""), composite(layers[v])) for v in REDO3]
+    cells += [("redo 2 A (rejected)", composite(layers["A"])), ("the accepted icon", icon)]
+    per_row = 4
+    rows = (len(cells) + per_row - 1) // per_row
+    band = Image.new("RGB", (W, rows * 200 + 10), bg)
     d = ImageDraw.Draw(band)
-    for i, (v, layer) in enumerate(layers.items()):
-        comp = composite(layer)
-        big = comp.resize((128, 128), Image.NEAREST)
-        t = Image.new("RGBA", (136, 136), (139, 139, 139, 255))
-        t.alpha_composite(big, (4, 4))
-        band.paste(t.convert("RGB"), (10 + i * 300, 24))
-        rim = comp.resize((128, 128), Image.NEAREST)
-        dr = ImageDraw.Draw(rim)
-        for (x, y) in OUTLINE:
-            col = (40, 80, 255) if (x, y) in FISH_OVER_RIM[v] else (230, 30, 30)
-            dr.rectangle((x * 8, y * 8, x * 8 + 7, y * 8 + 7), outline=col)
-        t = Image.new("RGBA", (136, 136), (139, 139, 139, 255))
-        t.alpha_composite(rim, (4, 4))
-        band.paste(t.convert("RGB"), (150 + i * 300, 24))
-        for j, s in enumerate((1, 2)):
-            t = Image.new("RGBA", (16 * s + 8, 16 * s + 8), (139, 139, 139, 255))
-            t.alpha_composite(comp.resize((16 * s, 16 * s), Image.NEAREST), (4, 4))
-            band.paste(t.convert("RGB"), (10 + i * 300 + j * 40, 180))
-        d.text((10 + i * 300, 4), f"{v}" + (" (chosen)" if v == CHOSEN else "") + ": 8x, rim check (red dark, blue fish)",
-               fill=ink, font=small)
-    parts.append(("Candidates over vanilla cod_bucket", band))
-    hb = [hotbar(os.path.join(CAND, "hotbar.png"), ["mc:water_bucket", "mc:cod_bucket", "file:" + os.path.join(CAND, f"bucket_{CHOSEN}.png"),
-                                                      "mod:pixxi_san_pietru", "bucket:kavall_bucket", "bucket:cerna_bucket",
-                                                      "mc:salmon_bucket", "mc:pufferfish_bucket", "mc:tropical_fish_bucket"], 2),
-          hotbar(os.path.join(CAND, "hotbar_x4.png"), ["mc:cod_bucket", "file:" + os.path.join(CAND, f"bucket_{CHOSEN}.png"),
-                                                         "mod:pixxi_san_pietru", "bucket:cerna_bucket"], 4)]
+    for i, (label, im) in enumerate(cells):
+        x, y = 10 + (i % per_row) * 360, 6 + (i // per_row) * 200
+        d.text((x, y), label, fill=ink, font=small)
+        t = Image.new("RGBA", (136, 136), SLOT)
+        t.alpha_composite(im.resize((128, 128), Image.NEAREST), (4, 4))
+        band.paste(t.convert("RGB"), (x, y + 20))
+        for k, s in enumerate((2, 1)):
+            t = Image.new("RGBA", (16 * s + 8, 16 * s + 8), SLOT)
+            t.alpha_composite(im.resize((16 * s, 16 * s), Image.NEAREST), (4, 4))
+            band.paste(t.convert("RGB"), (x + 150 + k * 50, y + 20))
+        if label.endswith("(PICK)"):
+            rim = composite(layers[PICK]).resize((128, 128), Image.NEAREST)
+            dr = ImageDraw.Draw(rim)
+            for (px, py) in OUTLINE:
+                col = (40, 80, 255) if (px, py) in FISH_OVER_RIM[PICK] else (230, 30, 30)
+                dr.rectangle((px * 8, py * 8, px * 8 + 7, py * 8 + 7), outline=col)
+            t = Image.new("RGBA", (136, 136), SLOT)
+            t.alpha_composite(rim, (4, 4))
+            band.paste(t.convert("RGB"), (x + 150, y + 64 if False else y + 60))
+    parts.append(("Redo 3: every concept at 8x, 2x and 1x over vanilla cod_bucket (the pick also with its rim check: "
+                  "red dark, blue fish), the rejected redo 2 and the accepted icon", band))
+    files = []
+    for v in REDO3:
+        files.append("file:" + os.path.join(CAND, f"bucket_{v}.png"))
+    hb = [hotbar(os.path.join(CAND, "hotbar.png"), ["mc:cod_bucket"] + files + ["mod:pixxi_san_pietru",
+                                                                             "bucket:skorfna_bucket"], 2),
+          hotbar(os.path.join(CAND, "hotbar_pick.png"), ["mc:water_bucket", "mc:cod_bucket",
+                                                         "file:" + os.path.join(CAND, f"bucket_{PICK}.png"),
+                                                         "mod:pixxi_san_pietru", "bucket:cerna_bucket",
+                                                         "bucket:lingwata_bucket", "mc:salmon_bucket",
+                                                         "mc:pufferfish_bucket", "mc:tropical_fish_bucket"], 2),
+          hotbar(os.path.join(CAND, "hotbar_x4.png"), ["mc:cod_bucket"] + files[:4], 4),
+          hotbar(os.path.join(CAND, "hotbar_x4b.png"), files[4:] + ["mod:pixxi_san_pietru", "mc:salmon_bucket"], 4)]
     band = Image.new("RGB", (W, sum(i.height + 10 for i in hb) + 10), bg)
     y = 4
     for im in hb:
         band.paste(im, (10, y))
         y += im.height + 10
-    parts.append(("Hotbar preview, unselected: water, cod, PIXXI SAN PIETRU bucket, its item, kavall and cerna buckets, "
-                  "salmon, pufferfish, tropical fish buckets at 2; cod, PIXXI SAN PIETRU bucket, its item, cerna bucket at 4",
-                  band))
+    parts.append(("Hotbar preview, unselected: cod bucket, concepts " + ", ".join(REDO3) + ", the icon, skorfna bucket "
+                  "(scale 2); water, cod, the PICK, its icon, cerna and lingwata buckets, salmon, pufferfish, tropical "
+                  "fish (scale 2); the concepts at scale 4", band))
     H = sum(b.height + 30 for _, b in parts) + 40
     out = Image.new("RGB", (W, H), bg)
     d = ImageDraw.Draw(out)
-    d.text((10, 8), "Bucket of pixxi San Pietru (John Dory), textures/item/pixxi_san_pietru_bucket.png", fill=ink,
-           font=label_font(20))
+    d.text((10, 8), "Bucket of pixxi San Pietru (John Dory), redo 3: very different versions for the owner to choose "
+                    "from (textures/item/pixxi_san_pietru_bucket.png)", fill=ink, font=label_font(20))
     y = 40
     for title, b in parts:
         d.text((10, y), title, fill=(250, 210, 120), font=font)
