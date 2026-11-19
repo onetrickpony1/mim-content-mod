@@ -6,7 +6,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Species:** John Dory, *Zeus faber*, **Pixxi San Pietru** in the species report. The dark spot on its side is "St Peter's thumbprint".
 
 ## Size
-- **Size in game:** 1.38 blocks long with the tail (22 px; the body alone is 18) and 1.32 tall from the spine tips to the pelvic fins, only 2 px thick. Body box 0.6 x 0.8 (unchanged). First planned at 1.06 long; the drawn fish came out longer once the jaw and the rounded tail were added.
+- **Size in game:** 1.38 blocks long with the tail (22 px; the body alone is 18) and about 1.35 tall from the filament tips to the pelvic fins, only 2 px thick. Body box 0.6 x 0.8 (unchanged). First planned at 1.06 long; the drawn fish came out longer once the jaw and the rounded tail were added.
 - **Why:** a real one is about 40 cm† long and very tall for its length. About 3 times life size, like the other small fish; beside the cerna it is a little shorter and about as tall with its spines, and much bigger than a cod.
 
 ## Behaviour, spawns, rarity
@@ -21,7 +21,7 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 
 **3D model** (`art/src/fish_pixxi_san_pietru_model.py`): passed in round 7 of 8.
 - Three paint jobs tried, all on the same model: A the spot with a soft edge all round, B the edge only at the sides and below, C as A with faint wavy streaks on the flank (like the Mediterranean photo). **B chosen** (the critic: the smoothest belly; C's streaks looked like teeth under the spot).
-- **Looks:** a tall, very thin oval disc, 2 px thick. A dark olive back, golden-olive flanks and a pale belly. St Peter's thumbprint is a soft mid brown-olive smudge a little above the middle of the side, with no ring. The eye is near the front, high on the head: a 2 x 2 black pupil in a round cream ring, the only ringed, high-contrast mark. A wedge of lower jaw juts up and forward past the upper lip. On the back there is a dark membrane strip with four thin spines swept back at 45 degrees, the front one longest, ending in filaments. A low soft dorsal and anal fin run back to a rounded tail, and there are long pelvic fins under the throat.
+- **Looks:** a tall, very thin oval disc, 2 px thick. A dark olive back, golden-olive flanks and a pale belly. St Peter's thumbprint is a soft mid brown-olive smudge a little above the middle of the side, with no ring. The eye is near the front, high on the head: a 2 x 2 black pupil in a round cream ring, the only ringed, high-contrast mark. A wedge of lower jaw juts up and forward past the upper lip. On the back, five thin dorsal spines swept back, joined by membrane about two thirds of the way up, each ending in a long bare filament trailing back (redone, see below). A low soft dorsal and anal fin run back to a rounded tail, and there are long pelvic fins under the throat.
 - **Colours:** back #5b5641 to #8f875f, flank #ab9d66 / #c3ae70, belly #e4ddc2 / #f6f4ea, spot #6e5e3a with a #9a8b5e edge, eye ring #efe6c4.
 - **The hard part was the spot.** Every critic in rounds 1 to 6 read it as a second eye or a face, in different ways:
   - a dark centre in a gold ring read as an iris;
@@ -55,6 +55,39 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
   2. "Slot 3: a bucket of water holding a sandy-tan fish with a spiky raised dorsal fin and mottled markings. It looks most like a weever or a pale scorpionfish, but I can't be sure."
   3. "Slot 3: bucket of water holding a pale sandy-tan fish with a spiky, raised fin on its back. My best guess is a weever, or possibly a pale scorpionfish. I can't be sure at this size."
 - The spawn egg is still a placeholder (not part of tonight's job).
+
+## Redo after the owner's review (2026-11-19)
+- **The owner said:** "john dory (its spikes look like graphical glitches and are very thick)". Recorded in [[2026-11-19 Night fish models - nine pass, John Dory and petrica redo]].
+- **Why it looked glitchy:** the old spines were flat 1 px sheets in the same spot as the fin behind them, so the game flickered between the two, and turned at 45 degrees they looked thick.
+- **Now:** five spines, each a rod about a third of a pixel thick, swept back. At about two thirds of the way up each one bends further back into an even thinner bare filament. A paler olive membrane (#a39668) fills between the spines up to that bend, with one clean edge stepping down toward the tail. Nothing lies flat against anything else, so there is nothing to flicker. The rest of the fish is unchanged.
+- **Checked in game** from the side, three-quarter, front, behind and straight above (new close-up shots `fish-pixxi_san_pietru-spines-*` in the fish test): no flicker, gaps or parts poking through.
+- **Critic rounds:** passed in round 4 of 8. Round 1 FAIL: blunt ends, membrane too low, too dark. Round 2 FAIL: membrane still low, rods like wires. Round 3 FAIL: the glitch and thickness were fixed, but the membrane only covered the bottom third. **Round 4 PASS:** "no z-fighting, flicker, gaps or wrong-depth faces" from any angle.
+- Polish not done: a lighter tip on each filament, and shorter spines toward the tail so the crest looks less like a rake from three-quarter view.
+- **Icon and bucket not changed:** at 16 px they already show a few spines standing above a membrane-filled fin, which still matches.
+
+## Icon and bucket redo after the owner's review (2026-11-19)
+- **The owner said:** "too flat and fat they dont look like the fish". Recorded in [[2026-11-19 Night fish icons and buckets - most pass; John Dory, gallinella, lingwata bucket redo]].
+- **Icon now:** side on, head left, like the hmar. A deep diamond, taller than long with the fins: a steep forehead, a big jaw jutting forward, the eye high on the head (black pupil in a pale ring), four thin spines raked back with light filament tips, the thumbprint behind the middle with a hint of pale ring, a narrow tail stalk and a rounded tail, a pelvic spine under the keel. Shaded from the top left down to a darker rim and belly. **C chosen:** a greyer silver-olive with near-black spines, nearer the photos and the model than the golden A and B.
+- **Bucket now:** the head and tall front rise out of the water facing left: the pale jaw, the eye behind it, three dark spines standing up, the thumbprint at the waterline, the back sloping into the water. **C chosen** (the same greyer olive).
+- **Critic rounds:** 3 of 3 allowed for each, all FAIL, so it is the owner's call.
+  - Icon: round 1 a pale ball with fuzz on top; round 2 close (the spot out-darked the eye, the spines a comb); round 3 close (the spines still a crown at 1x, no long pelvic fins, the spot faint). Not done: spines drawn as joined diagonals, a pelvic spine from the throat, a bigger upturned mouth, a darker spot with part of a ring, a narrower tail base.
+  - Bucket: round 1 a crown of teeth, no spot; round 2 the eye and spot merged into one hole; round 3 the jaw reads as a beak with a dark stripe, no clear eye, the spot at the waterline reads as a hole, still a low dome. Not done: a cream jaw joined to the head, the eye at (5,2), a steep forehead as the tallest part, the spot moved up and back.
+- **Blind reads** (three fresh readers, neutral names, beside vanilla cod, salmon, pufferfish and tropical fish), first lines word for word:
+  1. "Slot 3: A raw fish item: a tall, flat, pale olive-beige fish with long thread-like spines sticking up from its back, a dark mid-body mark and a fan tail. It looks most like a John Dory (Zeus faber)." Bucket: "It looks like a "bucket of John Dory"."
+  2. "Slot 3: A raw fish item. It is grey-beige and drawn side-on, with a deep, flat, roundish body, a tall comb of spiny dorsal filaments and a small tail. I think it is a John Dory (Zeus faber), though the dark central spot is not clear." Bucket: "probably a John Dory in a bucket".
+  3. "Slot 3: a raw fish item. The fish is flat with a tall, round, pale olive-beige body, long spiky filaments sticking up from the dorsal fin, a darker blotch on the side and a small tail. It reads as a John Dory (Zeus faber)." Bucket: "most likely a bucket of John Dory".
+- All three named a John Dory (about 60% sure for the icon, 50-55% for the bucket). Before the redo none did.
+
+## Bucket redo 2 (2026-11-19)
+- **The owner said:** icon C accepted; "the mouth looks like a magnet or duck bill" on the bucket. Recorded in [[2026-11-19 Redo verdicts - lizz bucket, lionfish, lingwata Q, gallinella, John Dory]].
+- **Now:** redrawn from the accepted icon, in its colours. The head rises out of the water facing up and left, kept inside the bucket's left side. The mouth is only a small dark notch under the snout, with the chin a dark line climbing to it: no pale lips, nothing sticking out. The eye is high on the head (black with a cream pixel above). The three dark spines with light tips match the icon, and the thumbprint is two rows above the water. Two candidates: A (the gape a notch under the snout, chosen) and B (the gape opening upward at the tip).
+- **Critic rounds:** round 1 A PASS (B's dark wedge read as a small beak). The blind readers after it all still saw a pale bill: the head stuck out past the bucket's left side. Moved a pixel right and toned down; round 2 A PASS ("the mouth can't read as a beak, duck bill or magnet"; B's tan lower jaw read as a flat open bill).
+- **Blind reads** after round 2 (three fresh readers, neutral names, beside vanilla buckets), asked about the mouth, word for word:
+  1. "it doesn't look like a beak, duck bill or magnet. The pale blob at the upper left reads loosely as a fish's thick-lipped mouth, but at this size it isn't clear."
+  2. "the pale tan bump at the upper left reads more like a small beak or duck bill than a fish's mouth, though at this size it is blurry and unclear."
+  3. "The mouth looks more like a fish's blunt mouth than a beak, a duck bill or a magnet, though at this size it isn't very clear."
+- All three saw a fish in a bucket (75-85% sure) but none named the species (grouper, scorpionfish, goby; two said it could be a toad). The icon beside it is what names it.
+- Polish not done: the chin pixel at (4,3) one step lighter, and a second pale eye pixel if the eye reads as a speck.
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.

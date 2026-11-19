@@ -1,32 +1,32 @@
 """The petrica (anglerfish, Lophius piscatorius and L. budegassa) as a swimming mob: its 3D model and its texture.
 
-Drawn from the reference photos in art/references/fish_petrica_refonly/ (list.tsv): norway (a landed fish from above,
-out of water, for the outline and the true colour), algeria (a Mediterranean L. budegassa at a market, for the olive
-tone and the mouth line), frontal and seeteufel (the mouth from the front), insitu and side01 (on the floor in water:
-the fringe of skin flaps and the camouflage), hal (a museum fish labelled "Frequent in Maltese waters").
-What makes it an anglerfish, and not a ray or a flatfish:
-  - a huge, wide, flattened head, 14 px across (16 with the fringe), nearly half the fish's 22 px length, 4 px thick
-    in the middle stepping down to 2 px at the rim; the body behind it tapers fast (6, 4, 3 px wide) to a small,
-    rounded tail fin that sways;
-  - an enormous mouth right across the front: the lower jaw juts 1 px past the upper and the gape is one straight,
-    flat dark line from corner to corner (12 px), never curved up (a grin) or down (a sad face), and no teeth;
-  - a fringe of small skin flaps along both edges of the head: 1 px tabs, every other texel, in a muted pale brown;
-  - small eyes on top of the head, looking up: a near-black pupil on a 1 px bump with a pale ring round it; nothing
-    else on the fish is that dark, and the blotches keep away from them;
-  - the "fishing rod" (illicium) standing on the snout, leaning forward, with a small dull fleshy flap at its tip
-    (this is a mud-floor anglerfish: no glowing lure), and a short second spine behind it;
-  - big fan pectoral fins spread flat on the floor behind the head, and a small soft dorsal fin near the tail;
-  - mottled brown camouflage on the back (2 px blotches darker and lighter, never 1 px specks), a paler rim, and a
-    pale cream belly (dark back, pale belly).
-The palette is a step lighter than the photos (water greys and darkens everything).
+Redo of 2026-11-19 (docs/Decisions/2026-11-19 Night fish models - nine pass, John Dory and petrica redo.md): the owner
+found the night job's flat pancake "looks absolutely nothing like an anglerfish ... in the water it has a normal fish
+shape". This version is drawn from the LIVE fish in aquariums (art/references/fish_petrica_refonly/: aq_angler, the
+fish standing on its fins in a Norwegian aquarium, head on; aq_finisterrae1/2, resting on sand; drawing_budegassa, a
+side view of a fresh L. budegassa) and keeps the old landed photos (norway, algeria, hal) for colour.
+What makes it an anglerfish (the redo's 8th and last critic round, "FAIL (narrowly)"; see the night log):
+  - a huge, broad head, 14 px wide and 8 deep, with 1 px bevels at its top and front edges, about half the fish;
+  - a very wide straight mouth right across: one dark gape row above the lower jaw, which juts 2 px past the upper
+    and is 1 px wider each side, with a pale lip edge and a few short, uneven pale teeth standing on its rim;
+  - the body deep behind the head, then narrowing in 3 steps (10, 7, 4, 3 px wide) to a squared tail fin with a
+    darker edge; a low soft second dorsal fin near the tail;
+  - big pectoral fans on short arms at the sides, swept back and angled out and down;
+  - the fishing rod (illicium) on the snout, one 1 px plane, with a ragged fleshy flap at its tip (no glow), and a
+    shorter second spine behind it leaning back;
+  - ragged skin flaps, light and dark, along the head's lower sides;
+  - small dark eyes on top of the head near its edges, half sunk, each with a pale pixel beside and behind it;
+  - mottled brown in 2 px blotches, paling to a cream belly (countershade).
+On land (out of water) it lies flat on its belly: the renderer squashes it to LAND_SQUASH of its height (MimContentClient,
+FishRenderer.withLandSquash; FishShape's flat row and the land hit boxes use the same squash), the landed, flattened look
+the owner found close.
 
 Model contract (docs/Tools and Process/Art pipeline.md, "Fish models"): a plain FishModel, head toward -z, y 24 at
-the ground, root children "body", "lure", "left_fin", "right_fin" and "tail_fin" (which sways). The renderer gives it
-no body wiggle and lays it flat on land (MimContentClient, liesFlat).
+the ground, root children "body", "lure", "left_fin", "right_fin" and "tail_fin" (which sways). No body wiggle.
 
 Writes (byte-identical on every run):
   mod/src/main/java/com/maltaminecraft/mimcontent/client/fish/PetricaModel.java
-  mod/src/main/resources/assets/mimcontent/textures/entity/fish/petrica.png   (64 x 64)
+  mod/src/main/resources/assets/mimcontent/textures/entity/fish/petrica.png   (128 x 64)
 With --preview DIR it writes offline previews of every candidate paint (side, three-quarter, top, beside vanilla cod
 and the cerna). With --candidate X it installs candidate X instead of the chosen one (for trying them in the game).
 
@@ -48,7 +48,7 @@ RES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimconten
 JAVA = os.path.join(ROOT, "mod", "src", "main", "java", "com", "maltaminecraft", "mimcontent", "client", "fish",
                     "PetricaModel.java")
 TEXTURE = os.path.join(RES, "textures", "entity", "fish", "petrica.png")
-TW, TH = 64, 64
+TW, TH = 128, 64
 CHOSEN = "A"
 
 
@@ -67,7 +67,7 @@ PALETTES = {
         # round 7: the back's darker tones 10% darker again
         "0": "#d8c8aa", "1": "#c8a070", "2": "#b48a5a", "3": "#94704a", "4": "#7a5a3a", "5": "#604630",
         "B": "#5a3c28", "P": "#e0b878",        # blotches: dark brown, light ochre (round 5: more contrast)
-        "e": "#c8a070", "E": "#0c0806",        # the ring round the eye, the eye
+        "e": "#d8c8a0", "E": "#0c0806",        # a pale rim beside and behind the eye (redo round 7), the eye
         "L": "#e0ccac", "M": "#1a120c",        # the pale lower lip, the gape
         "T": "#c8a070",                        # the fringe of skin flaps (round 5: pale brown)
         "F": "#a07a4c", "f": "#886440", "D": "#6e5034", "r": "#b48a5a",   # fins: membrane, shaded, rim, base
@@ -94,70 +94,63 @@ PALETTES = {
         "R": "#5e4430", "Q": "#b08a74",
     },
 }
-BLOTCH = {"A": (0.18, 0.14), "B": (0.18, 0.14), "C": (0.26, 0.18)}   # chance of a dark, of a pale 2 px blotch
+BLOTCH = {"A": (0.24, 0.14), "B": (0.18, 0.14), "C": (0.26, 0.18)}   # chance of a dark, of a pale 2 px blotch
 LIFT = {"A": 1.0, "B": 1.3, "C": 1.3}   # A is given at its final colours (round 2)
 CLEAR = (0, 0, 0, 0)
 
 # --- the model -------------------------------------------------------------------------------------------------------
 # Parts: name -> (parent, pivot (absolute model pixels), (xRot, yRot, zRot)). Cubes: (name, part, (U, V), (x0, y0, z0)
 # absolute, (w, h, d)). Absolute: x across, y down (24 = ground), z head (-) to tail (+).
+LAND_SQUASH = 0.45   # on land its height is squashed to this (the renderer and FishShape); the land check wants <= 7 px
 PARTS = {
-    "body": (None, (0.0, 22.0, 0.0), (0.0, 0.0, 0.0)),
-    # the rod stands just behind the front edge of the head and leans forward over the mouth
-    # round 7: right behind the upper lip. After round 8 the rod and its flap stand at the pivot (they had been left
-    # 2 px behind it, so the lean lifted them to 9 px, taller than a flat fish's 7 px on land) and lean a little more
-    "lure": (None, (0.0, 19.0, -12.5), (0.9, 0.0, 0.0)),
-    # the pectoral fans lie flat on the floor behind the head, swept a little back
-    "left_fin": (None, (4.5, 22.5, 0.5), (0.0, 0.6, 0.0)),    # round 5: swept back further
-    "right_fin": (None, (-4.5, 22.5, 0.5), (0.0, -0.6, 0.0)),
-    "tail_fin": (None, (0.0, 22.5, 10.0), (0.0, 0.0, 0.0)),
+    "body": (None, (0.0, 20.0, 0.0), (0.0, 0.0, 0.0)),
+    # the rod stands on the snout and leans a little forward, its flap above the mouth, not in front of it
+    "lure": (None, (0.0, 18.0, -13.0), (0.2, 0.0, 0.0)),
+    # the second spine behind it, a thin 1 px spike leaning back (redo round 2: upright, it read as a periscope)
+    "spine2": (None, (0.0, 16.0, -10.0), (-0.6, 0.0, 0.0)),
+    # the pectoral fins: a broad fan on a visible arm, swept back and angled out and down
+    "left_fin": (None, (5.0, 20.0, -1.0), (0.0, 0.4, 0.45)),
+    "right_fin": (None, (-5.0, 20.0, -1.0), (0.0, -0.4, -0.45)),
+    "tail_fin": (None, (0.0, 21.5, 10.0), (0.0, 0.0, 0.0)),
 }
 SPECS = [
-    # the lower jaw, jutting 1 px past the upper, right across the front
-    # round 5: the head 2 px longer (the fish sat smaller than the cerna; the head carries the size)
-    ("jaw", "body", (-6.0, 22.0, -14.0), (12, 2, 1)),
-    # the head: a 3 px dome in the middle, 2 px shoulders, a 1 px rim (round 1: flatter and wider)
-    # round 4: the dome 4 px deep (round 2 asked for the head to be the deepest part; a separate crown cube showed a
-    # dark step that read as a second mouth from the front)
-    # round 5: 5 px deep, a clear step over the 3 px body behind it
-    # round 7: the dome 2 px wider, so the eyes sit nearer the head's edges
-    ("head", "body", (-5.0, 19.0, -13.0), (10, 5, 12)),
-    ("shoulder_l", "body", (5.0, 21.0, -13.0), (1, 3, 11)),
-    ("shoulder_r", "body", (-6.0, 21.0, -13.0), (1, 3, 11)),
-    # the rim, its corners cut a step at the front and back (round 5: the head read as a square from above)
-    ("rim_l", "body", (6.0, 23.0, -11.0), (2, 1, 7)),
-    ("rim_r", "body", (-8.0, 23.0, -11.0), (2, 1, 7)),
-    ("rim_lf", "body", (6.0, 23.0, -12.0), (1, 1, 1)),
-    ("rim_rf", "body", (-7.0, 23.0, -12.0), (1, 1, 1)),
-    ("rim_lb", "body", (6.0, 23.0, -4.0), (1, 1, 1)),
-    ("rim_rb", "body", (-7.0, 23.0, -4.0), (1, 1, 1)),
-    # the body behind the head, tapering fast to the tail in width (head 16 px, trunk 5, rear 3, stalk 2) and depth
-    # (5, 3, 2, 2); round 5: the body behind the head 3 px shorter
-    # round 6: a wider middle section (head 16, trunk 9, rear 5, stalk 3) so the head doesn't jump to a stick
-    ("trunk", "body", (-4.5, 21.0, -1.0), (9, 3, 4)),
-    ("rear", "body", (-2.5, 22.0, 3.0), (5, 2, 4)),
-    ("stalk", "body", (-1.5, 22.0, 7.0), (3, 2, 3)),
-    # the fringe of skin flaps along both edges of the head and in front of the lower jaw (flat, every other texel)
-    # round 3: along the sides only (under the chin it read as a comb of teeth), irregular, 1 or 2 px long
-    ("fringe_l", "body", (8.0, 23.5, -11.0), (1, 0, 7)),
-    ("fringe_r", "body", (-9.0, 23.5, -11.0), (1, 0, 7)),
-    # round 6: small pale tabs along the lower jaw's edge too, irregular (an even row read as teeth in round 3)
-    ("fringe_f", "body", (-6.0, 23.5, -15.0), (12, 0, 1)),
-    # the small, low soft dorsal fin near the tail
-    ("dorsal", "body", (0.0, 21.0, 4.0), (0, 1, 4)),
-    # the rod (illicium) and the fleshy flap at its tip
-    # round 2: two crossed 1 px planes instead of a cube, so it reads 1 px thin from every side, and shorter
-    # round 5: 2 px and leaning further forward (it was the tallest thing from the side)
-    ("rod", "lure", (0.0, 17.0, -13.0), (0, 2, 1)),
-    ("rod_x", "lure", (-0.5, 17.0, -12.5), (1, 2, 0)),
-    ("esca", "lure", (0.0, 16.0, -14.5), (0, 1, 2)),
-    # the pectoral fans
-    # round 5: at the body's mid height, splayed flat sideways (lower down they hung like legs)
-    ("pec_l", "left_fin", (4.5, 22.5, -1.0), (5, 0, 4)),
-    ("pec_r", "right_fin", (-9.5, 22.5, -1.0), (5, 0, 4)),
-    # the small rounded tail
-    # round 3: a fan taller than the stalk, widening backward (a knob on a shaft read badly)
-    ("caudal", "tail_fin", (0.0, 20.0, 10.0), (0, 4, 3)),
+    # the head: one broad block 14 px wide and 8 deep with 1 px bevels at its top and front edges, so it is a low dome
+    # and not stepped tiers (redo rounds 1 to 7: a cube, a crate, a ziggurat, a slab, a stepped box); the lower jaw
+    # juts 2 px past it and is 1 px wider each side, with a dark gape between the jaws
+    ("head", "body", (-7.0, 17.0, -13.0), (14, 7, 9)),
+    ("cap", "body", (-6.0, 16.0, -12.0), (12, 1, 8)),
+    ("head_front", "body", (-6.0, 18.0, -14.0), (12, 6, 1)),
+    ("jaw", "body", (-8.0, 21.0, -16.0), (16, 3, 2)),
+    # the lower teeth: short, uneven 1 px points standing up on the jaw's rim only
+    ("teeth", "body", (-7.0, 20.0, -15.5), (14, 1, 0)),
+    # the small eyes on top of the head near its edges, set back from the mouth, half sunk
+    ("eye_l", "body", (4.0, 15.5, -8.0), (1, 1, 1)),
+    ("eye_r", "body", (-5.0, 15.5, -8.0), (1, 1, 1)),
+    # the body behind the head, deep, then tapering over 3 steps to a stalk a quarter of the head's width
+    # (redo round 7: the whole fish 1.5 times deeper in the water): 10, 7, 4, 3 px wide and 7, 5, 4, 2 deep
+    ("trunk", "body", (-5.0, 17.0, -4.0), (10, 7, 5)),
+    ("mid", "body", (-3.5, 19.0, 1.0), (7, 5, 4)),
+    ("rear", "body", (-2.0, 20.0, 5.0), (4, 4, 3)),
+    ("stalk", "body", (-1.5, 21.0, 8.0), (3, 2, 2)),
+    # the fringe of skin flaps: ragged 1 px tabs along the head's sides, light and dark, sticking out and hanging down
+    ("fringe_l", "body", (7.0, 21.0, -13.0), (1, 0, 9)),
+    ("fringe_r", "body", (-8.0, 21.0, -13.0), (1, 0, 9)),
+    ("flap_l", "body", (7.5, 21.0, -14.0), (0, 3, 10)),
+    ("flap_r", "body", (-7.5, 21.0, -14.0), (0, 3, 10)),
+    # the second spine and the low soft second dorsal fin near the tail
+    ("spine", "spine2", (0.0, 14.0, -10.5), (0, 2, 1)),
+    ("dorsal", "body", (0.0, 17.0, 1.0), (0, 2, 5)),
+    # the rod (illicium): one 1 px plane (redo round 7: a crossed plane faced the front as a horn), and a ragged
+    # 2 x 2 fleshy flap at its tip (round 7: a block read as a mallet)
+    ("rod", "lure", (0.0, 13.0, -13.5), (0, 5, 1)),
+    ("esca", "lure", (0.0, 11.0, -14.5), (0, 2, 2)),
+    # the pectoral fins: an arm and a broad fan
+    ("arm_l", "left_fin", (4.0, 19.0, -2.0), (3, 2, 2)),
+    ("arm_r", "right_fin", (-7.0, 19.0, -2.0), (3, 2, 2)),
+    ("pec_l", "left_fin", (7.0, 20.0, -3.5), (6, 0, 5)),
+    ("pec_r", "right_fin", (-13.0, 20.0, -3.5), (6, 0, 5)),
+    # the squared tail fin, wider than the stalk, with a darker edge
+    ("caudal", "tail_fin", (0.0, 19.0, 10.0), (0, 5, 4)),
 ]
 
 
@@ -167,6 +160,8 @@ def footprint(size):
         return 2 * d, d + h
     if h == 0:
         return d + 2 * w, d
+    if d == 0:
+        return 2 * w, h
     return 2 * d + 2 * w, d + h
 
 
@@ -197,27 +192,31 @@ def pack(specs):
 CUBES = pack(SPECS)
 
 # --- painting ----------------------------------------------------------------------------------------------------------
-# Fin outlines, one character per texel. Vertical planes (w 0): rows y from the top, columns z from the front.
-# Flat planes (h 0): rows z from the front, columns x from the body outward.
-CAUDAL = [        # rows y 20..23, columns z 10..12: a fan in the body's brown, widening backward, a darker rim
-    ".FD",
-    "FFD",
-    "FFD",
-    ".FD",
+# Fin outlines, one character per texel. Vertical planes along z (w 0): rows y from the top, columns z from the front.
+# Vertical planes across (d 0): rows y from the top, columns x from the body outward.
+CAUDAL = [        # rows y 19..24, columns z 10..14: a squared fan with a darker trailing edge
+    "FrFD",
+    "rFrD",
+    "FfFD",
+    "rFrD",
+    "FrfD",
 ]
-DORSAL = [        # row y 21, columns z 4..7: a low soft fin
-    "ffF.",
+DORSAL = [        # rows y 17..19, columns z 1..6: a low soft fin
+    ".fFf.",
+    "fFFFf",
 ]
-ESCA = [          # row y 16, columns z -14.5..-12.5: a small dull flap
-    "QQ",
+SPINE = ["2", "3"]   # in the head's own browns (redo round 5: dark, from above it read as a mouth line)
+ESCA = [".T", "TQ"]   # the rod's ragged fleshy flap
+PECTORAL = [      # rows z from the front, columns from the arm outward: a solid mid-brown blade with a darker fringe
+    "FFFD..",         # of rays at its outer edge (round 4: pale, they read as blobs; round 5: a checker read as
+    "FFFFD.",         # pinecones)
+    "FFFFFD",
+    "FFFFD.",
+    "FFDD..",
 ]
-PECTORAL = [      # rows z -1..2 (front to back), columns from the body outward: a thin fan, round 3 in the body's tones
-    "rrF..",
-    "rFFF.",
-    "rFFfD",
-    "rFfD.",
-]
-FRINGE = None     # every other texel, from the hash below
+TEETH = (0xe8, 0xe0, 0xd0, 255)
+TEETH_X = (-6, -3, -2, 2, 5)                    # x of the lower teeth (irregular; redo round 6: even ones read as a ruler)
+LIP = (0xc9, 0xa5, 0x8a, 255)                   # a dull pinkish tan (redo round 5: near-white read as a tray)
 
 
 def lifted(c, k):
@@ -234,98 +233,90 @@ def hash01(*vals):
     return CE.hash01(*vals)
 
 
-EYES = ((4.5, -8.5), (-4.5, -8.5))   # round 7: near the dome's edges
+EYES = ((4.5, -7.5), (-4.5, -7.5))   # the eyes (eye_l, eye_r)
 
 
-def near_eye(x, z, r=1.6):
-    return any(abs(x - ex) < r and abs(z - ez - 0.5) < r for ex, ez in EYES)
+def mottle(pal, cand, shade, x, z, salt=0):
+    """2 and 3 px blotches, darker and lighter, over a soft one-step mottle."""
+    dark, pale = BLOTCH[cand]
+    r = hash01(41 + salt, int(math.floor((x + 8) / 2)), int(math.floor((z + 16) / 2)))
+    r3 = hash01(45 + salt, int(math.floor((x + 9) / 3)), int(math.floor((z + 17) / 3)))
+    if r < dark * 0.8:                             # 2 px blotches only (redo round 2: 3 px ones read as plates)
+        return pal["B"]
+    if r3 > 0.92 or r > 1 - pale:
+        return pal["P"]
+    m = hash01(43 + salt, int(math.floor(x * 2)), int(math.floor(z / 2)))
+    return ramp(pal, shade + (1 if m < 0.22 else -1 if m > 0.8 else 0))
 
 
-def back_colour(pal, cand, x, z):
-    """The back seen from above, the view seen most: mottled brown camouflage in 2 px blotches, the middle of the dome
-    a little lighter, the rim a little paler and warmer, a clean pale ring round each eye."""
+def near_eye(x, z, r):
+    return any(abs(x - ex) < r and abs(z - ez) < r for ex, ez in EYES)
+
+
+def top_colour(pal, cand, name, x, z):
     for ex, ez in EYES:
         if abs(x - ex) < 0.6 and abs(z - ez) < 0.6:
-            return pal["E"]                  # a 1 px pupil (round 7 tried 2 x 2: googly cartoon eyes)
-        # round 5: a 2 x 2 eye, the pupil at its outer front corner and a pale socket on the other three
-        # round 6: a 1 px ring round the pupil (3 x 3), so it shows under water; in a light skin brown, not cream,
-        # because a cream ring made googly cartoon eyes from the front
-        if abs(x - ex) < 1.6 and abs(z - ez) < 1.6:
-            return pal["e"]                  # a light skin-brown ring (cream or grey rings made cartoon eyes)
-        # round 2: a pale rim only beside and behind the eye (no ring in front, which faced the viewer as a face);
-        # round 3: only behind it, so head on the eye shows as one small dark dot
-        # round 4: no rim at all (from above the front a pale pixel behind the eye read as the white of a cartoon eye)
-    ax = abs(x)
-    if z < -12 and ax < 6:
-        return ramp(pal, 2)                  # the row over the gape plain (round 4: a darker row read as a 2nd mouth)
-    snout = (z < -5 and ax < 6) and not near_eye(x, z, 1.6)   # round 8: as far back as the eyes (a dark blotch
-                                                             # behind them read as a brow)
-    if snout:
-        # round 6: no dark marks between the eyes and the mouth (they read as brows and a nose); round 7: a plain
-        # patch there read as a face, so it is mottled in the light and mid tones only
-        m = hash01(49, int(math.floor(x / 2)), int(math.floor(z / 2)))
-        return pal["P"] if m > 0.8 else ramp(pal, 1 if m > 0.55 else 2 if m > 0.2 else 3)
-    shade = 3
-    if ax < 3.0 and z < 0:
-        shade = 2                            # the dome
-    if ax > 6.0:
-        shade = 2                            # the rim
-    if z > 4:
-        shade = 3
-    if z > 9:
-        shade = 4                            # the tail darkens
-    if near_eye(x, z, 2.6):
-        return ramp(pal, shade)              # nothing but the plain back next to the eyes
-    # 2 px blotches: pairs of texels along z, cells of 2 x 2
-    # round 3: blotches of two sizes (2 and 3 px cells, staggered) so they never line up into bands
-    dark, pale = BLOTCH[cand]
-    r = hash01(41, int(math.floor((x + 8) / 2)), int(math.floor((z + 12) / 2)))
-    r3 = hash01(45, int(math.floor((x + 9) / 3)), int(math.floor((z + 13) / 3)))
-    if r3 < 0.16:
-        return pal["B"]
-    if r3 > 0.9:
-        return pal["P"]
-    if r < dark:
-        return pal["B"]
-    if r > 1 - pale:
-        return pal["P"]
-    # a soft one-step mottle in 2 px runs
-    m = hash01(43, int(math.floor(x * 2)), int(math.floor(z / 2)))
-    if m < 0.22:
-        shade += 1
-    elif m > 0.80:
-        shade -= 1
-    return ramp(pal, shade)
+            return pal["E"]                            # under the raised eye
+    for ex, ez in EYES:
+        dx, dz = x - ex, z - ez
+        if name in ("cap", "head") and ((abs(dz) < 0.6 and 0.4 < abs(dx) < 1.6 and dx * ex > 0) or
+                                        (abs(dx) < 0.6 and 0.4 < dz < 1.6)):
+            return pal["e"]                            # a pale rim: one pixel outside and one behind each eye
+                                                       # (redo round 7: gold bars read as drawer handles)                                # a gold rim behind each eye, on top only (redo round 3: a
+                                                       # full ring, seen from the front, made googly cartoon eyes)
+    if name == "head_front":
+        return ramp(pal, 2)                            # the bevel over the mouth
+    shade = 3 if z < 7 else 4
+    if name == "cap" and abs(x) < 2.6 and z < -5:
+        return ramp(pal, 1 if hash01(53, int(math.floor(x / 2)), int(math.floor(z / 2))) > 0.6 else 2)
+                                                   # between the eyes only light marks (a dark blotch there read as
+                                                   # a nose, redo round 2)
+    if near_eye(x, z, 2.6) or z < -12:
+        return ramp(pal, shade - (1 if z < -12 else 0))   # plain next to the eyes and over the snout (a dark mark
+                                                          # there reads as a nose or brows from the front)
+    return mottle(pal, cand, shade, x, z)
 
 
 def side_colour(pal, cand, x, y, z):
-    """The flanks of the flat head and body: dark at the top, paling down to the cream belly (countershade)."""
+    """Flanks: mottled brown at the top, paling down to the cream belly (countershade)."""
     yi = int(math.floor(y))
-    shade = {19: 3, 20: 3, 21: 3, 22: 2, 23: 0}.get(yi, 1)   # the bottom row cream; round 5: lighter flanks
-    m = hash01(47, int(math.floor(z / 2)), yi)
-    if yi <= 22 and m < 0.2:
-        shade += 1
-    return ramp(pal, shade)
+    if yi >= 23:
+        return ramp(pal, 0)
+    if yi >= 22:
+        return ramp(pal, 1)
+    if yi >= 21:
+        return ramp(pal, 2 if hash01(57, int(math.floor(z / 2)), yi) < 0.7 else 1)   # the paler lower flank
+    shade = 3 if yi <= 19 else 2
+    return mottle(pal, cand, shade, yi * 1.0, z, 7)
 
 
 def body_colour(pal, cand, name, face, x, y, z, cube):
-    _, _, _, (x0, y0, z0), (w, h, d) = cube
-    if name == "jaw":
-        if face == "top":
-            return pal["L"]                  # round 3: the lip seen from above (the gape is the row just behind it)
-        if face == "north":
-            return pal["L"] if y < 23 else ramp(pal, 1)   # the pale lower lip, the chin under it
-        if face == "bottom":
-            return pal["0"]
-        return pal["L"]
-    if face == "north" and name in ("head", "shoulder_l", "shoulder_r"):
-        if y < 21:
-            return ramp(pal, 1)              # the upper lip, over the middle of the gape
-        return pal["M"]                      # the gape seen from the front, the one row above the jaw
+    yi = int(math.floor(y))
+    xi = int(math.floor(x))
+    if name.startswith("eye"):
+        return pal["E"] if face in ("top", "north", "east" if x > 0 else "west") else ramp(pal, 2)
+    if face == "north" and name == "head_front":
+        # the gape: one thin dark row right across, just above the jutting lower jaw; the upper lip above it
+        return ramp(pal, 2) if yi < 20 else pal["M"]
+    if face == "north" and name in ("head", "cap"):
+        return ramp(pal, 2)
+    if face == "north" and name == "jaw":
+        if yi == 21:
+            return LIP                                 # the pale lip edge only (redo round 6: a pale jaw read as a tray)
+        if yi == 22 and xi in (-5, 0, 5):
+            return pal["T"]                            # a few pale-brown skin flaps under the lip
+        return ramp(pal, 3 if yi == 22 else 2)         # the jaw's brown body
+    if face == "top" and name == "jaw":
+        if abs(x) > 7:
+            return ramp(pal, 3)                        # the jaw's sides, brown
+        return LIP if z < -15 else pal["M"]            # the lip edge, and the near-black mouth slot
+
     if face == "top":
-        return back_colour(pal, cand, x, z)
+        return top_colour(pal, cand, name, x, z)
     if face == "bottom":
         return ramp(pal, 0)
+    if name.startswith("arm"):
+        return ramp(pal, 2)
     return side_colour(pal, cand, x, y, z)
 
 
@@ -333,18 +324,24 @@ def plane_colour(pal, name, cube, x, y, z):
     _, _, _, (x0, y0, z0), (w, h, d) = cube
     if name.startswith("fringe"):
         zi = int(math.floor(z))
-        # round 5: pale-brown flaps every other texel, 1 px out, so they show from above
-        if name == "fringe_f":
-            xi = int(math.floor(x))
-            return pal["T"] if xi in (-6, -3, -2, 1, 4) else CLEAR
-        return pal["T"] if zi % 2 == 0 else CLEAR
-    if h == 0:
-        grid = PECTORAL
+        tabs = (-12, -10, -8, -6) if x > 0 else (-13, -11, -8, -5)   # 4 a side, light and dark
+        if zi not in tabs:
+            return CLEAR
+        return pal["T"] if tabs.index(zi) % 2 == 0 else ramp(pal, 4)
+    if name.startswith("flap"):
+        zi, yi = int(math.floor(z)), int(math.floor(y))
+        hang = {-13: 22, -11: 23, -10: 22, -8: 23, -6: 22, -5: 23} if x > 0 else {-14: 23, -12: 22, -9: 23, -8: 22, -6: 23}
+        if zi in hang and yi >= hang[zi]:
+            return pal["T"] if zi % 2 == 0 else ramp(pal, 4)
+        return CLEAR
+    if h == 0 and name.startswith("pec"):
         r = int(math.floor(z - z0))
         c = int(math.floor(x - x0)) if name.endswith("_l") else int(math.floor(x0 + w - x))
-        ch = grid[r][c]
+        ch = PECTORAL[r][c]
     else:
-        grid = {"caudal": CAUDAL, "dorsal": DORSAL, "esca": ESCA}[name]
+        if name == "teeth":
+            return TEETH if int(math.floor(x)) in TEETH_X else CLEAR
+        grid = {"caudal": CAUDAL, "dorsal": DORSAL, "esca": ESCA, "spine": SPINE}[name]
         r, c = int(math.floor(y - y0)), int(math.floor(z - z0))
         ch = grid[r][c]
     return CLEAR if ch == "." else pal[ch]
@@ -360,8 +357,8 @@ def draw_texture(cand):
             assert 0 <= u < TW and 0 <= v < TH, (name, face, u, v)
             assert owner.setdefault((u, v), name) == name, ("texture overlap", name, owner[(u, v)], u, v)
             if name in ("rod", "rod_x"):
-                col = pal["R"]
-            elif w == 0 or h == 0:
+                col = ramp(pal, 1)                 # a light rod: dark, it read as a nose from the front
+            elif w == 0 or h == 0 or d == 0:
                 col = plane_colour(pal, name, cube, x, y, z)
             else:
                 col = body_colour(pal, cand, name, face, x, y, z, cube)
@@ -373,7 +370,7 @@ def draw_texture(cand):
 def write_java():
     f = CE.f
     lines = []
-    for part in ("body", "lure", "left_fin", "right_fin", "tail_fin"):
+    for part in ("body", "lure", "spine2", "left_fin", "right_fin", "tail_fin"):
         parent, (px, py, pz), rot = PARTS[part]
         builder = "CubeListBuilder.create()"
         for cube in [c for c in CUBES if c[1] == part]:
@@ -397,12 +394,13 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 /**
- * The petrica (anglerfish): a huge, wide, flattened head (14 px across, 16 with its fringe of skin flaps, nearly half
- * the 22 px length) with an enormous straight mouth right across the front and the lower jaw jutting out, small eyes
- * on top, the fishing-rod lure (illicium) leaning forward from the snout with a small dull flap at its tip, big fan
- * pectoral fins flat on the floor, and a body tapering fast to a small rounded tail that sways. Mottled brown above,
- * cream below. Head toward -z, the ground at y 24; flat, so it lies flat on land (no wiggle). Texture 64 x 64:
- * textures/entity/fish/petrica.png. Made by art/src/fish_petrica_model.py (don't edit by hand).
+ * The petrica (anglerfish): a huge, broad head about half the fish, with a very wide straight mouth, the lower jaw
+ * jutting out and teeth along both jaws; small eyes on top; the fishing-rod lure leaning forward from the snout with a
+ * dull flap at its tip and a second spine behind it; a fringe of skin flaps along the head; big fleshy pectoral fins on
+ * arms reaching to the floor; the body tapering to a slim tail stalk and a squared tail fin that sways. Mottled brown
+ * above, cream below. Head toward -z, the ground at y 24. No body wiggle; on land it lies flat on its belly, squashed
+ * (FishRenderer.withLandSquash). Texture 128 x 64: textures/entity/fish/petrica.png. Made by
+ * art/src/fish_petrica_model.py (don't edit by hand).
  */
 public class PetricaModel extends FishModel {
     public PetricaModel(ModelPart root) {

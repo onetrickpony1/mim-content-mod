@@ -12,7 +12,7 @@ id: mimcontent:mola_mola
 
 The heaviest bony fish in the world, a tall flat disc that looks cut off behind. It is seen now and then off Malta and Gozo, often lazing at the surface. In the game it is **extremely rare** in the wild: fishing with jellyfish meat, once fishing is overhauled, will be practically the only way to get one ([[2026-11-18 Mola mola - extremely rare]]). Started on [[2026-11-18 Mola mola - start]]; [[Content mod list]] no. 75a.
 
-**State (2026-11-18): building.** The mob is built and tested in the game. The **3D model** is accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]). The **item icon** is drawn and waits for the owner. The bucket and spawn egg are placeholders until then ([[2026-11-18 Fish art - owner approves each piece before the next]]).
+**State (2026-11-19): building.** The mob is built and tested in the game. The **3D model** is accepted ([[2026-11-18 Skorfna egg and mola mola model accepted]]). The **item icon** was accepted ([[2026-11-19 Night fish icons and buckets - most pass; John Dory, gallinella, lingwata bucket redo]]). The spawn egg is a placeholder ([[2026-11-18 Fish art - owner approves each piece before the next]]). **It can be found but not captured** ([[2026-11-19 Mola mola - can be found, not captured; escapes when hurt; basks in the sun]]): no bucket, no drop, tough, and it escapes when hurt.
 
 ## In Malta
 - **It does turn up.** The University of Malta's checklist of Maltese fishes lists *Mola mola* as confirmed in Maltese waters, and the slender sunfish *Ranzania laevis* too [1]. No other *Mola* species is listed.
@@ -46,38 +46,44 @@ The heaviest bony fish in the world, a tall flat disc that looks cut off behind.
 | Size | 1.63 blocks long and 2.4 blocks tall fin tip to fin tip, the disc as tall as it is long (life size, like the tonn and the blue shark) |
 | Body box | 1.3 x 1.8 (the disc without the fins); while basking 1.7 x 0.5, lying flat |
 | Hit boxes | 5 boxes from mouth to clavus, the tall fins included ([[Fish]], "Hit boxes match the fish") |
-| Health | 20 (10 hearts) |
-| Speed | 0.35 (half vanilla's fish, 0.7) |
+| Health | 40 (20 hearts); no single hit takes more than 4 (2 hearts) |
+| Speed | 0.35 (half vanilla's fish, 0.7); escaping, 0.375 blocks a tick (7.5 a second) for 4 seconds |
 | Damage | none: harmless |
 | Spawns | alone, the lowest weight (1), deep sea only; see "Extremely rare" |
 
-- **Slow and calm.** It drifts and swims slowly, and doesn't shy away from players (real sunfish let divers come close [5]). Hurt it and it swims off, slowly.
-- **It basks.** Now and then it rises to the surface and lies on its side there for 10 to 30 seconds, its upper side just breaking the water, tilted 12 degrees off flat so one fin rises at an angle. Its box lies flat (1.7 x 0.5) and its hit boxes lie on their side, centred over it. Hurting it ends the basking. It doesn't bask under ice or a ceiling.
+- **Slow and calm.** Left alone, it drifts and swims slowly, and doesn't shy away from players (real sunfish let divers come close [5]).
+- **It basks, in the sun only.** Now and then (about once every 20 seconds it may set off) it rises to the surface and lies on its side there for 10 to 30 seconds, its upper side just breaking the water, tilted 12 degrees off flat so one fin rises at an angle. Only **by day, with no rain or thunder, and with open sky above the water** where it is (not under ice, a ceiling, glass or leaves). At night or in rain it just swims slowly, and nightfall or rain ends any basking. Its box lies flat (1.7 x 0.5) and its hit boxes lie on their side, centred over it. Hurting it ends the basking.
+- **Tough.** 40 health, and every hit is capped at 4, whatever the weapon: swords with any enchantment, crits, sweeps, arrows, tridents, explosions. `/kill` and the void still kill it.
+- **It escapes when hurt.** It bursts straight away from whatever hurt it, sinking a little while there is water under it and turning along walls, at 7.5 blocks a second for 4 seconds (about 30 blocks). That outswims a sprint-swimming player (vanilla: about 3.9 blocks a second; 5.3 with Depth Strider III); only Dolphin's Grace (about 9.8) is faster. It doesn't stop to bask.
+  - **Hurt by a player** (a hit, an arrow, a trident, TNT the player lit): in the last 2 seconds of the escape it fades out into the blue with a stream of bubbles, and is gone (removed: no death, no drop). That fish never comes back.
+  - **Hurt by anything else:** it flees the same way but doesn't vanish. If a mob (a guardian, a drowned) hits it again while it still flees, it vanishes as well. Damage with no attacker (drying out on land, fire) never makes it vanish.
+- **No bucket.** A water bucket does nothing to it: it isn't caught, and the bucket stays full. There is no mola bucket item.
+- **Drops: nothing.** Its raw fish item, `mimcontent:mola_mola`, stays in the game (creative tab, `/give`), kept for fishing later.
 - **It sculls.** Its dorsal and anal fins swing from side to side together; the clavus steers a little.
-- **Drops: itself** as a raw fish, `mimcontent:mola_mola` (one, like the other fish). This is a proposal: the owner decides the drops.
-- **A bucket**, like every other fish of ours (the tonn and the blue shark have one too). Use a water bucket on it to catch it, as with vanilla fish.
-- **A spawn egg**, in vanilla's Spawn Eggs tab too, sitting in vanilla's pool.
-- It counts as fish for the blue shark (its item and its bucket are shark bait).
+- **A spawn egg**, in vanilla's Spawn Eggs tab too, sitting in vanilla's pool. Spawn eggs and `/summon` still work.
+- It counts as fish for the blue shark (its item is shark bait).
 
 ### Extremely rare
 Owner, 2026-11-18: "the mola mola must be EXTREMELY rare, with fishing it with the required bait being practically the only way to find it unless you are super lucky" ([[2026-11-18 Mola mola - extremely rare]]).
 - **Malta world:** only the deep sea (`fond_deep_sea`, `fond_band_1`-`8`, `dwejra_fond_deep_sea`), weight 1 (the lowest), always alone.
 - **Vanilla oceans** (behind `fish_in_vanilla_oceans`): the warm ocean and the deep lukewarm ocean, weight 1. Vanilla has no deep warm ocean.
-- **An extra roll:** even when the game picks it, a natural spawn goes ahead only **1 time in 400** (`MolaFish.SPAWN_CHANCE`). Spawn eggs, buckets, spawners and `/summon` always work.
+- **An extra roll:** even when the game picks it, a natural spawn goes ahead only **1 time in 400** (`MolaFish.SPAWN_CHANCE`). Spawn eggs, spawners and `/summon` always work.
 - **How rare that is (an estimate):** in the deep sea about 1 natural fish spawn in 50 picks the mola, the game tries up to about 4 spots for it, and 1 in 400 of those go ahead: about **1 fish in 5,000 to 6,500**. A player sailing the deep sea sees perhaps 1,000 to 3,000 fish spawn an hour, so **about one mola every 2 to 6 hours of sailing**, and fewer in vanilla oceans, where it shares the spawns with more fish. This is a rough figure from how vanilla's spawner works; it wasn't measured over hours of play.
 - **Fishing comes later.** Jellyfish meat will be its bait once fishing is overhauled ([[2026-11-18 Jellyfish drops - venom and meat; mola mola later]]). No fishing or bait behaviour is built yet.
 
 ### Art
 - **3D model** (`art/src/fish_mola_model.py`, `MolaMolaModel`): first piece, made from the reference photos in `art/references/fish_mola_refonly/` (Wikimedia Commons, licences in `list.tsv`). A round disc 21 px long and 21 tall, squared off behind, with a scalloped clavus, slim tall fins far back, a small round mouth and a dark eye in a paler ring. Judged by independent critics in the game (three rounds). Waiting for the owner. Screenshots: `art/candidates/fish_mola_model_shots/` (not in git).
-- **Item icon** (`art/src/fish_mola_icon.py`, waiting for the owner): the model's hues a step darker for out of water, with a dark rim. Three poses: A upright side view (installed), B tilted about 20 degrees, C about 40 degrees. Three blind readers named all three "sunfish" and found A the clearest. Compare sheet: `art/candidates/fish_mola_icon.png`.
-- **Bucket and spawn egg:** placeholders (`art/src/fish_placeholders.py mola_mola`), drawn one at a time after the owner accepts the icon.
+- **Item icon** (`art/src/fish_mola_icon.py`, A accepted 2026-11-19): the model's hues a step darker for out of water, with a dark rim. Three poses: A upright side view (installed), B tilted about 20 degrees, C about 40 degrees. Three blind readers named all three "sunfish" and found A the clearest. Compare sheet: `art/candidates/fish_mola_icon.png`.
+- **Spawn egg:** a placeholder (`art/src/fish_placeholders.py mola_mola`).
+- **Bucket: removed** (2026-11-19). The drawn bucket (`art/src/fish_mola_bucket.py`, night job candidate E, accepted the same morning) is retired: the script is kept for history and no longer installs anything.
+- **Fading:** while it fades out the game draws it see-through, from fully seen to gone over 2 seconds; its shadow fades with it.
 
 ## Questions for the owner
-1. **Drops:** keep "drops itself" (one raw fish)? Or more meat, since it is huge (2 to 4)? Or something special for a once-in-hours fish?
+1. ~~**Drops:**~~ answered 2026-11-19: **none**. It can't be captured until fishing is overhauled ([[2026-11-19 Mola mola - can be found, not captured; escapes when hurt; basks in the sun]]).
 2. **Size:** a mature fish at life size (1.63 blocks long, 2.4 tall)? Or mixed sizes like the tonn, or bigger?
 3. **Name:** Pixxiluna, Qamar or Pixxitanbur in the game?
 4. **Rarity:** about one every 2 to 6 hours of deep-sea sailing (estimate). Rarer, or right?
-5. **Bucket:** every fish has one, so it has one too, though a real one wouldn't fit. Keep it?
+5. ~~**Bucket:**~~ answered 2026-11-19: **none**. A water bucket does nothing to it, and the bucket item is removed.
 6. **Season:** Maltese sightings fall between April and August. Only then, once the mod has a calendar?
 
 ## Sources

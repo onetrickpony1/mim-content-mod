@@ -3,6 +3,7 @@
 Creative choices made by Claude on the night job ([[2026-11-18 Night job - the rest of the fish, Claude decides]]), for the owner to review. Nothing here is owner-accepted yet.
 
 ## Bucket (`art/src/fish_mola_bucket.py`, installed: candidate E)
+**Retired 2026-11-19:** the mola has no bucket any more ([[2026-11-19 Mola mola - can be found, not captured; escapes when hurt; basks in the sun]]); the script is kept for history.
 - **What shows:** only the front of the disc rising out of the water: a round, blunt dome with one eye high on it, a small beak mouth on the front edge low down, and the tip of the dorsal fin. No clavus, no anal fin, no tail.
 - **Colours:** only icon A's palette (the model's hues a step darker), plus the shared bucket water and rim shades. No new colours.
 - **Pale, smooth disc:** the dark grey-brown back band and the blotches were dropped after blind readers called a darker, mottled version a "grey-green mottled" bottom fish. The disc is now silver above and pale below, as in the out-of-water photos (mm07). The fin and the outline stay dark.

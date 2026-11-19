@@ -99,8 +99,9 @@ final class FishHitboxCheck {
             server.runCommand("kill @e[type=!minecraft:player]");
             arrow(context, server, x, y, z);
             server.runCommand("kill @e[type=!minecraft:player]");
-            // the boll's thickest point is 3 px (the raised eyes on the dome; art/src/fish_boll_model.py); the night job's
-            // the night job's flat fish: the lingwata 3 px with its raised pectoral fin, the petriċa 7 px with its lure
+            // the boll's thickest point is 3 px (the raised eyes on the dome; art/src/fish_boll_model.py);
+            // the night job's flat fish: the lingwata 3 px with its raised pectoral fin; the petriċa lies flattened on land
+            // (squashed to 0.45 of its height in the water), no more than 7 px with its lure
             flatOnLand(context, server, x, y, z, "boll", 3.0);
             server.runCommand("kill @e[type=!minecraft:player]");
             flatOnLand(context, server, x, y, z, "lingwata", 3.0);  // 3 px at the raised pectoral fin (art/src/fish_lingwata_model.py)
@@ -137,13 +138,13 @@ final class FishHitboxCheck {
                 model.root().visit(new PoseStack(), (pose, path, index, cube) -> cubes.add(bounds(pose.pose(), cube)));
                 float[][] measured = FishShape.slice(cubes);
                 FishShape shape = FishShape.of(f.id());
-                String problem = shape == null ? "no shape" : compare(shape, measured, renderer.landLift(), renderer.liesFlat(), renderer.sideShift());
+                String problem = shape == null ? "no shape" : compare(shape, measured, renderer.landLift(), renderer.liesFlat(), renderer.sideShift(), renderer.landSquash());
                 float length = measured[0][0] * (measured.length - 1);
                 log(String.format(Locale.ROOT, "%s model: %.1f px long; %d hit boxes of %.2f px; table %s", f.id(), length,
                     measured.length - 1, measured[0][0], problem == null ? "matches" : "WRONG: " + problem));
                 if (fishes.size() == 1) {
-                    log(String.format(Locale.ROOT, "%s measured row: %s; land lift %sF, flat %s, side shift %sF", f.id(), row(measured),
-                        renderer.landLift(), renderer.liesFlat(), renderer.sideShift()));
+                    log(String.format(Locale.ROOT, "%s measured row: %s; land lift %sF, flat %s, side shift %sF, land squash %sF", f.id(), row(measured),
+                        renderer.landLift(), renderer.liesFlat(), renderer.sideShift(), renderer.landSquash()));
                 }
                 if (problem != null) {
                     bad.append(f.id()).append(": ").append(problem).append("; the row should be ").append(row(measured)).append(". ");
@@ -154,7 +155,7 @@ final class FishHitboxCheck {
         check(result.equals("ok"), "FishShape's table is out of date: " + result);
     }
 
-    private static String compare(FishShape shape, float[][] measured, float landLift, boolean liesFlat, float sideShift) {
+    private static String compare(FishShape shape, float[][] measured, float landLift, boolean liesFlat, float sideShift, float landSquash) {
         if (Math.abs(shape.landLift() - landLift) > 1.0E-5F) {
             return "land lift " + shape.landLift() + ", the renderer's is " + landLift;
         }
@@ -163,6 +164,9 @@ final class FishHitboxCheck {
         }
         if (shape.flat() != liesFlat) {
             return "flat " + shape.flat() + ", the renderer's liesFlat is " + liesFlat;
+        }
+        if (Math.abs(shape.landSquash() - landSquash) > 1.0E-5F) {
+            return "land squash " + shape.landSquash() + ", the renderer's is " + landSquash;
         }
         if (shape.parts() != measured.length - 1 || Math.abs(shape.sliceLength() - measured[0][0]) > 0.02F) {
             return shape.parts() + " slices of " + shape.sliceLength() + " px, the model gives " + (measured.length - 1) + " of " + measured[0][0];

@@ -24,14 +24,15 @@ import net.minecraft.world.phys.Vec3;
  * <p>Placement follows {@code FishRenderer}: the body's yaw turns the chain, and out of water the fish lies on its
  * side (rotated 90 degrees about its length, lifted by the renderer's land lift), so the boxes lie flat too. The
  * murina's boxes follow the travelling wave of its five-section body ({@code MurinaModel}). A flat fish (the boll,
- * {@code flat}) lies flat on land too, as in water, only lifted by its land lift. The whole-body wiggle of the other
+ * {@code flat}) lies flat on land too, as in water, only lifted by its land lift (the petriċa, deep in the water, is also squashed
+ * flat on land: {@code landSquash}). The whole-body wiggle of the other
  * fish (a few degrees) is left out.
  *
  * <p>A fish much taller than it is thick (the mola mola) has a {@code sideShift}: lying on its side (on land, or basking
  * at the surface) it is moved back along its own height by that many blocks, so its middle lies over its position
  * instead of its belly (the renderer does the same; the smoke test checks they agree). 0 for every other fish.
  */
-public record FishShape(float sliceLength, float[][] slices, float landLift, Wave wave, boolean flat, float sideShift) {
+public record FishShape(float sliceLength, float[][] slices, float landLift, Wave wave, boolean flat, float sideShift, float landSquash) {
     /** The most slices a fish gets. */
     public static final int MAX_PARTS = 8;
     /** The slice length the count aims for, in px. */
@@ -73,7 +74,7 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         // 32 px long, 4 wide, 6 tall; bends with its wave (MurinaModel: sections body, seg1, seg2, seg3, tail)
         new AbstractMap.SimpleEntry<>("murina", new FishShape(5.333F, new float[][] {{-11.33F, 1.5F, 18F, 23F}, {-6F, 2F, 18F, 23F},
             {-0.667F, 1.5F, 18F, 23F}, {4.667F, 1.5F, 18F, 24F}, {10F, 1F, 18F, 24F}, {15.33F, 1F, 18.5F, 23.5F}}, 0.1875F,
-            new Wave(new float[] {0F, 0F, 5F, 10F, 14F}, new float[] {0.05F, 0.15F, 0.26F, 0.36F, 0.46F}, 0.33F, 1.05F, 1.2F, 1.8F), false, 0.0F)),
+            new Wave(new float[] {0F, 0F, 5F, 10F, 14F}, new float[] {0.05F, 0.15F, 0.26F, 0.36F, 0.46F}, 0.33F, 1.05F, 1.2F, 1.8F), false, 0.0F, 1.0F)),
         // 45 px long (the sword included), 14 wide (the pectoral fins), 18 tall (dorsal fin to tail fin)
         shape("pixxispad", 5.625F, 0.21875F, new float[][] {{-20.19F, 1F, 19F, 20F}, {-14.56F, 1.5F, 18.5F, 21.5F}, {-8.94F, 2.5F, 16.5F, 23.5F},
             {-3.31F, 6.99F, 9F, 26.7F}, {2.31F, 6.99F, 9F, 26.7F}, {7.94F, 3F, 16.5F, 26F}, {13.56F, 2F, 13F, 27F}, {19.19F, 0F, 13F, 27F}}),
@@ -99,10 +100,10 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         shape("trilja", 5.000F, 0.1F, new float[][] {{-5.500F, 1.000F, 17.000F, 24.933F}, {-0.500F, 1.000F, 17.000F, 23.000F}, {4.500F, 0.500F, 18.000F, 24.000F}}),
         // 14 px long, 6.5 wide (the pectoral fans), 5 tall with the black dorsal; 1 px of it in the sand (art/src/fish_sawt_model.py)
         shape("sawt", 4.667F, 0.1F, new float[][] {{-3.667F, 2.497F, 20.000F, 25.000F}, {1.000F, 1.000F, 20.000F, 25.000F}, {5.667F, 1.000F, 21.500F, 25.500F}}),
-        // 21 px long, 2 wide, 22 tall (the dorsal filaments to the pelvic fins; art/src/fish_pixxi_san_pietru_model.py)
-        shape("pixxi_san_pietru", 5.500F, 0.1F, new float[][] {{-8.250F, 1.000F, 13.000F, 24.000F}, {-2.750F, 1.000F, 2.926F, 24.000F}, {2.750F, 1.000F, 2.926F, 24.000F}, {8.250F, 0.500F, 6.756F, 24.000F}}),
-        // 22 px long, 16 wide (the head and pectoral fins), 7 tall with the lure; flat: it lies flat on land
-        flatShape("petrica", 5.819F, 0.0F, new float[][] {{-13.184F, 9.000F, 17.135F, 24.000F}, {-7.365F, 9.000F, 19.000F, 24.000F}, {-1.547F, 10.038F, 19.000F, 24.000F}, {4.272F, 10.038F, 21.000F, 24.000F}, {10.091F, 1.500F, 20.000F, 24.000F}}),
+        // 22 px long, 2 wide, about 22 tall (the dorsal filaments to the pelvic fins; art/src/fish_pixxi_san_pietru_model.py)
+        shape("pixxi_san_pietru", 5.500F, 0.1F, new float[][] {{-8.250F, 1.000F, 13.000F, 24.000F}, {-2.750F, 1.000F, 3.000F, 24.000F}, {2.750F, 1.000F, 2.305F, 24.000F}, {8.250F, 0.500F, 2.305F, 24.000F}}),
+        // 30 px long, 25 wide (the pectoral fins), 13 tall with the lure; flat on land, squashed to 0.45 of its height
+        flatShape("petrica", 6.000F, 0.0F, 0.45F, new float[][] {{-13.000F, 8.000F, 11.040F, 24.000F}, {-7.000F, 12.512F, 14.067F, 24.000F}, {-1.000F, 12.512F, 17.000F, 24.000F}, {5.000F, 3.500F, 17.000F, 24.000F}, {11.000F, 1.500F, 19.000F, 24.000F}}),
         // 23 px long with the tail, 10 wide, 2 thick (3 at the raised pectoral fin); flat: it lies flat on land too (art/src/fish_lingwata_model.py)
         flatShape("lingwata", 5.750F, 0.0F, new float[][] {{-9.125F, 5.000F, 22.000F, 24.000F}, {-3.375F, 5.000F, 21.164F, 24.000F}, {2.375F, 5.000F, 21.164F, 24.000F}, {8.125F, 3.000F, 22.000F, 24.000F}}),
         // 16 px long, 3 wide, 13 tall
@@ -111,20 +112,28 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         // 18 px long, 14 wide (the pectoral "wings"), 5.5 tall
         shape("gallinella", 6.000F, 0.15625F, new float[][] {{-6.000F, 7.026F, 18.000F, 23.000F}, {0.000F, 7.026F, 18.000F, 24.000F}, {6.000F, 1.000F, 19.000F, 24.000F}}),
         // 15 px long, 11 wide (the fan fins), 10 tall (the dorsal spines)
-        shape("lionfish", 5F, 0.125F, new float[][] {{-4.5F, 5.5F, 13F, 23F}, {0.5F, 5.5F, 13F, 23F}, {5.5F, 1.5F, 13F, 23F}}));
+        shape("lionfish", 5.000F, 0.125F, new float[][] {{-4.500F, 4.463F, 10.490F, 23.000F}, {0.500F, 4.463F, 10.926F, 23.000F}, {5.500F, 4.463F, 15.500F, 22.684F}}));
 
     private static Map.Entry<String, FishShape> shape(String id, float slice, float landLift, float[][] rows) {
-        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, 0.0F));
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, 0.0F, 1.0F));
     }
 
     /** A tall fish (the mola mola) whose middle, not its belly, lies over its position when it lies on its side. */
     private static Map.Entry<String, FishShape> tallShape(String id, float slice, float landLift, float sideShift, float[][] rows) {
-        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, sideShift));
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, sideShift, 1.0F));
     }
 
     /** A flat fish (the boll): it lies flat on land as in water (its renderer doesn't turn it on its side). */
     private static Map.Entry<String, FishShape> flatShape(String id, float slice, float landLift, float[][] rows) {
-        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, true, 0.0F));
+        return flatShape(id, slice, landLift, 1.0F, rows);
+    }
+
+    /**
+     * A flat fish that is deep in the water but lies flattened on land (the petriċa): on land its height is squashed to
+     * landSquash from the ground up, as its renderer does (FishRenderer.withLandSquash).
+     */
+    private static Map.Entry<String, FishShape> flatShape(String id, float slice, float landLift, float landSquash, float[][] rows) {
+        return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, true, 0.0F, landSquash));
     }
 
     /** The shape for one of our fish (by its id, e.g. "tonn"), or null. */
@@ -163,8 +172,9 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         // FishRenderer's frame before the body's yaw: scale(-1, -1, 1) then up 1.501
         double a = -x / 16.0, b = 1.501 - yMid / 16.0, c = z / 16.0;
         if (onSide && flat) {
-            // a flat fish lies on land as it swims, lifted a little
-            b += landLift;
+            // a flat fish lies on land as it swims, lifted a little, its height squashed from the ground up (landSquash)
+            b = b * landSquash + landLift;
+            tall *= landSquash;
         } else if (onSide) {
             // lying on its side: translate(0.1, landLift, -0.1), rotate 90 degrees about z, then back along its height
             // by the side shift (a tall fish's middle over its position)

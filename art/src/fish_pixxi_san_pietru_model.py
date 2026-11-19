@@ -24,7 +24,8 @@ cod's.
 
 Candidates (the same model, three paint jobs): A the spot with its half-tone edge all round; B the edge only at the
 sides and below; C as A with faint wavy flank streaks as in the Mediterranean photo jd02. CHOSEN (B) is installed.
-Model critic rounds: 7 (PASS in round 7).
+Model critic rounds: 7 (PASS in round 7). Spine redo after the owner's review ("its spikes look like graphical glitches and
+are very thick"): thin rods with membrane and trailing filaments, PASS in redo round 4.
 
 Writes (byte-identical on every run):
   mod/src/main/java/com/maltaminecraft/mimcontent/client/fish/PixxiSanPietruModel.java
@@ -70,8 +71,8 @@ BASE = {
     "K": "#5b5641", "B": "#75704f", "b": "#8f875f", "O": "#ab9d66", "G": "#c3ae70", "L": "#e4ddc2", "W": "#f6f4ea",
     "S": "#6e5e3a", "s": "#9a8b5e", "R": "#cdbd8a", "o": "#958d66",
     "E": "#101010", "I": "#efe6c4", "c": "#d6d0b0", "J": "#d6cfb2", "m": "#4c4537", "j": "#a9a283", "g": "#958e6a",
-    "d": "#4a4637", "f": "#5c5746", "t": "#b8b08c", "D": "#aaa27e", "T": "#bfb68c", "u": "#a89f7a", "r": "#807a5e",
-    "P": "#7e775a", "n": "#6f6a55", "p": "#8a835f",
+    "d": "#a39668", "f": "#665f40", "t": "#b8b08c", "D": "#aaa27e", "T": "#bfb68c", "u": "#a89f7a", "r": "#807a5e",
+    "P": "#7e775a", "n": "#7a7350", "p": "#8a835f",
 }
 PALETTES = {"A": dict(BASE), "B": dict(BASE), "C": dict(BASE)}
 CLEAR = (0, 0, 0, 0)
@@ -84,17 +85,40 @@ PARTS = {
     "top_fin": (None, (0.0, 12.0, -5.0), 0.0),
     "tail_fin": (None, (0.0, 17.0, 7.0), 0.0),
 }
-# The spiny dorsal (round 3, critic: loose antennae): a dark membrane sail on the back (top_fin) with four spines, each
-# its own child part hinged at its base on the membrane's top edge and swept back 45 degrees, so they stay joined to
-# the fin and trail toward the tail. Round 4 (critic: uniform 2 px rods read as a hairbrush): 1 px wide, the front
-# one longest (round 5: 10, 9, 7, 6 px), each ending in a thin filament.
-# (name, pivot z, pivot y, length)
-SPINES = [("spine_0", -5, 10, 10), ("spine_1", -3, 10, 9), ("spine_2", -1, 11, 7), ("spine_3", 1, 11, 6)]
-for _n, _z, _y, _l in SPINES:
+# The spiny dorsal, redone on the owner's review (2026-11-19: "its spikes look like graphical glitches and are very
+# thick"). The night version's spines were 1 px planes lying in the same plane as the membrane strip (both at x 0),
+# so where they crossed the two flickered (z-fighting), and as 1 px slabs swept back they looked thick. Now:
+#   - one membrane plane (top_fin's "dorsal", at x 0) holds the whole fin, the low soft dorsal behind included, so no
+#     two fin faces share a plane;
+#   - each spine is a thin square rod, 0.4 px across (much thinner than a body pixel), its own child part of top_fin,
+#     hinged at its base on the back and swept back SWEEP radians; the membrane plane runs through the middle of each
+#     rod, never along a face of it;
+#   - the membrane is painted to follow the rods (it reaches up each spine and dips between them), and each rod runs
+#     on well past it as a long, lighter filament trailing back, as on the real fish.
+# (name, base z, base y (the back's top there), length in px)
+# Redo round 1 (critic: the rods ended bluntly, the membrane covered too little, charcoal rods looked added on):
+# each spine now carries a thinner filament, its own child part hinged at the spine's tip and bent a further
+# FILAMENT_BEND back, the front ones longest; the membrane runs up most of each spine; the rods are the body's dark
+# olive-brown. The tallest spines are the second and third.
+# Redo round 2 (critic: the membrane stopped low, so the rods read as loose wires): the membrane plane made taller (it
+# had been cut off at y 6) so it runs about 0.72 of the way up each spine with a shallow notch between them, in a
+# lighter olive than the rods; the rods a touch lighter olive-grey; the filaments a px longer and bent further back.
+# Redo round 3 (critic: still bare wires above a low block): each section of membrane now runs from near the top of
+# one spine down to under half way up the next, in a lighter olive; the two front spines a px shorter.
+# (name, base z, base y (the back's top there), spine length px, filament length px)
+SPINES = [("spine_0", -5, 12, 8, 6), ("spine_1", -3, 12, 9, 6), ("spine_2", -1, 12, 8, 5), ("spine_3", 1, 12, 6, 4),
+          ("spine_4", 3, 13, 4, 2)]
+MEMBRANE_F = 0.7            # how far up each spine the membrane reaches
+SPINE_W = 0.35               # the rod's width across and along the fish, px
+FILAMENT_W = 0.2             # the filament's
+SWEEP = 0.6                  # radians the spines lean back (about 34 degrees)
+FILAMENT_BEND = 0.6          # radians the filaments bend further back from their spine (about 34 degrees)
+for _n, _z, _y, _l, _f in SPINES:
     PARTS[_n] = ("top_fin", (0.0, float(_y), float(_z)), 0.0)
-# The spiny dorsal leans back (a rotation about x, tips toward the tail), so its spines and filaments slant like the
-# photos' instead of standing up as a comb. The offline renderer only knows z rotations, so it is taught this one here.
-XROT = {n: -0.785 for n, _, _, _ in SPINES}
+    PARTS[_n.replace("spine", "filament")] = (_n, (0.0, float(_y - _l), float(_z)), 0.0)
+# The offline renderer only knows z rotations, so it is taught this one here.
+XROT = {n: -SWEEP for n, _, _, _, _ in SPINES}
+XROT.update({n.replace("spine", "filament"): -FILAMENT_BEND for n, _, _, _, _ in SPINES})
 
 
 def _to_world(parts, part, p):
@@ -205,30 +229,47 @@ def side_map(variant):
 
 
 # Fins: one character per pixel, rows by absolute y, columns by absolute z.
-# The membrane strip on the back (top_fin): z -5..1, y 10..11, darker, its top edge stepping down toward the tail.
-MEMB_Z0, MEMB_Y0 = -5, 10
-MEMB = [
-    "dddd...",
-    "ddddddd",
-]
-# each spine, from its base up: dark (f) and 2 px wide for the lower third, then 1 px; the top 3 px a thin, slightly
-# lighter filament (n), never a pale cap (round 3, critic: pale tips read as match heads)
+# The dorsal membrane plane (top_fin): z -5..6 (it stops short of the tail fin, which shares its plane), y 3..13, computed from the spines' lines.
+DORSAL_Z0, DORSAL_Z1, DORSAL_Y0, DORSAL_Y1 = -5, 7, 3, 14
 
 
-def spine_key(length, up, back):
-    """up: px above the base (0 = the base row); back: 0 the front column, 1 the back one."""
-    return "n" if up >= length - 2 else "f"
+def back_top(z):
+    return [c for c in COLUMNS if c[0] <= z < c[1]][0][2]
 
 
-# the soft dorsal behind it: z 2..5, low along the sloping back
-SOFT_Z0, SOFT_Y0 = 2, 10
-SOFT = [
-    "DD..",
-    "DDD.",
-    "DDDD",
-    "..DD",
-    "...D",
-]
+def dorsal_key(z, y):
+    """The membrane's colour at texel (z, y), or '.' where it is clear. Between two spines it reaches up each spine to
+    up to near its tip and slopes down to under half way up the next one; behind the last spine a low soft dorsal runs back."""
+    zc, yc = z + 0.5, y + 0.5
+    if yc > back_top(z):
+        return "."                                  # inside the body: left clear
+    tan = math.tan(SWEEP)
+    at = [(sz + (sy - yc) * tan, sy, sl) for _, sz, sy, sl, _ in SPINES]   # each spine's z at this height
+    # round 4: one clean edge, no stray texels. The top runs straight from a point MEMBRANE_F of the way up each spine
+    # to the same point on the next, so the membrane fills between the spines to there and only the tips and the
+    # filaments stand bare.
+    pts = [(sz + MEMBRANE_F * sl * math.sin(SWEEP), sy - MEMBRANE_F * sl * math.cos(SWEEP))
+           for _, sz, sy, sl, _ in SPINES]
+    if at[0][0] <= zc and zc < pts[-1][0]:
+        for (z0, y0), (z1, y1) in zip(pts, pts[1:]):
+            if z0 <= zc < z1:
+                return "d" if yc >= y0 + (y1 - y0) * (zc - z0) / (z1 - z0) else "."
+        return "d" if yc >= pts[0][1] else "."      # ahead of the first point, under the front spine
+    if pts[-1][0] <= zc < at[-1][0]:
+        return "d" if yc >= pts[-1][1] else "."     # under the last spine, below its point
+    za, ya, la = at[-1]
+    if zc >= za:
+        # the soft dorsal: two px high at the last spine, sloping down to the back's line by z 6
+        top = 2.0 * max(0.0, 1 - (zc - za) / (6.5 - za))
+        return "D" if back_top(z) - yc <= top else "."
+    return "."
+
+
+def spine_key(name):
+    """A spine rod's colour: the dark olive-brown spine, or its lighter filament."""
+    return "n" if name.startswith("filament_") else "f"
+
+
 # the anal fin under the rear: z -1..5, y 20..23 (a short spiny front, then the soft fin)
 ANAL_Z0, ANAL_Y0 = -1, 20
 ANAL = [
@@ -264,9 +305,12 @@ def body_cubes():
 
 
 FIN_CUBES = [
-    ("membrane", "top_fin", None, (0.0, 10.0, -5.0), (0, 2, 7)),
-] + [(n, n, None, (0.0, float(y - l), float(z)), (0, l, 1)) for n, z, y, l in SPINES] + [
-    ("soft_dorsal", "body", None, (0.0, 10.0, 2.0), (0, 5, 4)),
+    ("dorsal", "top_fin", None, (0.0, float(DORSAL_Y0), float(DORSAL_Z0)),
+     (0, DORSAL_Y1 - DORSAL_Y0, DORSAL_Z1 - DORSAL_Z0)),
+] + [(n, n, None, (-SPINE_W / 2, float(y - l), z - SPINE_W / 2), (SPINE_W, l, SPINE_W)) for n, z, y, l, _ in SPINES] + [
+    (n.replace("spine", "filament"), n.replace("spine", "filament"), None,
+     (-FILAMENT_W / 2, float(y - l - fl), z - FILAMENT_W / 2), (FILAMENT_W, fl, FILAMENT_W)) for n, z, y, l, fl in SPINES
+] + [
     ("anal", "body", None, (0.0, 20.0, -1.0), (0, 4, 7)),
     ("pelvic", "body", None, (0.0, 22.0, -6.0), (0, 2, 4)),
     ("caudal", "tail_fin", None, (0.0, 13.0, 7.0), (0, 7, 4)),
@@ -275,6 +319,8 @@ FIN_CUBES = [
 
 def footprint(cube):
     _, _, _, _, (w, h, d) = cube
+    if w and h and (w != int(w) or d != int(d)):
+        return int(math.ceil(2 * d + 2 * w)), int(math.ceil(d + h))      # a thin rod
     w, h, d = int(math.ceil(w)), int(math.ceil(h)), int(math.ceil(d))
     if w == 0:
         return 2 * d, h
@@ -298,6 +344,11 @@ def pack(cubes):
 
 
 CUBES = pack(body_cubes() + FIN_CUBES)
+# The offline previews can't draw the thin rods, so they stand in as 1 px planes along each rod (previews only; the
+# game draws the rods).
+PREVIEW_CUBES = [c if not c[0].startswith(("spine_", "filament_")) else
+                 (c[0], c[1], (c[2][0], c[2][1] + 1), (0.0, c[3][1], c[3][2] + c[4][2] / 2 - 0.5), (0, int(c[4][1]), 1))
+                 for c in CUBES]
 
 
 def pal(variant):
@@ -324,12 +375,10 @@ def body_colour(side, P, face, y, z, x0, y0, z0, w, h, d):
 
 def fin_colour(P, name, y, z):
     zi, yi = int(math.floor(z)), int(math.floor(y))
-    for n, sz, sy, sl in SPINES:
-        if name == n:
-            ch = spine_key(sl, sy - 1 - yi, zi - sz)
-            return CLEAR if ch == "." else P[ch]
-    table = {"membrane": (MEMB, MEMB_Z0, MEMB_Y0), "soft_dorsal": (SOFT, SOFT_Z0, SOFT_Y0),
-             "anal": (ANAL, ANAL_Z0, ANAL_Y0), "pelvic": (PELVIC, PELVIC_Z0, PELVIC_Y0),
+    if name == "dorsal":
+        ch = dorsal_key(zi, yi)
+        return CLEAR if ch == "." else P[ch]
+    table = {"anal": (ANAL, ANAL_Z0, ANAL_Y0), "pelvic": (PELVIC, PELVIC_Z0, PELVIC_Y0),
              "caudal": (CAUDAL, CAUDAL_Z0, CAUDAL_Y0)}
     if name in table:
         grid, gz, gy = table[name]
@@ -345,7 +394,15 @@ def draw_texture(variant):
     img = Image.new("RGBA", (TW, TH), CLEAR)
     owner = {}
     for cube in CUBES:
-        name, _, _, (x0, y0, z0), (w, h, d) = cube
+        name, _, (U, V), (x0, y0, z0), (w, h, d) = cube
+        if name.startswith(("spine_", "filament_")):
+            # a thin rod: its faces cover texture columns U..U+1 and rows V..V+length; painted by row
+            fw, fh = footprint(cube)
+            for r in range(fh):
+                for c in range(fw):
+                    assert owner.setdefault((U + c, V + r), name) == name, ("texture overlap", name, U + c, V + r)
+                    img.putpixel((U + c, V + r), P[spine_key(name)])
+            continue
         for face, u, v, x, y, z in sard.face_texels(cube):
             assert 0 <= u < TW and 0 <= v < TH, (name, face, u, v)
             assert owner.setdefault((u, v), name) == name, ("texture overlap", name, owner[(u, v)], u, v)
@@ -382,7 +439,8 @@ def write_java():
         else:
             pose = "PartPose.offset(%s, %s, %s)" % (fnum(qx), fnum(qy), fnum(qz))
         holder = "root" if parent is None else parent.replace("_", "") + "Part"
-        decl = "PartDefinition %sPart = " % part.replace("_", "") if part == "top_fin" else ""
+        has_children = any(q[0] == part for q in PARTS.values())
+        decl = "PartDefinition %sPart = " % part.replace("_", "") if has_children else ""
         lines.append("        %s%s.addOrReplaceChild(\"%s\", %s,\n            %s);" % (decl, holder, part, builder, pose))
     body = "\n".join(lines)
     src = """package com.maltaminecraft.mimcontent.client.fish;
@@ -449,11 +507,11 @@ def write_candidates():
     for v in PALETTES:
         tex = draw_texture(v)
         tex.save(os.path.join(CAND, "texture_%s.png" % v))
-        views = [on_bg(sard.render(CUBES, PARTS, tex, view, 12)) for view in ("side", "three", "top")]
+        views = [on_bg(sard.render(PREVIEW_CUBES, PARTS, tex, view, 12)) for view in ("side", "three", "top")]
         hstack(views, bottom=False).save(os.path.join(CAND, "preview_%s.png" % v))
     if cod:
         cc = sard.vanilla_cubes(sard.COD_CUBES)
-        row = [on_bg(sard.render(CUBES, PARTS, draw_texture(CHOSEN), "side", 12)),
+        row = [on_bg(sard.render(PREVIEW_CUBES, PARTS, draw_texture(CHOSEN), "side", 12)),
                on_bg(sard.render(cc, sard.COD_PARTS, cod, "side", 12))]
         hstack(row).save(os.path.join(CAND, "scale_vs_cod.png"))
 
@@ -498,13 +556,19 @@ def sheet(shots_dir):
             found = sorted(glob.glob(os.path.join(shots_dir, "*" + n + ".png")))
             return Image.open(found[-1]).convert("RGBA") if found else None
         names = ["fish-pixxi_san_pietru-side", "fish-pixxi_san_pietru-three-quarter", "fish-pixxi_san_pietru-top",
-                 "fish-pixxi_san_pietru-beside-cod", "fish-pixxi_san_pietru-on-land", "fish-pixxi_san_pietru-lineup"]
+                 "fish-pixxi_san_pietru-beside-cod", "fish-pixxi_san_pietru-on-land", "fish-pixxi_san_pietru-lineup",
+                 "fish-pixxi_san_pietru-spines-front", "fish-pixxi_san_pietru-spines-side",
+                 "fish-pixxi_san_pietru-spines-behind", "fish-pixxi_san_pietru-spines-above"]
         present = [(n, shot(n)) for n in names]
         present = [(n, i) for n, i in present if i]
         if present:
             title("In the game: side, three-quarter, top; beside vanilla cod, on land, lineup (this fish, cod, cerna, small tonn)")
             row([i for _, i in present[:3]], h=330)
-            row([i for _, i in present[3:]], h=330)
+            row([i for _, i in present[3:6]], h=330)
+            if len(present) > 6:
+                title("The dorsal spines up close: front, side, behind, above")
+                row([i for _, i in present[6:8]], h=440)
+                row([i for _, i in present[8:]], h=440)
     H = sum(b.height for b in blocks)
     out = Image.new("RGBA", (W, H), (72, 72, 72, 255))
     y = 0

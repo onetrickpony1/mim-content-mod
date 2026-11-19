@@ -1,15 +1,5 @@
 {
   "type": "minecraft:entity",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mimcontent:mola_mola"
-        }
-      ]
-    }
-  ],
+  "pools": [],
   "random_sequence": "mimcontent:entities/mola_mola"
 }

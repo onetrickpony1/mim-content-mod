@@ -615,6 +615,8 @@ def main(ids):
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(java_model(fid, fish, uvs))
         for kind, make in (("_bucket", icon_bucket), ("_spawn_egg", icon_egg)):
+            if kind == "_bucket" and fid == "mola_mola":
+                continue    # no mola bucket: it can't be caught (owner 2026-11-19)
             out = os.path.join(RES, "textures/item", fid + kind + ".png")
             if fresh(out):
                 icon = make(fish)

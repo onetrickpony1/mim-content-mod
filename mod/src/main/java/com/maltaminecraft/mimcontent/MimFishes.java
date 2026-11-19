@@ -54,7 +54,7 @@ import net.minecraft.world.level.material.Fluids;
  * Sizes are the real fish scaled down the way vanilla scales cod and salmon. Art is placeholder for now.
  */
 public final class MimFishes {
-    /** One tier A fish: its live mob, the item it drops (null for the żiemel), its bucket and its spawn egg. */
+    /** One tier A fish: its live mob, the item it drops (null for the żiemel), its bucket (null for the mola mola) and its spawn egg. */
     public record Fish(String id, EntityType<? extends AbstractFish> type, Item item, Item bucket, Item spawnEgg) {
     }
 
@@ -103,8 +103,9 @@ public final class MimFishes {
     // tall fin tip to fin tip (a mature fish, life size like the tonn and shark); slow, harmless, basks at the surface
     // (MolaFish). Extremely rare (owner 2026-11-18): weight 1, alone, and MolaFish's spawn rule lets only one try in
     // 400 through; jellyfish meat will be its bait once fishing is overhauled. The body box (1.3 x 1.8) holds the disc
-    // without the fins. Drops itself (a proposal, waiting for the owner).
-    public static final Fish MOLA_MOLA = mola("mola_mola", 1.3F, 1.8F, 20.0, () -> MimContent.item("mola_mola", Item::new, new Item.Properties()));
+    // without the fins. Found, never captured (owner 2026-11-19): no bucket, no drop (its loot table is empty), 40
+    // health with every hit capped, and it escapes when hurt (MolaFish). Its item stays registered, for fishing later.
+    public static final Fish MOLA_MOLA = mola("mola_mola", 1.3F, 1.8F, MolaFish.HEALTH, () -> MimContent.item("mola_mola", Item::new, new Item.Properties()));
 
     // ---- The night job (owner 2026-11-18, "Night job - the rest of the fish, Claude decides"): twelve more fish, every
     // choice logged for the owner in docs/Creatures and Plants/Night log/<id>.md. Placeholder art. Sizes are bigger
@@ -142,8 +143,9 @@ public final class MimFishes {
     public static final Fish GALLINELLA = bottom("gallinella", 0.6F, 0.35F, 5.0, 2, 0.7, new Habit(Floor.SOFT, 0.05, 0.5, 0.6, 40, 300, 60, 200, true, false, null),
         () -> MimContent.item("gallinella", Item::new, new Item.Properties()));
     // The lionfish (Pterois miles, invasive since 2016): slow (0.5), bold (doesn't shy), over rock; its spines sting
-    // what touches or hits it (1 heart and Poison for 6 seconds). Rare.
-    public static final Fish LIONFISH = bottom("lionfish", 0.5F, 0.55F, 4.0, 1, 0.5, new Habit(Floor.ROCK, 0.3, 2.0, 0.6, 80, 400, 100, 300, false, false,
+    // what touches or hits it (1 heart and Poison for 6 seconds). Rare. It hovers: short, slow drifts every 2 seconds
+    // or so (swimEvery 40, as the gallinella); with 80 a lone one, not fleeing anyone, sat still most of the time.
+    public static final Fish LIONFISH = bottom("lionfish", 0.5F, 0.55F, 4.0, 1, 0.5, new Habit(Floor.ROCK, 0.3, 2.0, 0.6, 40, 400, 100, 300, false, false,
         new Sting(2.0F, 6, 40)), () -> MimContent.item("lionfish", Item::new, new Item.Properties()));
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
@@ -232,7 +234,7 @@ public final class MimFishes {
         // Besides the mod's own tab: spawn eggs in vanilla's Spawn Eggs tab, buckets beside vanilla's fish buckets.
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(out -> ALL.forEach(f -> out.accept(f.spawnEgg())));
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(out ->
-            out.insertAfter(Items.TROPICAL_FISH_BUCKET, ALL.stream().map(Fish::bucket).toArray(Item[]::new)));
+            out.insertAfter(Items.TROPICAL_FISH_BUCKET, ALL.stream().map(Fish::bucket).filter(java.util.Objects::nonNull).toArray(Item[]::new)));
     }
 
     /** How a schooling fish is made: vanilla's entity factory plus the bucket and the school size. */
@@ -338,24 +340,29 @@ public final class MimFishes {
         return reason == EntitySpawnReason.SPAWNER || reason == EntitySpawnReason.TRIAL_SPAWNER || pos.getY() <= level.getSeaLevel() - MIDWATER_DEPTH;
     }
 
-    /** The ocean sunfish: a slow solitary fish of its own kind (MolaFish) with its own, extremely rare, spawn rule. */
+    /**
+     * The ocean sunfish: a slow solitary fish of its own kind (MolaFish) with its own, extremely rare, spawn rule. It
+     * has no bucket (owner 2026-11-19: found, not captured), so its Fish's bucket is null.
+     */
     private static Fish mola(String id, float width, float height, double health, Supplier<Item> item) {
-        Item[] bucket = new Item[1];
         EntityType<MolaFish> type = MimContent.entity(id, FabricEntityType.Builder.<MolaFish>createMob(
-                (t, level) -> new MolaFish(t, level, () -> bucket[0], 1), MobCategory.WATER_AMBIENT,
+                (t, level) -> new MolaFish(t, level, () -> null, 1), MobCategory.WATER_AMBIENT,
                 b -> b.spawnPlacement(SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, MolaFish::checkMolaSpawnRules)
                     .defaultAttributes(() -> AbstractFish.createAttributes().add(Attributes.MAX_HEALTH, health)
                         .add(Attributes.MOVEMENT_SPEED, MolaFish.SPEED)))
             .sized(width, height).eyeHeight(height * 0.5F).clientTrackingRange(6));
-        return finish(id, type, bucket, item);
+        return finish(id, type, null, item);
     }
 
+    /** Registers the fish's item, its bucket (unless bucket is null: the mola has none) and its spawn egg. */
     private static Fish finish(String id, EntityType<? extends AbstractFish> type, Item[] bucket, Supplier<Item> item) {
         Item drop = item.get();
-        bucket[0] = MimContent.item(id + "_bucket", p -> new MobBucketItem(type, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, p),
-            new Item.Properties().stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY));
+        if (bucket != null) {
+            bucket[0] = MimContent.item(id + "_bucket", p -> new MobBucketItem(type, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, p),
+                new Item.Properties().stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY));
+        }
         Item egg = MimContent.item(id + "_spawn_egg", SpawnEggItem::new, new Item.Properties().spawnEgg(type));
-        Fish fish = new Fish(id, type, drop, bucket[0], egg);
+        Fish fish = new Fish(id, type, drop, bucket == null ? null : bucket[0], egg);
         ALL.add(fish);
         return fish;
     }

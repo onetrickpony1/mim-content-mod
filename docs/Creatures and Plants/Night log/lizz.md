@@ -51,6 +51,56 @@ Photos used (reference only, free licences, list in `art/references/fish_lizz_re
   - "slot 5: bucket with a slender silvery blue-grey fish in it, pointed snout and black eye, lying on a diagonal (looks like a needlefish or garfish, or some other thin silver fish)"
 - Left as suggestions (not done): a whiter belly edge and a softer centre stripe, an even darker back so it stands further from the anchovy bucket, a tapered head top.
 
+**Bucket redo (2026-11-19, after the owner's review)**
+- The owner: "barracuda bucket fails looks like a duck or seehorse with long nose" ([[2026-11-19 Lizz bucket redo]]). The upright head on a thin neck read as a bird's bill.
+- New pose: the whole long body lies across the bucket mouth at a low slant, the head at the upper left just over the rim and the body running down to the right into the water. No neck.
+- Candidates: A (full-depth body, one dorsal fin), B (the forked tail breaking the water at the right), C (slimmer, both dorsals). Installed: B.
+- Round 1 critic: PASS (conditional), B best; "None of the three reads as one now" (a bird, duck or seahorse). Fixes applied: a darker continuous back line, two separate tail prongs, bars, a grey jaw tip.
+- Round 2 critic: PASS (conditional); the tall tail column could look like a resting gull. Fixed: a short "<" fork, one straight dark back, darker bars, less white.
+- Round 3 critic: PASS; "Bird / duck / seahorse read: No." Not applied (for the owner to decide): sink the pale back half under the water so it reads slimmer, a lighter pixel above the eye, slimmer tail lobes.
+- Blind readers, round 3 (installed version), first lines word for word:
+  - "slot 3: a bucket of water with a pale silver-white fish in it" (bird, duck or seahorse: "No"; it could not make out the eye)
+  - "slot 5: bucket of a pale silver-grey fish (a silvery fish like a bream or mullet)" (bird, duck or seahorse: "It does not look like a bird, a duck or a seahorse")
+  - "slot 2: water bucket holding a pale silvery-white fish (looks like a silver sea fish such as a bream or mullet type, not a specific vanilla fish)" (bird, duck or seahorse: "No, not really"; the raised tail could "just hint at a duck's tail")
+- Earlier redo rounds' readers all said a fish, none a bird or seahorse; two said the head end could pass for a small bird's head "for a moment".
+- Nobody named it a barracuda: they called it a silver fish, bream, mullet or mackerel.
+
+**Bucket, second redo (2026-11-19)**
+- The owner on redo B: "shape of the lizz in the bucket is still off, its borders are fuzzy its hard to tell what it is really" ([[2026-11-19 Lizz bucket B fails - fuzzy outline]]).
+- Studied the cod, kavall and cerna buckets at 8x: a solid fish with a darker edge, sitting in the bucket mouth.
+- New fish: a tapered spindle wrapped in a near-black outline, a brighter blue slate back, a mid-silver flank (darker than the bucket's grey), one white highlight, the jaw jutting at the lower left and a forked tail at the right.
+- Round 1 (an outlined but level, thin fish): FAIL. "a parallel-sided tube", no jaw. Readers: "only partly" clear, "only fairly readable".
+- Round 2 (a row deeper, two-pixel tail lobes): FAIL. "reads as a grey-blue fish-shaped bar or log". Readers: still "only partly" clear; the dark back and tail fade into the slot.
+- Round 3 (the tapered, outlined spindle): FAIL but "close to a pass"; "The body's outline is crisp", it reads as a fish and not a bird, duck, seahorse or log, but as a generic torpedo; the tail has no outline and the snout end is open. B (the back sloping toward the tail) is the better one and is installed.
+- Readers, round 3, first lines word for word:
+  - "slot 2: a bucket of water with a slim blue-grey fish lying across the top..." (outline: "mostly clear")
+  - "slot 4: a bucket holding a slender blue-grey fish, lying flat across the rim" (outline: "Only partly")
+  - "slot 6: a bucket holding a silvery blue-grey fish (long and plain, dark eye at the left, tail to the right...)" (outline: "partly clear")
+- Not applied (3 rounds used): outline the tail as a dark fork, close and point the snout, taper the tail stalk more.
+
+- Extra round (coordinator: apply round 3's fixes to B, one more critic): the tail now a dark-outlined fork, the snout closed with a dark outline, the stalk tapered. Critic: FAIL, "close": "Crisp" outline and colours pass, but the head is blunt, the jaw doesn't jut (the belly line runs straight to the tip), and the lower tail prong merges into the belly line, so it reads as a generic grey fish with a slight loaf look.
+- Readers, extra round, first lines word for word:
+  - "slot 4: a bucket of fish holding a slim, silvery blue-grey fish (it looks most like a mackerel or horse mackerel, but I can't be sure which kind)" (outline: "Only partly")
+  - "slot 2: a bucket holding a pale blue-grey fish, possibly a small shark or a grey mullet-type fish, though the species is hard to name" (outline: "Not really"; "a low grey dome or blob", could be "a cap or a lid")
+  - "slot 5: water bucket holding a flat, silvery blue-grey fish (it looks like a broad, flattened fish: maybe a mola/sunfish or a ray-like shape; I can't name the kind with confidence)" (outline: "Only partly"; "a lid or a flat blob")
+- Not applied: separate the lower tail lobe from the belly line, point the snout so the jaw juts, move the white highlight up and back off the belly row.
+
+## Bucket, option 2 (rebuilt from the accepted icon)
+The owner picked option 2: the bucket is the accepted icon's fish (`textures/item/lizz.png`) turned so the head points up-left, with the icon's own pixels, outline, palette, jaw, bars and tail, shortened to fit rows 0-5. The script now builds it straight from the icon grid, so the two stay the same fish. The icon sits beside it on the sheet.
+- Round 1 (the icon's head rising, the rest under the water): FAIL. Only a head-and-neck stub showed and it read as a bird head. Readers: "a thin silvery-blue fish (a needlefish or garfish type)", "a small slim silvery grey-blue fish", "a thin pale silvery-grey fish"; all a little bird-like.
+- Round 2 (the head joined straight to the icon's own back half, the tail breaking the water at the right): PASS. "It reads as the icon's fish sitting in the bucket, not a redesign", "does not read as a duck or seahorse". Fixes asked: fork the tail and let the back half keep falling toward the lower right.
+- Readers, round 2, first lines word for word:
+  - "slot 3: a water bucket with a pale silvery-blue fish sticking out. It looks like a slim silver fish, perhaps a garfish or mackerel type, but I can't name the species with confidence." (outline "Only partly clear"; bird "a little")
+  - "slot 6: bucket of water with a pale silver-blue fish (thin, silvery fish; I can't tell the exact species)" (outline "only partly clear"; "A little like a bird")
+  - "slot 1: bucket of water with a pale silvery-blue fish in it" (outline "only partly clear"; a "weak" gull-head look)
+- Round 3 (the back half one row lower, from the icon's rows 9-11, with the second dorsal and a notched tail): FAIL "but only just", "the best version so far and the closest to the icon". It reads as a silver fish, not a duck or seahorse, but the back half still lies level on the rim instead of going into the water, and the one-pixel notch is lost at 1x.
+- Readers, round 3, first lines word for word:
+  - "slot 4: bucket of fish: a slim silver-white fish (sardine/mackerel type), head at top-left, tail at right" (outline "only fair"; head "faintly" bird-like)
+  - "slot 2: a bucket of water holding a pale silver-white slender fish (it looks like a needlefish or a garfish-type fish)" (outline "only fairly clear"; bird "slightly")
+  - "slot 5: a water bucket holding a pale silver-grey fish (slim, silvery fish, maybe a garfish or a mackerel-type; I can't tell the species)" (outline "not clear"; "somewhat like a bird")
+- Installed: A (round 3's version). B on the sheet is round 2's passed version. The owner decides between them.
+- Not applied (3 rounds used): end the fish inside x14, drop the back half another row into the water, and a wider V tail at (14,4) and (14,6) with (14,5) left open. These go past the icon's own pixels.
+
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
 

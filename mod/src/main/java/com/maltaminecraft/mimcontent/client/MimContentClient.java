@@ -95,8 +95,9 @@ public class MimContentClient implements ClientModInitializer {
         // the sawt mostly lies still on the sand: a small wiggle
         fish(MimFishes.SAWT, SawtModel::createBodyLayer, SawtModel::new, 0.15F, 2.0F, 0.1F);
         fish(MimFishes.PIXXI_SAN_PIETRU, PixxiSanPietruModel::createBodyLayer, PixxiSanPietruModel::new, 0.3F, 2.0F, 0.1F);
-        // the petriċa and the lingwata are flat: no body wiggle, and they lie flat on land (no lift needed)
-        fish(MimFishes.PETRICA, PetricaModel::createBodyLayer, PetricaModel::new, 0.5F, 0.0F, 0.0F, true);
+        // the petriċa and the lingwata: no body wiggle, and they lie flat on land (no lift needed); the petriċa is a
+        // normal deep fish in the water but flattened on land, its height squashed to 0.45 (owner 2026-11-19)
+        fishSquashed(MimFishes.PETRICA, PetricaModel::createBodyLayer, PetricaModel::new, 0.5F, 0.0F, 0.0F, 0.45F);
         fish(MimFishes.LINGWATA, LingwataModel::createBodyLayer, LingwataModel::new, 0.35F, 0.0F, 0.0F, true);
         fish(MimFishes.HMAR, HmarModel::createBodyLayer, HmarModel::new, 0.3F, 3.0F, 0.125F);
         fish(MimFishes.GALLINELLA, GallinellaModel::createBodyLayer, GallinellaModel::new, 0.3F, 2.5F, 0.15625F);
@@ -136,6 +137,15 @@ public class MimContentClient implements ClientModInitializer {
             FishRenderer renderer = new FishRenderer(context, model.apply(context.bakeLayer(location)), fish.id(), shadow, wiggle, landLift, liesFlat);
             return textures == null ? renderer : renderer.withTextures(textures);
         });
+    }
+
+    /** A flat fish that is deep in the water but lies flattened on land: its height on land is squashed to landSquash. */
+    private static void fishSquashed(MimFishes.Fish fish, net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry.TexturedLayerDefinitionProvider layer,
+                                     Function<ModelPart, FishModel> model, float shadow, float wiggle, float landLift, float landSquash) {
+        ModelLayerLocation location = new ModelLayerLocation(MimContent.id("fish/" + fish.id()), "main");
+        ModelLayerRegistry.registerModelLayer(location, layer);
+        EntityRenderers.register(fish.type(), context ->
+            new FishRenderer(context, model.apply(context.bakeLayer(location)), fish.id(), shadow, wiggle, landLift, true).withLandSquash(landSquash));
     }
 
     private static void jelly(MimJellyfish.Jelly jelly, net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry.TexturedLayerDefinitionProvider layer,

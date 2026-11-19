@@ -7,7 +7,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Name:** **Petriċa**, with the ċ (id `petrica`).
 
 ## Size
-- **Size in game:** 1.75 blocks long (28 px), 1.1 blocks wide across the head and its fringe, flat (the head 5 px deep). Body box 0.9 x 0.35 (unchanged). The art maker made it longer than the placeholder (1.38 blocks) after critics found it small beside the ċerna.
+- **Size in game:** 1.88 blocks long (30 px), 0.9 blocks wide across the head and jaw, 0.81 tall with its rod (the redo; the night job's flat version was 1.75 long and 5 px deep). On land it is squashed to 45% of its height. Body box 0.9 x 0.35 (unchanged).
 - **Why:** anglerfish get big (the larger kind past a metre†). Like the tonn and the shark, it is kept near the size of a big one: a wide, flat head is its look.
 
 ## Behaviour, spawns, rarity
@@ -20,7 +20,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 ## Art
 Made overnight by a maker, judged by a fresh critic each round from pictures only. Photos: free Wikimedia Commons ones (licences in `art/references/fish_petrica_refonly/list.tsv`), colour from landed fish (Norway, a Mediterranean *L. budegassa* at an Algerian market) and a museum fish labelled "Frequent in Maltese waters".
 
-**3D model** (`art/src/fish_petrica_model.py`): **gave up** after 8 of 8 rounds; the last version is installed.
+**3D model, night job** (`art/src/fish_petrica_model.py`): **gave up** after 8 of 8 rounds; the owner then asked for a redo (below).
 - Three paint jobs tried: A warm mottled brown, B olive brown (the Mediterranean kind), C A with bigger blotches. **A chosen**: the photos of the fish out of water are warm brown.
 - **Looks:** a huge, flat head 16 px across (18 with its fringe), nearly half the fish, 5 px deep in the middle stepping down to a 1 px rim, its corners cut so it isn't a square. The lower jaw juts out 1 px with a pale lip, and the gape is one straight dark line right across the front, never curved. Small eyes sit near the head's edges on top, each a dark pupil in a light-brown ring. The rod stands right behind the upper lip, leaning forward, 1 px thin, with a small dull flap at its tip (no glow). Pale skin flaps fringe both sides of the head and the lower jaw. The body tapers 9, 5, 3 px wide and 3, 2, 2 px deep to a small fan tail that sways. Fan pectoral fins lie flat, swept back, at the body's sides, and a low soft fin sits on the back near the tail.
 - **Colours:** back #94704a, light #c8a070, dark blotches #5a3c28, ochre blotches #e0b878, cream belly #d8c8aa, gape #1a120c, eye #0c0806. They are set a third lighter than the photos, because under water it went near-black beside the cod.
@@ -30,6 +30,20 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - **Left for the owner:** whether the head-on view (two eyes above a straight mouth, as on the real fish) reads too much like a face; the back's darkness; a bigger fish (rounds 5 and 8 asked for 1.3-1.5x).
 - After round 8 the rod was moved onto its pivot (it had been left 2 px behind it, which lifted the flap to 9 px). The fish now stands at most 7 px tall, so it lies flat on land as the fish test expects. The look is unchanged and was not re-judged.
 - A new review shot, `fish-petrica-lineup` (with `-lineup-above` and close-ups `-close-three-quarter`, `-close-top`, `-close-front`), shows it resting on the floor beside a cod, the ċerna and a small tonn.
+
+**3D model redo** (2026-11-19, daytime; owner: "petrica which looks absolutely nothing like an anglerfish. pertricia on the floor is close, but it only really looks that flat OUT of the water. in the water it has a normal fish shape"): **gave up** after 8 of 8 critic rounds; round 8 ("FAIL (narrowly)") is installed.
+- Drawn from photos of the live fish in aquariums (Norway, head on; Finisterrae, resting on sand) and a side drawing of *L. budegassa*, all from Wikimedia Commons (`list.tsv`).
+- **In the water, a normal fish's depth:** a broad head 14 px wide and 8 deep with bevelled top and front edges; the body deep behind it, narrowing in 3 steps to a squared tail fin with a darker edge; 1.88 blocks long, 0.81 tall with the rod.
+- **Mouth:** one dark gape line right across; the lower jaw juts 2 px and is 1 px wider each side, with a pale lip edge and a few short uneven teeth standing on it.
+- **Rod and spine:** a 1 px rod on the snout with a ragged fleshy flap (no glow), a shorter second spine behind it leaning back.
+- **Fins and flaps:** big pectoral fans on short arms, angled out and down; a low soft second dorsal fin; ragged light and dark skin flaps along the head's lower sides.
+- **Eyes:** small and dark, half sunk on top of the head near its edges, a pale pixel beside and behind each.
+- **On land it lies flattened:** squashed to 45% of its height (new in the code: `FishRenderer.withLandSquash`, with the hit boxes squashed the same way in `FishShape`; the test checks the two agree, and the land check still wants it no more than 7 px thick: it is about 6).
+- Paint A (warm mottled brown) was best in every round; B (olive) washed out to grey in the water, C read pink.
+- What the critics said, round by round: 1 a box with a radiator grille; 2 a crate, the head no deeper than the body; 3 a tadpole, the yellow eyes a frog face; 4 a ziggurat or tank turret, white side tabs like a comb; 5 a smiley mark on the head, the jaw a white tray; 6 a flat crate from the side; 7 a stepped brick, the lure a mallet; 8 "FAIL (narrowly)": "the side view now reads as a monkfish", but from three-quarter the head still reads as a stacked box and from the front as a toad face.
+- The critics kept contradicting each other (round 4 said drop the stacked tiers, round 6 asked for a dome on top, round 8 for a narrower top step again; rounds 3 and 6 asked for gold eye rims, round 8 called the rim googly).
+- **Left for the owner:** whether the head reads as an anglerfish's or a box; whether the head-on view is too much of a face; the squash on land (one critic wanted it flatter).
+- The icon and bucket were not changed (the owner passed them). They still fit: the icon is the landed fish from above, the bucket the head-on mouth.
 
 **Item icon** (`art/src/fish_petrica_icon.py`): **passed in round 6** of 8.
 - The caught fish seen from above, as it lies on a market slab: head at the lower left, tail at the upper right, like vanilla's fish.

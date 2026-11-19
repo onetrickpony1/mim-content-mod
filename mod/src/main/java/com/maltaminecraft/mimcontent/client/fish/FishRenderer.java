@@ -8,7 +8,10 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.animal.fish.AbstractFish;
 import org.jspecify.annotations.Nullable;
@@ -27,6 +30,8 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
     private final boolean liesFlat;
     /** A tall fish's shift back along its height when it lies on its side, in blocks (FishShape's sideShift). */
     private float sideShift;
+    /** A flat fish's height on land, as a share of its height in water (FishShape's landSquash); 1 for most. */
+    private float landSquash = 1.0F;
     /** Picks the texture for each fish (a fish with versions), or null for the one texture. */
     private @Nullable Function<AbstractFish, Identifier> textures;
 
@@ -35,6 +40,8 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
         public @Nullable Identifier texture;
         /** The mola mola lying on its side at the surface (MolaFish): drawn on its side, though in the water. */
         public boolean basking;
+        /** How opaque it is drawn: below 1 while a mola mola fades out at the end of its escape (MolaFish). */
+        public float alpha = 1.0F;
     }
 
     /**
@@ -75,6 +82,20 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
         return sideShift;
     }
 
+    /**
+     * A flat fish that is deep in the water but lies flattened on land (the petriċa: "it only really looks that flat OUT
+     * of the water"): on land its height is squashed to this share, from the ground up. FishShape's landSquash copies
+     * it (the smoke test checks).
+     */
+    public FishRenderer withLandSquash(float squash) {
+        this.landSquash = squash;
+        return this;
+    }
+
+    public float landSquash() {
+        return landSquash;
+    }
+
     /** The texture this renderer draws the fish with. */
     public Identifier textureFor(AbstractFish fish) {
         return textures == null ? texture : textures.apply(fish);
@@ -106,7 +127,29 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
         if (state instanceof FishRenderState fishState) {
             fishState.texture = textureFor(fish);
             fishState.basking = fish instanceof MolaFish mola && mola.isBasking();
+            fishState.alpha = fish instanceof MolaFish mola ? mola.fadeAlpha(partialTick) : 1.0F;
         }
+    }
+
+    /** A fading mola mola is drawn see-through, its alpha falling to nothing. */
+    @Override
+    protected @Nullable RenderType getRenderType(LivingEntityRenderState state, boolean bodyVisible, boolean translucent, boolean glowing) {
+        if (bodyVisible && state instanceof FishRenderState fish && fish.alpha < 1.0F) {
+            return RenderTypes.entityTranslucent(getTextureLocation(state));
+        }
+        return super.getRenderType(state, bodyVisible, translucent, glowing);
+    }
+
+    @Override
+    protected int getModelTint(LivingEntityRenderState state) {
+        int tint = super.getModelTint(state);
+        return state instanceof FishRenderState fish && fish.alpha < 1.0F ? ARGB.multiplyAlpha(tint, fish.alpha) : tint;
+    }
+
+    @Override
+    protected float getShadowRadius(LivingEntityRenderState state) {
+        float radius = super.getShadowRadius(state);
+        return state instanceof FishRenderState fish ? radius * fish.alpha : radius;
     }
 
     @Override
@@ -118,6 +161,9 @@ public class FishRenderer extends MobRenderer<AbstractFish, LivingEntityRenderSt
         }
         if (!state.isInWater && liesFlat) {
             poseStack.translate(0.0F, landLift, 0.0F);
+            if (landSquash != 1.0F) {
+                poseStack.scale(1.0F, landSquash, 1.0F);
+            }
         } else if (!state.isInWater || basking) {
             poseStack.translate(0.1F, landLift, -0.1F);
             // basking (the mola mola) it lies a little off flat, BASK_TILT degrees, so its upper fin breaks the

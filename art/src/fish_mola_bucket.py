@@ -1,5 +1,9 @@
 """Bucket of mola mola (ocean sunfish, "Pixxiluna"): the fish layer of the item icon (16 x 16), 2026-11-18.
 
+RETIRED 2026-11-19: the mola can't be caught in a bucket (docs/Decisions/2026-11-19 Mola mola - can be found, not
+captured; escapes when hurt; basks in the sun.md), so the mod has no mola bucket. The script is kept for history: a
+run still checks the candidates and writes the review sheet with --sheet, but no longer installs anything in the mod.
+
 Made on the night job (docs/Decisions/2026-11-18 Night job - the rest of the fish, Claude decides.md): an independent
 critic's PASS stands in for the owner's OK tonight; the creative choices are logged in
 docs/Creatures and Plants/Night log/mola_mola.md for the owner's morning review.
@@ -34,8 +38,8 @@ narrower round dome with the fin apart behind.  4. D: critic PASS; blind readers
 "Bucket of Cod", one saw the fin as a tail -> E, the fin grown out of the dome's back.  5. E: critic PASS, the pick.
 Blind reads of E, alone among vanilla items: "Bucket of Mola Mola (Sunfish)" once, a plain grey fish twice.
 
-Writes: mod/src/main/resources/assets/mimcontent/textures/item/mola_mola_bucket.png (the PICK, byte-identical on
-rerun). With --sheet it also writes the review sheet art/candidates/fish_mola_bucket.png (the candidates as players
+Wrote (until retired): mod/src/main/resources/assets/mimcontent/textures/item/mola_mola_bucket.png (the PICK,
+byte-identical on rerun); that file is now removed from the mod. With --sheet it also writes the review sheet art/candidates/fish_mola_bucket.png (the candidates as players
 see them, this layer over vanilla's cod_bucket, at 8x, 2x and 1x beside vanilla's cod and pufferfish buckets and the
 accepted cerna, boll and skorfna buckets; the layers alone; measure.py numbers; the offline hotbar previews).
 Run:    art/.venv/bin/python art/src/fish_mola_bucket.py [--sheet]
@@ -363,7 +367,7 @@ if __name__ == "__main__":
         check_rim(lay, os.path.join(VANILLA, "cod_bucket.png"), fish_over(lay))
         composite(lay).save(cand_file(name), optimize=False)
     print(f"cover ok: all {n} cod pixels covered, 0 pixels identical to vanilla (all candidates)")
-    build(CANDIDATES[PICK]).save(OUT, optimize=False)
-    print("wrote", os.path.relpath(OUT, ROOT), f"(candidate {PICK})")
+    # retired 2026-11-19 (no mola bucket in the mod): the pick is no longer written to OUT
+    print("retired: the mola has no bucket; nothing installed (pick was candidate", PICK + ")")
     if "--sheet" in sys.argv[1:]:
         sheet()

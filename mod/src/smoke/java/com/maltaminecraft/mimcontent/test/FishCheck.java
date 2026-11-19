@@ -123,7 +123,8 @@ public class FishCheck implements FabricClientGameTest {
                 server.runCommand("kill @e[type=mimcontent:" + f.id() + "]");
                 context.waitTicks(5);
                 String drops = drops(server, pool);
-                String expected = f.item() == null ? "" : BuiltInRegistries.ITEM.getKey(red ? MimFishes.SKORFNA_RED : f.item()) + " x1";
+                // the mola mola drops nothing (owner 2026-11-19), though its item stays registered for fishing later
+                String expected = f.item() == null || f == MimFishes.MOLA_MOLA ? "" : BuiltInRegistries.ITEM.getKey(red ? MimFishes.SKORFNA_RED : f.item()) + " x1";
                 log(f.id() + " dropped [" + drops + "]");
                 check(drops.equals(expected), f.id() + " should drop [" + expected + "], dropped [" + drops + "]");
             }
@@ -158,20 +159,31 @@ public class FishCheck implements FabricClientGameTest {
                     player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WATER_BUCKET));
                     fish.interact(player, InteractionHand.MAIN_HAND, fish.position());
                     ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
-                    if (!held.is(f.bucket())) {
-                        return "bucketing gave " + BuiltInRegistries.ITEM.getKey(held.getItem());
+                    if (f.bucket() == null) {
+                        // the mola mola can't be caught (owner 2026-11-19): the water bucket stays as it was, the fish in the water
+                        if (!held.is(Items.WATER_BUCKET) || held.getCount() != 1) {
+                            return "a water bucket on it left " + held.getCount() + " " + BuiltInRegistries.ITEM.getKey(held.getItem());
+                        }
+                        if (!fish.isAlive() || fish.isRemoved()) {
+                            return "the fish left the water after a water bucket";
+                        }
+                        fish.discard();
+                    } else {
+                        if (!held.is(f.bucket())) {
+                            return "bucketing gave " + BuiltInRegistries.ITEM.getKey(held.getItem());
+                        }
+                        if (fish.isAlive() && !fish.isRemoved()) {
+                            return "the fish stayed in the water after bucketing";
+                        }
+                        // let it out again
+                        BlockPos out = BlockPos.containing(x + 3.5, y - 3, z + 3.5);
+                        ((MobBucketItem) held.getItem()).checkExtraContent(player, level, held, out);
+                        List<? extends AbstractFish> back = level.getEntities(f.type(), new AABB(out).inflate(1.5), e -> true);
+                        if (back.size() != 1 || !back.getFirst().fromBucket()) {
+                            return "emptying the bucket gave " + back.size() + " fish";
+                        }
+                        back.getFirst().discard();
                     }
-                    if (fish.isAlive() && !fish.isRemoved()) {
-                        return "the fish stayed in the water after bucketing";
-                    }
-                    // let it out again
-                    BlockPos out = BlockPos.containing(x + 3.5, y - 3, z + 3.5);
-                    ((MobBucketItem) held.getItem()).checkExtraContent(player, level, held, out);
-                    List<? extends AbstractFish> back = level.getEntities(f.type(), new AABB(out).inflate(1.5), e -> true);
-                    if (back.size() != 1 || !back.getFirst().fromBucket()) {
-                        return "emptying the bucket gave " + back.size() + " fish";
-                    }
-                    back.getFirst().discard();
                     // the spawn egg, used on the pool floor
                     player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(f.spawnEgg()));
                     BlockPos floor = BlockPos.containing(x - 3.5, y - 6, z - 3.5);
@@ -272,6 +284,12 @@ public class FishCheck implements FabricClientGameTest {
             AABB pool = new AABB(x - 9, y - 7, z - 9, x + 10, y + 5, z + 10);
             swims(context, server, x, y, z, pool, List.of(f));
             server.runCommand("kill @e[type=!minecraft:player]");
+            if (f == MimFishes.MOLA_MOLA) {
+                // its behaviour checks, as in the whole check (no bucket, capped hits, the escape, basking only in the sun)
+                mola(context, server, x, y, z);
+                server.runCommand("gamemode creative @a");
+                server.runCommand("kill @e[type=!minecraft:player]");
+            }
             FishHitboxCheck.runOne(context, f);
 
             // the shots, on the ground near spawn as in shots()
@@ -294,8 +312,10 @@ public class FishCheck implements FabricClientGameTest {
             if (f == MimFishes.SKORFNA) {
                 bar.add(BuiltInRegistries.ITEM.getKey(MimFishes.SKORFNA_RED).toString());
             }
-            bar.addAll(List.of("minecraft:cod_bucket", BuiltInRegistries.ITEM.getKey(f.bucket()).toString(),
-                "minecraft:cod_spawn_egg", BuiltInRegistries.ITEM.getKey(f.spawnEgg()).toString()));
+            if (f.bucket() != null) {     // the mola mola has none
+                bar.addAll(List.of("minecraft:cod_bucket", BuiltInRegistries.ITEM.getKey(f.bucket()).toString()));
+            }
+            bar.addAll(List.of("minecraft:cod_spawn_egg", BuiltInRegistries.ITEM.getKey(f.spawnEgg()).toString()));
             for (int i = 0; i < 9; i++) {
                 server.runCommand("item replace entity @a hotbar." + i + " with " + (i < bar.size() ? bar.get(i) : "minecraft:air"));
             }
@@ -342,12 +362,16 @@ public class FishCheck implements FabricClientGameTest {
                     case "kavall" -> kavallSizeShot(context, server, world, x + 30, y, z);
                     case "tird" -> tirdSizeShot(context, server, world, x + 30, y, z);
                     case "trilja" -> triljaSizeShot(context, server, world, x + 30, y, z);
-                    case "pixxi_san_pietru" -> pixxiSanPietruSizeShot(context, server, world, x + 30, y, z);
+                    case "pixxi_san_pietru" -> {
+                        pixxiSanPietruSizeShot(context, server, world, x + 30, y, z);
+                        pixxiSanPietruSpineShots(context, server, world, x + 60, y, z);
+                    }
                     case "sawt" -> sawtSandShots(context, server, world, x + 30, y, z);
                     case "petrica" -> petricaSizeShot(context, server, world, x + 30, y, z);
                     case "lingwata" -> lingwataSizeShot(context, server, world, x + 30, y, z);
                     case "gallinella" -> gallinellaSizeShot(context, server, world, x + 30, y, z);
                     case "hmar" -> hmarSizeShot(context, server, world, x + 30, y, z);
+                    case "lionfish" -> lionfishSizeShot(context, server, world, x + 30, y, z);
                     default -> {
                     }
                 }
@@ -1286,6 +1310,32 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("gamemode creative @a");
     }
 
+    /**
+     * The pixxi San Pietru's dorsal spines up close (owner 2026-11-19: "its spikes look like graphical glitches and are
+     * very thick"): one fish in a tank, seen from the front, from the side at the spines, from behind and above, and
+     * from above, to show any flicker, gap or face drawn at the wrong depth.
+     */
+    private static void pixxiSanPietruSpineShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        fill(server, x - 7, y, z - 2, x + 7, y + 8, z + 12, "minecraft:air");
+        fill(server, x - 7, y - 1, z - 2, x + 7, y - 1, z + 12, "minecraft:smooth_sandstone");
+        fill(server, x - 4, y, z + 2, x + 4, y + 5, z + 10, "minecraft:glass");
+        fill(server, x - 3, y, z + 3, x + 3, y + 4, z + 9, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:pixxi_san_pietru %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.5, y + 2.0, z + 6.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.3, y + 0.4, z + 6.5, x + 0.5, y + 2.4, z + 6.5, "fish-pixxi_san_pietru-spines-front");
+        look(context, server, x + 0.6, y + 0.7, z + 5.1, x + 0.7, y + 2.9, z + 6.5, "fish-pixxi_san_pietru-spines-side");
+        // the fish faces -x, so "behind" is straight along its length from the tail end, "above" straight down on its back
+        look(context, server, x + 2.7, y + 1.0, z + 6.5, x + 0.5, y + 2.6, z + 6.5, "fish-pixxi_san_pietru-spines-behind");
+        look(context, server, x + 0.9, y + 2.4, z + 6.5, x + 0.5, y + 2.4, z + 6.5, "fish-pixxi_san_pietru-spines-above");
+        server.runCommand("gamemode creative @a");
+    }
+
     /** The pixxi San Pietru's size review: in one tank, left to right as the camera sees them, a pixxi San Pietru, a vanilla cod, the cerna and a small (2 block) tonn. */
     private static void pixxiSanPietruSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
         server.runCommand("gamemode creative @a");
@@ -1320,10 +1370,53 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("gamemode creative @a");
     }
 
+    /**
+     * The lionfish's size review: in one tank over a stone floor, left to right as the camera sees them, a lionfish, a
+     * vanilla cod, a skorfna (its relative, which must look different), the cerna and a small (2 block) tonn; seen from
+     * the side (fish-lionfish-lineup) and from above (fish-lionfish-lineup-above).
+     */
+    private static void lionfishSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        // far from spawn in the whole run: give the server time to load the chunks before building the tank
+        context.waitTicks(60);
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 16, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 16, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:stone");
+        fill(server, x - 12, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 12, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 11, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        String[][] row = {{"mimcontent:lionfish", "2.6", "1.2"}, {"minecraft:cod", "0.9", "1.5"}, {"mimcontent:skorfna", "-0.6", "0.2"},
+            {"mimcontent:cerna", "-2.6", "1.2"}};
+        for (String[] r : row) {
+            server.runCommand(String.format(Locale.ROOT, "summon %s %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+                r[0], x + Double.parseDouble(r[1]), y + Double.parseDouble(r[2]), fz + 0.5));
+        }
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 6.0, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.6, y + 1.0, fz - 3.6, x - 1.6, y + 1.2, fz + 0.5, "fish-lionfish-lineup");
+        look(context, server, x - 0.6, y + 3.3, fz - 1.2, x - 0.6, y + 0.8, fz + 0.4, "fish-lionfish-lineup-above");
+        server.runCommand("gamemode creative @a");
+    }
+
     /** The hmar's size review: in one tank, left to right as the camera sees them, a hmar, a vanilla cod, the cerna and a small (2 block) tonn. */
     private static void hmarSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
         server.runCommand("gamemode creative @a");
         server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        // far from spawn in the whole run: give the server time to load the chunks before building the tank
+        context.waitTicks(60);
         world.getConnection().waitForChunksRender();
         int fz = z + 6;
         fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
@@ -1486,11 +1579,13 @@ public class FishCheck implements FabricClientGameTest {
         tirdSizeShot(context, server, world, x + 130, y, z + 250);
         triljaSizeShot(context, server, world, x + 170, y, z + 320);
         pixxiSanPietruSizeShot(context, server, world, x + 210, y, z + 250);
+        pixxiSanPietruSpineShots(context, server, world, x + 210, y, z + 285);
         sawtSandShots(context, server, world, x + 250, y, z + 250);
         petricaSizeShot(context, server, world, x + 330, y, z + 250);
         lingwataSizeShot(context, server, world, x + 410, y, z + 330);
         gallinellaSizeShot(context, server, world, x + 490, y, z + 250);
         hmarSizeShot(context, server, world, x + 530, y, z + 410);
+        lionfishSizeShot(context, server, world, x + 650, y, z + 250);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {
@@ -1507,9 +1602,9 @@ public class FishCheck implements FabricClientGameTest {
                 "mimcontent:boll_spawn_egg", "mimcontent:huta_kahla", "mimcontent:huta_kahla_bucket", "mimcontent:huta_kahla_spawn_egg"},
             {"minecraft:cod", "mimcontent:skorfna", "minecraft:cod_bucket", "mimcontent:skorfna_bucket", "minecraft:cod_spawn_egg",
                 "mimcontent:skorfna_spawn_egg", "minecraft:pufferfish", "minecraft:pufferfish_bucket", "minecraft:pufferfish_spawn_egg"},
-            // the mola mola's placeholder item, bucket and egg (its icons wait for the owner's OK on the model)
-            {"minecraft:cod", "mimcontent:mola_mola", "minecraft:cod_bucket", "mimcontent:mola_mola_bucket", "minecraft:cod_spawn_egg",
-                "mimcontent:mola_mola_spawn_egg", "mimcontent:tonn", "mimcontent:tonn_bucket", "mimcontent:tonn_spawn_egg"},
+            // the mola mola's item and egg (no bucket: it can't be caught, owner 2026-11-19)
+            {"minecraft:cod", "mimcontent:mola_mola", "minecraft:cod_spawn_egg", "mimcontent:mola_mola_spawn_egg", "mimcontent:tonn",
+                "mimcontent:tonn_bucket", "mimcontent:tonn_spawn_egg", "minecraft:air", "minecraft:air"},
             // the two skorfna items, black and red, beside vanilla's fish and the accepted ones
             {"minecraft:cod", "mimcontent:skorfna", "mimcontent:skorfna_red", "minecraft:salmon", "mimcontent:cerna",
                 "mimcontent:awrata", "minecraft:pufferfish", "mimcontent:lampuka", "minecraft:tropical_fish"},
@@ -2388,6 +2483,7 @@ public class FishCheck implements FabricClientGameTest {
      * (health, speed, body box, no bite); the rarity roll on natural spawns (one in MolaFish.SPAWN_CHANCE) while eggs,
      * spawners and /summon always work; it doesn't shy away from a player; and in an open pool it rises to the
      * surface and basks on its side (flat box, at the surface, its hit boxes lying flat and centred), until it is hurt.
+     * Then the owner's 2026-11-19 rules (molaFoundNotCaptured): no bucket, capped hits, the escape, basking only in the sun.
      */
     private static void mola(ClientGameTestContext context, TestServerContext server, int x, int y, int z) {
         String numbers = server.computeOnServer(s -> {
@@ -2397,7 +2493,10 @@ public class FishCheck implements FabricClientGameTest {
                 fish.getAttribute(Attributes.ATTACK_DAMAGE) == null ? "none" : "yes");
         });
         log("mola mola: " + numbers);
-        check(numbers.equals("health 20, speed 0.35, box 1.30x1.80, bite none"), "the mola mola's numbers: " + numbers);
+        check(numbers.equals("health 40, speed 0.35, box 1.30x1.80, bite none"), "the mola mola's numbers: " + numbers);
+        // basking needs the sun (owner 2026-11-19): a clear day for the open-pool check below
+        server.runCommand("time set 6000");
+        server.runCommand("weather clear");
 
         // the rarity roll: natural spawns pass about one time in SPAWN_CHANCE, spawners and eggs always
         int[] passed = server.computeOnServer(s -> {
@@ -2495,6 +2594,7 @@ public class FishCheck implements FabricClientGameTest {
         check(!player.contains("by mola_mola"), "the mola mola should be harmless: " + player);
         server.runCommand("effect clear @a");
         server.runCommand("kill @e[type=mimcontent:mola_mola]");
+        molaFoundNotCaptured(context, server, x, y, z);
     }
 
     /**
@@ -2622,6 +2722,292 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("kill @e[type=item]");
         server.runCommand("item replace entity @a weapon.mainhand with minecraft:air");
         log("skorfna drops by version: " + String.join("; ", results));
+    }
+
+    /**
+     * The mola mola's 2026-11-19 rules (owner: "players to be able to find it, but not be able to \"capture\" it"), in a
+     * long open channel: a water bucket does nothing to it; no hit takes more than MolaFish.MAX_HIT (a strong sword in
+     * survival, then 50-point arrow, trident and explosion hits from the player), while /kill still kills; hurt by
+     * something that isn't a player it only flees, unless a mob's hits go on; it basks by day in clear weather and never
+     * at night or in rain (eight molas sampled under each); and hit by a player it bursts away faster than a player
+     * sprint-swims, fades out and is gone within 7 seconds, with nothing dropped.
+     */
+    private static void molaFoundNotCaptured(ClientGameTestContext context, TestServerContext server, int x, int y, int z) {
+        // the channel: 81 x 11 water, 7 deep, open to the sky
+        int x0 = x - 10, x1 = x + 70, z0 = z + 20, z1 = z + 30, cz = z + 25;
+        fill(server, x0 - 2, y - 10, z0 - 2, x1 + 2, y + 5, z1 + 2, "minecraft:air");
+        fill(server, x0 - 1, y - 8, z0 - 1, x1 + 1, y - 1, z1 + 1, "minecraft:stone");
+        fill(server, x0, y - 7, z0, x1, y - 1, z1, "minecraft:water");
+        AABB channel = new AABB(x0 - 2, y - 10, z0 - 2, x1 + 3, y + 6, z1 + 3);
+        server.runCommand("kill @e[type=item]");
+        server.runCommand("gamemode survival @a");
+        server.runCommand("effect give @a minecraft:water_breathing 600 0 true");
+        server.runCommand("effect give @a minecraft:resistance 600 4 true");
+        server.runCommand("time set 6000");
+        server.runCommand("weather clear");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x0 + 1, y, z0 - 1));
+        context.waitTicks(20);
+
+        // 1. a water bucket used on it: the bucket stays a full water bucket, and the fish stays
+        UUID bucketed = summonMola(server, x0 + 4.5, y - 4.5, cz + 0.5, true);
+        context.waitTicks(2);
+        String bucket = server.computeOnServer(s -> {
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            MolaFish m = (MolaFish) s.overworld().getEntity(bucketed);
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WATER_BUCKET));
+            net.minecraft.world.InteractionResult r = m.interact(player, InteractionHand.MAIN_HAND, m.position());
+            ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+            return String.format(Locale.ROOT, "result %s (action taken %s), holding %d %s, mola %s, %d bucket items in the game",
+                r.getClass().getSimpleName(), r.consumesAction(), held.getCount(), BuiltInRegistries.ITEM.getKey(held.getItem()),
+                m.isAlive() && !m.isRemoved() ? "still there" : "gone",
+                BuiltInRegistries.ITEM.keySet().stream().filter(k -> k.toString().equals("mimcontent:mola_mola_bucket")).count());
+        });
+        log("mola mola, water bucket used on it: " + bucket);
+        // the action is taken (so the client doesn't go on to pour the bucket out), and nothing changes
+        check(bucket.contains("(action taken true), holding 1 minecraft:water_bucket, mola still there, 0 bucket items"),
+            "a water bucket should do nothing to the mola mola: " + bucket);
+        server.runCommand("kill " + bucketed);
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:air");
+
+        // 2. capped hits: a netherite sword with Sharpness V and Strength II, fully charged, in survival
+        UUID hit = summonMola(server, x0 + 4.5, y - 4.5, cz + 0.5, true);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.1f %.1f", x0 + 2.5, y - 4.5, cz + 0.5));
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:netherite_sword[minecraft:enchantments={\"minecraft:sharpness\":5}]");
+        server.runCommand("effect give @a minecraft:strength 60 1 true");
+        context.waitTicks(30);
+        List<String> taken = new ArrayList<>();
+        float most = 0.0F, total = 0.0F;
+        for (int i = 0; i < 4; i++) {
+            float[] r = server.computeOnServer(s -> {
+                ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+                MolaFish m = (MolaFish) s.overworld().getEntity(hit);
+                float before = m.getHealth(), charge = player.getAttackStrengthScale(0.5F);
+                player.attack(m);
+                return new float[] {before - m.getHealth(), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE), charge};
+            });
+            taken.add(String.format(Locale.ROOT, "sword %.1f (uncapped %.1f, charge %.2f)", r[0], r[1], r[2]));
+            most = Math.max(most, r[0]);
+            total += r[0];
+            context.waitTicks(15);
+        }
+        for (String type : new String[] {"minecraft:arrow", "minecraft:trident", "minecraft:player_explosion", "minecraft:player_attack"}) {
+            float before = server.computeOnServer(s -> ((MolaFish) s.overworld().getEntity(hit)).getHealth());
+            server.runCommand("damage " + hit + " 50 " + type + " by @p");
+            float after = server.computeOnServer(s -> ((MolaFish) s.overworld().getEntity(hit)).getHealth());
+            taken.add(String.format(Locale.ROOT, "%s 50 -> %.1f", type.substring(10), before - after));
+            most = Math.max(most, before - after);
+            total += before - after;
+            context.waitTicks(15);
+        }
+        String afterHits = server.computeOnServer(s -> {
+            MolaFish m = (MolaFish) s.overworld().getEntity(hit);
+            return String.format(Locale.ROOT, "health %.1f of %.0f, alive %s", m.getHealth(), m.getMaxHealth(), m.isAlive());
+        });
+        log("mola mola, hits taken: " + String.join("; ", taken) + "; then " + afterHits);
+        check(most <= MolaFish.MAX_HIT + 0.001F && most > 0.0F && total >= MolaFish.MAX_HIT * 7, "no hit should take more than "
+            + MolaFish.MAX_HIT + " (and every one should land): " + taken);
+        check(afterHits.endsWith("alive true"), "the mola mola should live through capped hits: " + afterHits);
+        // /kill still kills
+        server.runCommand("kill " + hit);
+        String killed = server.computeOnServer(s -> {
+            Entity e = s.overworld().getEntity(hit);
+            return e == null ? "gone" : "dying " + ((MolaFish) e).isDeadOrDying();
+        });
+        log("mola mola after /kill: " + killed);
+        check(killed.equals("gone") || killed.equals("dying true"), "/kill should kill the mola mola: " + killed);
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:air");
+        server.runCommand("effect clear @a minecraft:strength");
+        context.waitTicks(25);
+        server.runCommand("kill @e[type=item]");
+
+        // 3. hurt by something that isn't a player: it flees and comes back calm; a mob's hits that go on make it vanish
+        UUID magic = summonMola(server, x0 + 8.5, y - 4.5, cz + 0.5, true);
+        context.waitTicks(2);
+        server.runCommand("damage " + magic + " 30 minecraft:magic");
+        String fleeing = server.computeOnServer(s -> molaState((MolaFish) s.overworld().getEntity(magic)));
+        context.waitTicks(MolaFish.ESCAPE_TICKS + 20);
+        String calm = server.computeOnServer(s -> {
+            Entity e = s.overworld().getEntity(magic);
+            return e == null ? "gone" : molaState((MolaFish) e);
+        });
+        log("mola mola hurt by magic: " + fleeing + "; " + (MolaFish.ESCAPE_TICKS + 20) + " ticks later: " + calm);
+        check(fleeing.startsWith("state 1, vanishes false") && fleeing.endsWith("health 36.0"),
+            "magic should make it flee (not vanish), the 30 capped to 4: " + fleeing);
+        check(calm.startsWith("state 0, vanishes false") && calm.endsWith("health 36.0"), "after magic it should be calm again: " + calm);
+        String mob = "";
+        for (int i = 0; i < 2; i++) {
+            mob = server.computeOnServer(s -> {
+                ServerLevel level = s.overworld();
+                net.minecraft.world.entity.LivingEntity cod = MimFishes.SARDINA.type().create(level, EntitySpawnReason.COMMAND);
+                MolaFish m = (MolaFish) level.getEntity(magic);
+                m.hurtServer(level, level.damageSources().mobAttack(cod), 2.0F);
+                return molaState(m);
+            });
+            log("mola mola hit by a mob (" + (i + 1) + "): " + mob);
+            check(mob.startsWith(i == 0 ? "state 1, vanishes false" : "state 1, vanishes true"),
+                (i == 0 ? "one mob hit should only make it flee: " : "a second mob hit while it flees should make it vanish: ") + mob);
+            context.waitTicks(15);
+        }
+        context.waitTicks(MolaFish.ESCAPE_TICKS);
+        String gone = server.computeOnServer(s -> s.overworld().getEntity(magic) == null ? "gone" : "still there");
+        check(gone.equals("gone"), "after the mob's hits went on it should vanish: " + gone);
+        server.runCommand("kill @e[type=mimcontent:mola_mola]");
+
+        // 4. basking only in the sun: eight molas in the channel, sampled on a clear day, at night and in rain
+        UUID still = summonMola(server, x0 + 60.5, y - 3.5, cz + 0.5, true);
+        List<UUID> molas = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            molas.add(summonMola(server, x0 + 6.5 + 7 * i, y - 5.0, cz - 2.5 + (i % 3) * 2.5, false));
+        }
+        String[][] phases = {{"6000", "clear", "day, clear"}, {"18000", "clear", "night"}, {"6000", "rain", "day, rain"},
+            {"6000", "thunder", "day, thunder"}};
+        int dayTrips = 0;
+        for (String[] phase : phases) {
+            server.runCommand("time set " + phase[0]);
+            server.runCommand("weather " + phase[1]);
+            // the rain takes a moment to set in; nightfall and rain end any basking at once
+            context.waitTicks(60);
+            int[] start = baskCount(server, molas);
+            String direct = server.computeOnServer(s -> {
+                MolaFish m = (MolaFish) s.overworld().getEntity(still);
+                return "sunOut " + m.sunOut(MolaFish.surfaceAbove(s.overworld(), m.position(), MolaFish.BASK_REACH));
+            });
+            int baskingSeen = 0;
+            for (int t = 0; t < 400; t += 10) {
+                context.waitTicks(10);
+                baskingSeen = Math.max(baskingSeen, baskCount(server, molas)[1]);
+            }
+            int[] end = baskCount(server, molas);
+            int trips = end[0] - start[0];
+            log(String.format(Locale.ROOT, "mola mola basking, %s: %s; %d trips to the surface by 8 molas in 400 ticks, basking at the start %d,"
+                + " most basking at once %d", phase[2], direct, trips, start[1], baskingSeen));
+            if (phase[2].equals("day, clear")) {
+                dayTrips = trips;
+                check(direct.equals("sunOut true") && trips > 0, "on a clear day the molas should go up to bask: " + direct + ", " + trips + " trips");
+            } else {
+                check(direct.equals("sunOut false") && trips == 0 && start[1] == 0 && baskingSeen == 0,
+                    "no basking " + phase[2] + ": " + direct + ", " + trips + " trips, basking " + start[1] + "/" + baskingSeen);
+            }
+        }
+        // a glass roof over the water on a clear day: no sun on it (after the rain has cleared: it fades over 100 ticks)
+        server.runCommand("time set 6000");
+        server.runCommand("weather clear");
+        context.waitTicks(120);
+        String roofed = server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            MolaFish m = (MolaFish) level.getEntity(still);
+            double surface = MolaFish.surfaceAbove(level, m.position(), MolaFish.BASK_REACH);
+            boolean open = m.sunOut(surface);
+            level.setBlockAndUpdate(BlockPos.containing(m.getX(), surface + 2.0, m.getZ()), net.minecraft.world.level.block.Blocks.GLASS.defaultBlockState());
+            return "open " + open + ", under glass " + m.sunOut(surface);
+        });
+        log("mola mola, sky over the water: " + roofed + " (day trips " + dayTrips + ")");
+        check(roofed.equals("open true, under glass false"), "the sky must be open over the water to bask: " + roofed);
+        server.runCommand("kill @e[type=mimcontent:mola_mola]");
+        context.waitTicks(5);
+
+        // 5. the escape: hit by a player, it bursts off down the channel, fades and is gone, dropping nothing
+        UUID esc = summonMola(server, x0 + 5.5, y - 4.0, cz + 0.5, false);
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.1f %.1f %.1f -90 0", x0 + 2.5, y - 4.5, cz + 0.5));
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:wooden_sword");
+        context.waitTicks(30);
+        server.runCommand("kill @e[type=item]");
+        MolaFish[] ref = new MolaFish[1];
+        Vec3 start = server.computeOnServer(s -> {
+            ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+            ref[0] = (MolaFish) s.overworld().getEntity(esc);
+            player.attack(ref[0]);
+            return ref[0].position();
+        });
+        int netId = server.computeOnServer(s -> ref[0].getId());
+        List<String> samples = new ArrayList<>();
+        double at40 = 0, at80 = 0, lowest = start.y;
+        int fadeFrom = -1, goneAt = -1;
+        float minAlpha = 1.0F;
+        boolean basked = false;
+        for (int t = 1; t <= 160 && goneAt < 0; t++) {
+            context.waitTicks(1);
+            int tick = t;
+            String row = server.computeOnServer(s -> {
+                MolaFish m = ref[0];
+                return String.format(Locale.ROOT, "%d %.3f %.3f %.3f %d %s %s %s", tick, m.getX(), m.getY(), m.getZ(), m.escapeState(),
+                    m.isBasking(), m.isRemoved(), m.getRemovalReason());
+            });
+            String[] v = row.split(" ");
+            double dist = Math.hypot(Double.parseDouble(v[1]) - start.x, Double.parseDouble(v[3]) - start.z);
+            lowest = Math.min(lowest, Double.parseDouble(v[2]));
+            basked |= v[5].equals("true");
+            if (fadeFrom < 0 && v[4].equals("2")) {
+                fadeFrom = t;
+            }
+            if (t == 40) {
+                at40 = dist;
+            }
+            if (t == 80 || (v[6].equals("true") && at80 == 0)) {
+                at80 = dist;
+            }
+            if (v[6].equals("true")) {
+                goneAt = t;
+                check(v[7].equals("DISCARDED"), "the escaped mola mola should be removed (discarded), not killed: " + row);
+            }
+            float alpha = context.computeOnClient(mc -> mc.level.getEntity(netId) instanceof MolaFish m ? m.fadeAlpha(0.0F) : -1.0F);
+            if (alpha >= 0.0F) {
+                minAlpha = Math.min(minAlpha, alpha);
+            }
+            if (t % 20 == 0) {
+                samples.add(String.format(Locale.ROOT, "t%d %.1f blocks state %s alpha %.2f", t, dist, v[4], alpha));
+            }
+        }
+        context.waitTicks(5);
+        String dropped = drops(server, channel);
+        double speed = at40 / 40.0;
+        log("mola mola escape: " + String.join("; ", samples));
+        log(String.format(Locale.ROOT, "mola mola escape: %.1f blocks in 2 s (%.3f a tick, %.1f a second; a sprint-swimming player 0.196 a tick,"
+                + " 3.9 a second), %.1f blocks by its end, %.2f blocks lower at its lowest, fading from tick %d, gone at tick %d (%.2f s),"
+                + " lowest alpha seen on the client %.2f, basked %s, dropped [%s]", at40, speed, speed * 20, at80, start.y - lowest,
+            fadeFrom, goneAt, goneAt / 20.0, minAlpha, basked, dropped));
+        check(speed > 0.196 * 1.5, "the escaping mola mola should outswim a sprint-swimming player: " + speed + " blocks a tick");
+        check(at80 > 24.0, "the mola mola should escape about 30 blocks: " + at80);
+        check(start.y - lowest > 0.2, "the mola mola should escape a little downward: " + (start.y - lowest));
+        check(fadeFrom > 0 && fadeFrom >= MolaFish.ESCAPE_TICKS - MolaFish.FADE_TICKS - 2 && minAlpha < 0.6F,
+            "the mola mola should fade out at the end of its escape: from tick " + fadeFrom + ", alpha " + minAlpha);
+        check(goneAt > 0 && goneAt <= 140, "the mola mola should be gone within 7 seconds of the hit: " + goneAt);
+        check(!basked, "the escaping mola mola should not stop to bask");
+        check(dropped.isEmpty(), "the escaped mola mola should drop nothing: " + dropped);
+        server.runCommand("item replace entity @a weapon.mainhand with minecraft:air");
+        server.runCommand("effect clear @a");
+        server.runCommand("kill @e[type=mimcontent:mola_mola]");
+    }
+
+    private static UUID summonMola(TestServerContext server, double x, double y, double z, boolean noAi) {
+        return server.computeOnServer(s -> {
+            ServerLevel level = s.overworld();
+            MolaFish m = (MolaFish) MimFishes.MOLA_MOLA.type().create(level, EntitySpawnReason.COMMAND);
+            m.snapTo(x, y, z, 0.0F, 0.0F);
+            m.setPersistenceRequired();
+            m.setNoAi(noAi);
+            level.addFreshEntity(m);
+            return m.getUUID();
+        });
+    }
+
+    private static String molaState(MolaFish m) {
+        return String.format(Locale.ROOT, "state %d, vanishes %s, escape ticks %d, health %.1f", m.escapeState(), m.willVanish(),
+            m.escapeTicksLeft(), m.getHealth());
+    }
+
+    /** The molas' bask trips so far (summed) and how many are basking now. */
+    private static int[] baskCount(TestServerContext server, List<UUID> molas) {
+        return server.computeOnServer(s -> {
+            int trips = 0, basking = 0;
+            for (UUID id : molas) {
+                if (s.overworld().getEntity(id) instanceof MolaFish m) {
+                    trips += m.baskTrips;
+                    basking += m.isBasking() ? 1 : 0;
+                }
+            }
+            return new int[] {trips, basking};
+        });
     }
 
     private static String drops(TestServerContext server, AABB area) {

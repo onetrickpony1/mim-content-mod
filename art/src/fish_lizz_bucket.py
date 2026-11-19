@@ -44,8 +44,6 @@ ITEMS = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcont
 OUT = os.path.join(ITEMS, "lizz_bucket.png")
 VANILLA = os.path.join(ART, ".vanilla", "item")
 PY = os.path.join(ART, ".venv", "bin", "python")
-CHOSEN = "A"
-
 
 def hx(h):
     return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
@@ -57,36 +55,81 @@ PAL = {
     "^": hx("#6a92ea"),  # a glint of light on the water
     "#": RIM,            # the back-rim outline where we cover a cod pixel
 }
-PAL.update({k: ICON[k] for k in "hBbSgWsoeMJ"})
-PAL["q"] = hx("#8a979c")  # the mid-grey belly rim against the water (round 2: lighter than the back)
+# The fish: the owner-accepted lizz icon's palette, all of it, unchanged (art/src/fish_lizz_icon.py PAL)
+PAL.update(ICON)
 
-# rows 0-5; "." is clear (cod_bucket's own outline or water shows there)
+# Round 10 (owner, 2026-11-19: option 2, "the bucket matches the accepted lizz icon"): the icon's own fish, its
+# pixels unchanged, turned a quarter (clockwise) so the head points up and left and the body runs down to the lower
+# right into the water, its back (the lit slate edge and the dark back) on the upper right side as it dives. It is
+# shifted 4 pixels right so the head rises out of the bucket mouth: the jaw J and snout at the top (4-6,0), the eye
+# e (7,2), the bars and the second dorsal fin on the way down. Where the fish isn't, the bucket mouth is our water
+# (rows 3-5) and the far edge of the rim our RIM grey (row 2, and the corners at 3-4,3 and 11,3).
+def _icon_fish():
+    from fish_lizz_icon import grid, CHOSEN as ICON_CHOSEN
+    g = grid(ICON_CHOSEN)
+    return ["".join(g[15 - x][y] for x in range(16)) for y in range(16)]   # a quarter turn clockwise
+
+
+def _in_bucket(dx, under, tail_from=None):
+    """The turned icon fish shifted dx pixels right, rows 0-5; from the rows in `under` down, only water shows.
+    With tail_from=(row, dy): the fish is shortened: from that bucket row on, the icon's rows from `row + dy` (the
+    back half with the forked tail) are shown instead of the middle of the body, unshifted, so the head joins the
+    tail half directly."""
+    fish = _icon_fish()
+    out = [["."] * 16 for _ in range(6)]
+    for y in range(6):
+        for x in range(16):
+            if tail_from and y >= tail_from[0]:
+                src_y, sx = y + tail_from[1], x
+            else:
+                src_y, sx = y, x - dx
+            if 0 <= sx < 16 and fish[src_y][sx] != "." and not (y >= under.get(x, 6)):
+                out[y][x] = fish[src_y][sx]
+    mouth = {(x, 3) for x in range(5, 11)} | {(x, y) for y in (4, 5) for x in range(3, 13)}
+    for (x, y) in sorted(mouth):
+        if out[y][x] == ".":
+            out[y][x] = "~"
+    for x in range(3, 11):
+        if out[2][x] == ".":
+            out[2][x] = "#"
+    for x in (3, 4, 11):
+        if out[3][x] == ".":
+            out[3][x] = "#"
+    return ["".join(r) for r in out]
+
+
+def _forked(grid):
+    """Critic round 11: the tail read as a flat paddle. Open the icon's V at the right edge: a notch at (15,4)
+    between the upper prong (the icon's own tip at (15,3), widened to (14,3)) and the lower prong (15,5)."""
+    rows = [list(r) for r in grid]
+    rows[3][14] = "T"
+    rows[4][15] = "."
+    return ["".join(r) for r in rows]
+
+
 GRIDS = {
-    # A (round 2; critic round 1: the dark back didn't read, the pale crown made a knob): the crown dark slate B B B b
-    # on row 0, running on as the back; the upper snout h B on row 1 ending at 2,1, the eye 5,1 between silver S; the
-    # lower jaw juts to 0,2 as a silver point (J tip, S S, no dark mouth slit under the eye); behind the gill the body
-    # dives to the lower right: dark slate back B and b along the top, silver S, the white belly W and s, and a mid-grey
-    # rim q against the water, so the back is the darkest part of the fish.
-    "A": [
-        "....BBBb........",
-        "..hBSeSbB.......",
-        "JSSsSSsBB##.....",
-        "...#qsWSbBv#....",
-        "...~~vqsSbBv~...",
-        "....~^~qsSbB....",
-    ],
-    # B: the head tilted up out of the water, the snout pointing up and left from the bucket's far rim
-    "B": [
-        "..hBBhh.........",
-        ".JMSeSBh........",
-        "...sSWsBh##.....",
-        "...#osWSbhv#....",
-        "...~~vosWBhv~...",
-        "....~^~osWBh....",
-    ],
+    # A (round 12; critic round 11 passed A but the tail read as a flat paddle and the body ran level): the head
+    # (icon rows 0-2) joins the icon's back half one row further on (rows 9-11), so the body keeps falling toward
+    # the lower right with the second dorsal at (12,3), and the tail is forked
+    "A": _forked(_in_bucket(4, {}, tail_from=(3, 6))),
+    # B: round 11's A, the back half one row higher, unforked, kept for comparison
+    "B": _in_bucket(4, {}, tail_from=(3, 7)),
 }
-# The back-rim outline pixels the head covers; every other one stays dark
-FISH_OVER_RIM = {"A": [(5, 2), (6, 2), (7, 2), (8, 2), (4, 3)], "B": [(5, 2), (6, 2), (7, 2), (8, 2), (4, 3)]}
+for _k in GRIDS:                       # the glint and the shadow on the water, as the other buckets
+    _g = [list(r) for r in GRIDS[_k]]
+    if _g[5][4] == "~":
+        _g[5][4] = "^"
+    GRIDS[_k] = ["".join(r) for r in _g]
+CHOSEN = "A"
+REJECTED_DIR = os.path.join(ART, "candidates", "fish_lizz_bucket_rejected")
+
+
+def fish_over(cand):
+    """The back-rim outline pixels a light part of the fish covers (dark fish pixels keep the outline dark)."""
+    from fish_bucket_rim import _dark
+    layer = build(cand)
+    return [p for p in OUTLINE if layer.getpixel(p)[3] and layer.getpixel(p)[:3] not in
+            {PAL["~"], PAL["v"], PAL["^"]} and not _dark(layer.getpixel(p))]
 
 
 def build(cand):
@@ -134,7 +177,7 @@ def sheet(layers):
     from font import label_font
     from measure import measure
     font, small = label_font(16), label_font(13)
-    W = 1500
+    W = 1860
     parts = []
 
     def text(lines, f=font):
@@ -149,7 +192,11 @@ def sheet(layers):
 
     icons = [("cod bucket", Image.open(os.path.join(VANILLA, "cod_bucket.png")).convert("RGBA")),
              ("salmon bucket", Image.open(os.path.join(VANILLA, "salmon_bucket.png")).convert("RGBA")),
-             ("incova (accepted)", ours_of("incova_bucket")), ("pixxispad (accepted)", ours_of("pixxispad_bucket"))]
+             ("incova (accepted)", ours_of("incova_bucket")), ("kavall (accepted)", ours_of("kavall_bucket")),
+             ("night (rejected)", composite(Image.open(os.path.join(REJECTED_DIR, "night.png")).convert("RGBA"))),
+             ("redo B (rejected)", composite(Image.open(os.path.join(REJECTED_DIR, "redo_B.png")).convert("RGBA"))),
+             ("redo 2 (rejected)", composite(Image.open(os.path.join(REJECTED_DIR, "redo2_B.png")).convert("RGBA"))),
+             ("cerna (accepted)", ours_of("cerna_bucket"))]
     icons += [("cand %s%s" % (c, " (installed)" if c == CHOSEN else ""), composite(l)) for c, l in layers.items()]
     icons += [("lizz item", Image.open(os.path.join(ITEMS, "lizz.png")).convert("RGBA"))]
     parts.append(text(["Bucket of lizz: 8x on the slot grey beside vanilla and accepted buckets, the candidates over "
@@ -171,7 +218,7 @@ def sheet(layers):
     d = ImageDraw.Draw(big)
     for (x, y) in OUTLINE:
         d.rectangle((x * 8, y * 8, x * 8 + 7, y * 8 + 7),
-                    outline=(40, 80, 255) if (x, y) in FISH_OVER_RIM[CHOSEN] else (230, 30, 30))
+                    outline=(40, 80, 255) if (x, y) in fish_over(CHOSEN) else (230, 30, 30))
     row = Image.new("RGBA", (W, 140), (139, 139, 139, 255))
     row.alpha_composite(big, (10, 6))
     parts.append(row)
@@ -198,7 +245,7 @@ def sheet(layers):
         subprocess.run([PY, os.path.join(ART, "tools", "hotbar_preview.py"),
                         os.path.join(ART, "candidates", "fish_lizz_bucket_hotbar_%s.png" % c),
                         "mc:cod_bucket", "file:" + tmpf, "mc:salmon_bucket", "bucket:incova_bucket",
-                        "bucket:pixxispad_bucket", "mc:tropical_fish_bucket", "--scale", "4"], check=True, capture_output=True)
+                        "bucket:kavall_bucket", "mc:tropical_fish_bucket", "--scale", "4"], check=True, capture_output=True)
         os.remove(tmpf)
 
 
@@ -208,7 +255,7 @@ if __name__ == "__main__":
         layer = build(c)
         print("candidate", c)
         check_cover(layer)
-        check_rim(layer, os.path.join(VANILLA, "cod_bucket.png"), FISH_OVER_RIM[c])
+        check_rim(layer, os.path.join(VANILLA, "cod_bucket.png"), fish_over(c))
         layers[c] = layer
     layers[CHOSEN].save(OUT, optimize=False)
     print("wrote", os.path.relpath(OUT, ROOT), "(candidate %s)" % CHOSEN)

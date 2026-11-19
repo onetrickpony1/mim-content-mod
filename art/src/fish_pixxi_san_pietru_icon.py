@@ -18,6 +18,12 @@ read as a lump. Light from the top left, a darker outline like vanilla's.
 Candidates: A golden olive (the Mediterranean photo jd02); B a greyer olive (the market photos jd05, jd10); C as A
 with the spot a step lighter. Icon critic rounds: 8 (PASS in round 8). CHOSEN is written to the mod.
 
+REDO 2026-11-19 (owner: "too flat and fat they dont look like the fish"): redrawn side on as a deep diamond with
+shading, raked spines, a jutting jaw and the thumbprint (the GRID and PAL below replace the night version above).
+A golden olive, B A with a pale halo round the spot, C a greyer silver-olive with near-black spines (chosen by every
+critic). Redo critic rounds: 3 of 3, all FAIL (round 3 "close"); the owner judges. Blind reads: all three named a
+John Dory, about 60% sure.
+
 Run:  art/.venv/bin/python art/src/fish_pixxi_san_pietru_icon.py
 Writes mod/.../textures/item/pixxi_san_pietru.png (byte-identical on rerun), the candidates and the review sheet in
 art/candidates/pixxi_san_pietru_icon/ and art/candidates/fish_pixxi_san_pietru_icon.png, and the offline hotbar
@@ -43,7 +49,7 @@ OUT_ICON = os.path.join(TEXTURES, "item", "pixxi_san_pietru.png")
 CAND = os.path.join(ART, "candidates", "pixxi_san_pietru_icon")
 OUT_SHEET = os.path.join(ART, "candidates", "fish_pixxi_san_pietru_icon.png")
 VANILLA = os.path.join(os.environ.get("MIM_VANILLA_TEXTURES", os.path.join(ART, ".vanilla")), "item")
-CHOSEN = "A"
+CHOSEN = "C"
 
 
 def hx(h):
@@ -62,73 +68,89 @@ def scale(c, k):
 
 
 MODEL = {k: hx(v) for k, v in model.PALETTES[model.CHOSEN].items()}
-PAL = {k: lift(v) for k, v in MODEL.items()}
-PAL["E"] = MODEL["E"]                       # the pupil stays black
-PAL["S"] = MODEL["S"]                       # the spot keeps the model's tone: lifted it washed out to a stain
-PAL["s"] = MODEL["s"]
-# the back and the spines keep the model's own darker olive (lifted, the back read pale and the spines vanished);
-# the pale belly is not lifted further (the model's is already near white), and the lowest band is a shaded pale so
-# the light still falls from the top left
-for key in "KBbfdLW":
-    PAL[key] = MODEL[key]
-PAL["W"] = scale(MODEL["L"], 0.97)
-PAL["n"] = MODEL["d"]
 
-
-# The outline: the model's back edge, a step darker (vanilla's fish have a darker rim, about 0.6 of the inside)
-PAL["o"] = scale(MODEL["K"], 0.8)
-# the tail keeps the model's own tones (lifted, it read as a pale flag)
-PAL["T"] = MODEL["T"]
-PAL["u"] = MODEL["r"]
-PAL["X"] = hx("#f4f2e6")                   # the eye's glint
-# round 1 fixes: the flank toned from yellow toward the photos' olive-gold (the lifted model colours read as a
-# banana), the spot's ring only a step lighter than the flank round it, so the spot is no second eye
-PAL.update({"G": hx("#c6b683"), "O": hx("#b4a679"), "b": hx("#938962"), "L": hx("#d8d1b2"), "W": hx("#a3976f"),
-            "S": hx("#5c4e35"), "T": hx("#8a7f52"), "u": hx("#5e5634"),
-            "H": hx("#d8cea5"), "V": hx("#857b57"), "W": hx("#9a8e68"), "d": hx("#6f6850"), "w": hx("#a49c7c")})
-PAL.update({"H": hx("#d8cc96"), "G": hx("#b9a96a"), "O": hx("#a89a5c"), "b": hx("#8c7f48"), "W": hx("#766b3e"),
-            "V": hx("#5e5634"), "S": hx("#55462b"), "n": hx("#c9bd8e"), "o": hx("#433d2a"),
-            "s": hx("#6c5c3a"), "I": hx("#d8cc96"), "q": hx("#5e5634"), "m": hx("#433d2a"), "D": hx("#8a7f52"),
-            "T": hx("#6e6644"), "f": hx("#6e6644"), "k": hx("#36311f"), "S": hx("#504228")})
-PAL["R"] = hx("#c4b472")                   # the spot's ring: one step lighter than the flank (round 3: brighter, it made the spot an eye)
-# B: a greyer olive flank, as the market photos jd05 and jd10 (A follows the golden Mediterranean fish, jd02)
-PAL_B = dict(PAL)
-PAL_B.update({"O": hx("#a09a70"), "G": hx("#b4ae84"), "b": hx("#86805c"), "W": hx("#706a4a")})
-# C: as A with the spot a step lighter, a softer smudge
+# Redo 2026-11-19 (owner: "too flat and fat they dont look like the fish"). Side on, head left, like the hmar: on the
+# diagonal the deep disc turned into a round blob. The outline now follows the accepted model's side view: a tall
+# compressed disc, deeper than long once the fins count, with a steep forehead down to the big jutting jaw, a keel
+# under the throat with the pelvic fin, the long spines rising up and back from the top of the head with filaments
+# streaming back, and the rounded tail fan on a short stalk. Shaded for volume: lit top left (H, G), olive-gold in the
+# middle (O), darker toward the back and the lower right (b, W), a pale but shaded belly (L, l, w) and a dark rim.
+PAL = {
+    "o": hx("#3a3422"),  # outline, dark olive
+    "p": hx("#5a5236"),  # the belly's outline, a step lighter
+    "H": hx("#e2d6a2"),  # the lit highlight, top left
+    "G": hx("#c6b47a"),  # lit gold
+    "O": hx("#a8995e"),  # olive-gold
+    "b": hx("#8a7d4a"),  # mid shade
+    "W": hx("#6e6440"),  # shade at the back and lower right
+    "L": hx("#e6e2cc"),  # pale belly, lit
+    "l": hx("#c3bda2"),  # pale belly
+    "w": hx("#9c967c"),  # pale belly, shaded
+    "S": hx("#3e3220"),  # St Peter's thumbprint
+    "R": hx("#d4c27e"),  # its pale gold halo (candidate B)
+    "E": hx("#141210"),  # pupil
+    "X": hx("#f2eedc"),  # the eye's pale ring
+    "m": hx("#2a2418"),  # the gape
+    "j": hx("#b0a88a"),  # the jaw
+    "f": hx("#4e4630"),  # spine
+    "n": hx("#8a8160"),  # filament
+    "d": hx("#9d9068"),  # membrane and soft fins
+    "T": hx("#7a6f48"),  # tail
+    "u": hx("#5a5236"),  # the tail's edge
+    "P": hx("#a59e82"),  # pelvic fin
+    "t": hx("#aea683"),  # the tail fan's lighter edge
+    "s": hx("#64573a"),  # the thumbprint's mid-dark edge
+}
+# C: the greyer olive of the market photos (jd05, jd10) and of the model under water
 PAL_C = dict(PAL)
-PAL_C["S"] = hx("#5e5034")
-PALS = {"A": PAL, "B": PAL_B, "C": PAL_C}
+PAL_C.update({"H": hx("#dcd6b8"), "G": hx("#bdb48e"), "O": hx("#a29a74"), "b": hx("#857e5c"), "W": hx("#686247"),
+              "T": hx("#767052"), "d": hx("#9a9474"), "f": hx("#2e2a1e"), "S": hx("#4a4232"), "R": hx("#c4bc98"),
+              "s": hx("#5a5440"), "t": hx("#aaa588"), "w": hx("#7e7862"), "p": hx("#4a4534")})
+PALS = {"A": PAL, "B": PAL, "C": PAL_C}
 
-# Keys: o outline, G lit golden back, O olive-gold, b mid flank, W shaded belly, S spot, H the lit highlight on the back, V the shaded belly rim, d spine membrane, w the jaw's shade, E pupil, X its glint, j lower jaw, m gape, f spine, n spine tip, T tail, u tail lobes.
-# Round 1 (critic: level and round it read as a cartoon face or a pufferfish, no jaw, lit backwards, too heavy): laid
-# on vanilla's diagonal, head lower left, tail upper right; a thin oval 6 px across, lit from the top left along the
-# back and darkest along the belly's lower-right edge; four spines of uneven length standing up off the back (swept
-# toward the tail, which on this diagonal is straight up); a dark gape at the jutting jaw; a 2 x 2 eye with a glint
-# and no ring; the spot behind and above the middle, out of line with the eye, in a pale gold ring; a forked tail.
-# Round 2 (critic: lit backwards, spines like insect legs, tail like antlers): the lightest tone moved to the back at
-# the top left and the belly rim shaded; the spines joined by a membrane into one fin; the tail filled into one fan.
+# Keys: o outline, p belly outline, H G O b W the lit-to-shaded flank, L l w the belly, S spot, R its halo, E pupil,
+# X eye ring, m gape, j jaw, f spine, n filament, d membrane and soft fins, T tail, u tail edge, P pelvic fin.
+# Round 1 (critic: still a pale ball with fuzz on top, longer than deep; the jaw a notch; the spines one block; a flat
+# pale belly stripe). Redrawn as a deep diamond, taller than long: the back peaks at (7,3) and the keel at the
+# pelvic spine (7,15); four 1 px spines rise from the back with a gap between each, dark roots and light filament
+# tips trailing back; the mouth a dark gape slanting down and back from (0,7), the lips lit, jutting past the
+# forehead; the eye high on the head with a pale glint; the highlight on the shoulder and the belly shaded; the
+# thumbprint a 2 x 2 behind the middle with a mid-dark edge; a narrow stalk and a rounded fan, lighter at its edge.
+# Round 2 (critic: close; the spot out-darks the eye, the spines a vertical comb, the forehead too gentle): the eye a
+# near-black pupil at (5,6) in a pale ring; the spot a step lighter with a hint of pale ring (C); the spines raked
+# back, each tip a pixel behind its base and the filaments further back; a steeper forehead; a dark tail stalk.
 GRID = [
-    "........n...o...",
-    "......nff.n.To..",
-    ".....fDfDfD.TTo.",
-    ".....fDoDoooTToo",
-    ".....ooHGGoTo...",
-    "....oHHGGOOk....",
-    "...oIHGGOObk....",
-    "..oHEGGGObWk....",
-    "oGoHGGGSSWWk....",
-    "mmHGGOOSSOo.....",
-    ".oGGOObbWo......",
-    ".oGOObWWo.......",
-    "..oObWWoff......",
-    "...oooo.........",
-    "...f............",
-    "................",
+#    0123456789012345
+    "........n.n.n...",  # 0
+    ".......f.f.f....",  # 1
+    "......f.f.f.....",  # 2
+    "......f.f.f.....",  # 3
+    "....oHooo.f.....",  # 4
+    "...oHXHGGof.....",  # 5
+    "...oXEGGGOo.....",  # 6
+    "mjoHGGGOOOOo..T.",  # 7
+    "jmoGGGOOObbo.uTt",  # 8
+    ".jmGOOOOSSWWoTTt",  # 9
+    "..oOOObbSSsooTTt",  # 10
+    "...oObbWsWo..TTt",  # 11
+    "....obWWWo....T.",  # 12
+    ".....pwwp.......",  # 13
+    "......pp........",  # 14
+    ".......P........",  # 15
 ]
 
 
 def grid(variant):
-    return [list(r) for r in GRID]
+    g = [list(r) for r in GRID]
+    if variant == "B":
+        # B: the thumbprint in its pale halo, as on the real fish (above and in front, the lit side)
+        for x, y in ((8, 8), (9, 8), (7, 9), (7, 10)):
+            g[y][x] = "R"
+    if variant == "C":
+        # C (round 2): a hint of the pale ring on three pixels round the spot
+        for x, y in ((7, 9), (8, 8), (10, 10)):
+            g[y][x] = "R"
+    return g
 
 
 def render(g, variant):
@@ -142,13 +164,13 @@ def render(g, variant):
 
 
 def check(g, variant):
-    """No stray pixels; the eye is a 2 x 2 with one glint."""
+    """No stray pixels (touching nothing, even at a corner); one pupil."""
     for y in range(16):
         for x in range(16):
             if g[y][x] == ".":
                 continue
             if not any(0 <= x + dx < 16 and 0 <= y + dy < 16 and g[y + dy][x + dx] != "."
-                       for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                       for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy):   # diagonal lines allowed
                 print(f"warning {variant}: stray pixel at {x},{y}")
     assert sum(r.count("E") for r in g) == 1, variant
 
@@ -173,11 +195,30 @@ def hotbar(out, items, sc):
     return Image.open(out).convert("RGB")
 
 
+MODEL_SHOTS = os.path.join(ART, "candidates", "pixxi_san_pietru_model")
+
+
+def model_band(W, bg=(52, 52, 56)):
+    """The owner-accepted model, side on in game (the spine close-up and the tank view), for the review sheets."""
+    shots = [("redo_spines_side.png", (300, 120, 720, 470)), ("redo_side.png", (290, 60, 560, 320))]
+    band = Image.new("RGB", (W, 330), bg)
+    x = 10
+    for name, box in shots:
+        path = os.path.join(MODEL_SHOTS, name)
+        if not os.path.exists(path):
+            continue
+        im = Image.open(path).convert("RGB").crop(box)
+        im = im.resize((int(im.width * 300 / im.height), 300))
+        band.paste(im, (x, 10))
+        x += im.width + 20
+    return band
+
+
 def sheet(icons):
     font, small = label_font(16), label_font(13)
     W = 1800
     bg, ink = (52, 52, 56), (235, 235, 235)
-    parts = []
+    parts = [("The accepted model, side on in game (spine close-up, and in the tank)", model_band(W, bg))]
     band = Image.new("RGB", (W, 200), bg)
     d = ImageDraw.Draw(band)
     x = 10

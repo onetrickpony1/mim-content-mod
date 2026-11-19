@@ -36,28 +36,45 @@ public class PixxiSanPietruModel extends FishModel {
             /* col10 */ .texOffs(0, 16).addBox(-0.5F, -3.0F, 4.0F, 1.0F, 7.0F, 1.0F)
             /* col11 */ .texOffs(4, 16).addBox(-0.5F, -2.0F, 5.0F, 1.0F, 5.0F, 1.0F)
             /* col12 */ .texOffs(8, 16).addBox(-0.5F, -1.0F, 6.0F, 1.0F, 3.0F, 1.0F)
-            /* soft_dorsal */ .texOffs(34, 12).addBox(0.0F, -7.0F, 2.0F, 0.0F, 5.0F, 4.0F)
-            /* anal */ .texOffs(42, 9).addBox(0.0F, 3.0F, -1.0F, 0.0F, 4.0F, 7.0F)
-            /* pelvic */ .texOffs(56, 12).addBox(0.0F, 5.0F, -6.0F, 0.0F, 2.0F, 4.0F),
+            /* anal */ .texOffs(0, 20).addBox(0.0F, 3.0F, -1.0F, 0.0F, 4.0F, 7.0F)
+            /* pelvic */ .texOffs(14, 23).addBox(0.0F, 5.0F, -6.0F, 0.0F, 2.0F, 4.0F),
             PartPose.offset(0.0F, 17.0F, 0.0F));
         PartDefinition topfinPart = root.addOrReplaceChild("top_fin", CubeListBuilder.create()
-            /* membrane */ .texOffs(12, 9).addBox(0.0F, -2.0F, 0.0F, 0.0F, 2.0F, 7.0F),
+            /* dorsal */ .texOffs(12, 4).addBox(0.0F, -9.0F, 0.0F, 0.0F, 11.0F, 12.0F),
             PartPose.offset(0.0F, 12.0F, -5.0F));
         root.addOrReplaceChild("tail_fin", CubeListBuilder.create()
-            /* caudal */ .texOffs(0, 22).addBox(0.0F, -4.0F, 0.0F, 0.0F, 7.0F, 4.0F),
+            /* caudal */ .texOffs(22, 23).addBox(0.0F, -4.0F, 0.0F, 0.0F, 7.0F, 4.0F),
             PartPose.offset(0.0F, 17.0F, 7.0F));
-        topfinPart.addOrReplaceChild("spine_0", CubeListBuilder.create()
-            /* spine_0 */ .texOffs(26, 15).addBox(0.0F, -10.0F, 0.0F, 0.0F, 10.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -0.785F, 0.0F, 0.0F));
-        topfinPart.addOrReplaceChild("spine_1", CubeListBuilder.create()
-            /* spine_1 */ .texOffs(28, 15).addBox(0.0F, -9.0F, 0.0F, 0.0F, 9.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -2.0F, 2.0F, -0.785F, 0.0F, 0.0F));
-        topfinPart.addOrReplaceChild("spine_2", CubeListBuilder.create()
-            /* spine_2 */ .texOffs(30, 15).addBox(0.0F, -7.0F, 0.0F, 0.0F, 7.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -1.0F, 4.0F, -0.785F, 0.0F, 0.0F));
-        topfinPart.addOrReplaceChild("spine_3", CubeListBuilder.create()
-            /* spine_3 */ .texOffs(32, 15).addBox(0.0F, -6.0F, 0.0F, 0.0F, 6.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -1.0F, 6.0F, -0.785F, 0.0F, 0.0F));
+        PartDefinition spine0Part = topfinPart.addOrReplaceChild("spine_0", CubeListBuilder.create()
+            /* spine_0 */ .texOffs(36, 16).addBox(-0.175F, -8.0F, -0.175F, 0.35F, 8.0F, 0.35F),
+            PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.6F, 0.0F, 0.0F));
+        spine0Part.addOrReplaceChild("filament_0", CubeListBuilder.create()
+            /* filament_0 */ .texOffs(46, 16).addBox(-0.1F, -6.0F, -0.1F, 0.2F, 6.0F, 0.2F),
+            PartPose.offsetAndRotation(0.0F, -8.0F, 0.0F, -0.6F, 0.0F, 0.0F));
+        PartDefinition spine1Part = topfinPart.addOrReplaceChild("spine_1", CubeListBuilder.create()
+            /* spine_1 */ .texOffs(38, 16).addBox(-0.175F, -9.0F, -0.175F, 0.35F, 9.0F, 0.35F),
+            PartPose.offsetAndRotation(0.0F, 0.0F, 2.0F, -0.6F, 0.0F, 0.0F));
+        spine1Part.addOrReplaceChild("filament_1", CubeListBuilder.create()
+            /* filament_1 */ .texOffs(47, 16).addBox(-0.1F, -6.0F, -0.1F, 0.2F, 6.0F, 0.2F),
+            PartPose.offsetAndRotation(0.0F, -9.0F, 0.0F, -0.6F, 0.0F, 0.0F));
+        PartDefinition spine2Part = topfinPart.addOrReplaceChild("spine_2", CubeListBuilder.create()
+            /* spine_2 */ .texOffs(40, 16).addBox(-0.175F, -8.0F, -0.175F, 0.35F, 8.0F, 0.35F),
+            PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -0.6F, 0.0F, 0.0F));
+        spine2Part.addOrReplaceChild("filament_2", CubeListBuilder.create()
+            /* filament_2 */ .texOffs(48, 16).addBox(-0.1F, -5.0F, -0.1F, 0.2F, 5.0F, 0.2F),
+            PartPose.offsetAndRotation(0.0F, -8.0F, 0.0F, -0.6F, 0.0F, 0.0F));
+        PartDefinition spine3Part = topfinPart.addOrReplaceChild("spine_3", CubeListBuilder.create()
+            /* spine_3 */ .texOffs(42, 16).addBox(-0.175F, -6.0F, -0.175F, 0.35F, 6.0F, 0.35F),
+            PartPose.offsetAndRotation(0.0F, 0.0F, 6.0F, -0.6F, 0.0F, 0.0F));
+        spine3Part.addOrReplaceChild("filament_3", CubeListBuilder.create()
+            /* filament_3 */ .texOffs(49, 16).addBox(-0.1F, -4.0F, -0.1F, 0.2F, 4.0F, 0.2F),
+            PartPose.offsetAndRotation(0.0F, -6.0F, 0.0F, -0.6F, 0.0F, 0.0F));
+        PartDefinition spine4Part = topfinPart.addOrReplaceChild("spine_4", CubeListBuilder.create()
+            /* spine_4 */ .texOffs(44, 16).addBox(-0.175F, -4.0F, -0.175F, 0.35F, 4.0F, 0.35F),
+            PartPose.offsetAndRotation(0.0F, 1.0F, 8.0F, -0.6F, 0.0F, 0.0F));
+        spine4Part.addOrReplaceChild("filament_4", CubeListBuilder.create()
+            /* filament_4 */ .texOffs(50, 16).addBox(-0.1F, -2.0F, -0.1F, 0.2F, 2.0F, 0.2F),
+            PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, -0.6F, 0.0F, 0.0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
 }

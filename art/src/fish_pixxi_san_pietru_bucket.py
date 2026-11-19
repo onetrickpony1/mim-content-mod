@@ -19,6 +19,14 @@ shared shades of the other buckets.
 Candidates: A (the head high, the spot's edge at the waterline), B (the head a row lower, no spot), C (A with a
 taller fin). Bucket critic rounds: 2 (PASS in round 2).
 
+REDO 2026-11-19 (owner: "too flat and fat they dont look like the fish"): the grids below replaced the night version,
+following the redrawn icon. C (greyer, near-black spines) chosen. Redo critic rounds: 3 of 3, all FAIL; the owner
+judges. Blind reads: all three took it for a bucket of the same fish as the icon, probably a John Dory (50-55%).
+
+REDO 2 2026-11-19 (owner: icon C accepted; the bucket fails, "the mouth looks like a magnet or duck bill"): redrawn
+from the accepted icon in its palette, two candidates. Mouth critic rounds: A PASS in round 1, then the blind readers
+still saw a pale bill (the head stuck out past the bucket), fixed, A PASS again in round 2.
+
 Writes: mod/src/main/resources/assets/mimcontent/textures/item/pixxi_san_pietru_bucket.png (byte-identical on rerun),
 the candidates in art/candidates/pixxi_san_pietru_bucket/ and the review sheet
 art/candidates/fish_pixxi_san_pietru_bucket.png.
@@ -33,7 +41,7 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from fish_bucket_rim import RIM, OUTLINE, check_rim  # noqa: E402
-from fish_pixxi_san_pietru_icon import PAL as ICON  # noqa: E402
+from fish_pixxi_san_pietru_icon import PALS as ICONS, model_band  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(HERE))
 ART = os.path.join(ROOT, "art")
@@ -55,62 +63,63 @@ PAL = {
     "^": hx("#6a92ea"),  # a glint of light on the water
     "#": RIM,            # the bucket's back-rim outline where we cover a cod pixel
 }
-PAL.update({k: ICON[k] for k in "oHGObWVSEImqfnDk"})
+PAL.update({k: ICONS["A"][k] for k in "oHGObWSRXEmjfnd"})
+PAL["v"] = hx("#1d3c96")
+PAL_C = dict(PAL)
+PAL_C.update({k: ICONS["C"][k] for k in "oHGObWSRXEmjfnd"})   # C: the icon's greyer olive
 
-# rows 0-5 (rows 6-15 clear); "." is clear (vanilla cod_bucket's own outline or water shows there)
 GRIDS = {
-    # A: the jaw's dark tip q and the gape m at the top left; the lit head H G with the eye E and its gold pixel I;
-    # the spiny fin (dark spines f, membrane D, pale tips n) standing up behind the head; the body dives to the lower
-    # right: olive O, mid b, the dark spot S at the waterline, the shaded belly V, into the water.
-    # Round 1 (critic: the jaw vanished on the dark slot, the two spines read as ears): the jaw's upper edge lit so
-    # the dark jaw shows below it; the spines joined by membrane with a third, shorter one, stepping down to the
-    # right; the spot moved right, away from the eye; the fin's base joined to the head.
+    # Redo 2 (owner, 2026-11-19: icon C accepted; the bucket fails, "the mouth looks like a magnet or duck bill"):
+    # redrawn from the accepted icon, in its palette. The head rises out of the water facing up and left with the
+    # mouth only a small dark jaw line in the head's outline (no pale lips, nothing sticking out); the eye high on the
+    # head, a black pupil with its pale ring above and in front, as on the icon; three near-black spines raked back
+    # with light tips; the thumbprint mid-body above the water with a hint of pale ring; the back slopes into the
+    # water. A: the gape a dark notch under the snout, the chin a step ahead. B: the gape opening upward at the
+    # snout's tip, the jaw a dark line under it. Mouth critic round 1: A PASS (B's dark wedge read as a small beak);
+    # its polish applied after: the lip tip k a softer dark olive-brown. Blind reads after it: all three still saw
+    # a pale bill at the top left (the eye's two cream pixels and the lit chin), so the eye keeps one cream pixel above
+    # it and the chin and the pixel in front of the eye are mid olive.
+    # Round 2 fix: the head moved a pixel right so nothing pokes out past the bucket's left side (the pale snout out
+    # there read as a bill), the spot a pixel further back from the eye. Round 2: A PASS (B's tan lower jaw read as
+    # a flat open bill).
     "A": [
-        "...qO..nfn......",
-        "..DmHGffDfD.....",
-        "...oHIGOODk#....",
-        "...oGEGObbOk#...",
-        "..#~oGOObSSVk...",
-        "..#~~oObbSVv~...",
+        "....oXon.n.n....",
+        "...oOEfOfOf.....",
+        "...kmOORSSb.....",
+        "...ooObbSSbb#...",
+        "..#~oObbbWW~~...",
+        "..#~~obWWWv~~...",
     ],
-    # B: the same head a row lower, the fin shorter, no spot
     "B": [
-        "................",
-        "...qoGon.n......",
-        "..qmHGofDf##....",
-        "...oHIGOODk#....",
-        "..#~oGEObbVv#...",
-        "..#~~oOObVv~~...",
-    ],
-    # C: A with the fin a pixel taller
-    "C": [
-        ".......n.n......",
-        "...qoGof.f......",
-        "..qmHGofDf##....",
-        "...oHIGOODk#....",
-        "..#~oGEObSbVk...",
-        "..#~~oObSSVv~...",
+        "....oXon.n.n....",
+        "...mOEfOfOf.....",
+        "...ooOORSSb.....",
+        "...oOObbSSbb#...",
+        "..#~oObbbWW~~...",
+        "..#~~obWWWv~~...",
     ],
 }
+PAL_C["k"] = hx("#4a4230")                  # A's lip tip: dark olive-brown, not the outline's near-black (critic polish)
+PALS = {"A": PAL_C, "B": PAL_C}
 
 
 def fish_over_rim(grid):
     """The rim outline pixels the fish sits in front of: those our layer paints with a fish colour, not a dark grey."""
     def dark(c):
         return max(c) < 0x40 and max(c) - min(c) < 6
-    return [(x, y) for (x, y) in OUTLINE if y < len(grid) and grid[y][x] not in ".~v^" and not dark(PAL[grid[y][x]])]
+    return [(x, y) for (x, y) in OUTLINE if y < len(grid) and grid[y][x] not in ".~v^#" and not dark(PAL[grid[y][x]])]
 
 
 FISH_OVER_RIM = {v: fish_over_rim(g) for v, g in GRIDS.items()}
 
 
-def build(grid):
+def build(grid, P=PAL):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for y, row in enumerate(grid):
         assert len(row) == 16, (y, len(row))
         for x, ch in enumerate(row):
             if ch != ".":
-                img.putpixel((x, y), PAL[ch] + (255,))
+                img.putpixel((x, y), P[ch] + (255,))
     return img
 
 
@@ -152,7 +161,7 @@ def sheet(layers):
     font, small = label_font(16), label_font(13)
     W = 1500
     bg, ink = (52, 52, 56), (235, 235, 235)
-    parts = []
+    parts = [("The accepted model, side on in game (spine close-up, and in the tank)", model_band(W, bg))]
     band = Image.new("RGB", (W, 330), bg)
     d = ImageDraw.Draw(band)
     for i, (v, layer) in enumerate(layers.items()):
@@ -207,7 +216,7 @@ def main():
     os.makedirs(CAND, exist_ok=True)
     layers = {}
     for v, g in GRIDS.items():
-        layer = build(g + ["................"] * 10)
+        layer = build(g + ["................"] * 10, PALS[v])
         check_cover(layer)
         check_rim(layer, os.path.join(VANILLA, "cod_bucket.png"), FISH_OVER_RIM[v])
         layer.save(os.path.join(CAND, f"layer_{v}.png"))

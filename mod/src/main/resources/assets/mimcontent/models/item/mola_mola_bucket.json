@@ -1,7 +1,0 @@
-{
- "parent": "minecraft:item/generated",
- "textures": {
-  "layer0": "minecraft:item/cod_bucket",
-  "layer1": "mimcontent:item/mola_mola_bucket"
- }
-}
