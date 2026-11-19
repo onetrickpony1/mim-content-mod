@@ -48,7 +48,7 @@ The tier A fish from [[Content mod list]] section 6, built on the owner's go-ahe
 | `lingwata` | Lingwata (night job) | alone; low over sand, rests often (like the boll); shy; flat on land too | 0.6 x 0.2 | 3 boxes, 1.13 long, 0.5 wide, 0.09 thick | 4 | 1 | `lingwata` |
 | `hmar` | Ħmar (night job) | alone or in twos, 0.5 to 3 blocks over rock; shy | 0.55 x 0.7 | 3 boxes, 1.0 long, 0.19 wide, 0.81 tall | 6 | 1-2 | `hmar` |
 | `gallinella` | Gallinella (night job) | alone or in twos, within half a block of the sand; shy | 0.6 x 0.35 | 3 boxes, 1.13 long, 0.88 wide with the "wings", 0.34 tall | 5 | 1-2 | `gallinella` |
-| `lionfish` | Lionfish† (night job) | alone, slow (speed 0.5), bold, over rock; stings (below) | 0.5 x 0.55 | 3 boxes, 0.94 long, 0.69 wide with the fans, 0.63 tall | 4 | 1 | `lionfish` |
+| `lionfish` | Lionfish† (night job) | alone, slow (speed 0.5), bold, over rock, drifts every 2 seconds or so; stings (below) | 0.5 x 0.55 | 3 boxes, 0.94 long, 0.28 wide with the fans, 0.78 tall with the spines | 4 | 1 | `lionfish` |
 
 Vanilla for scale: cod 0.5 x 0.3 (3 health), salmon 0.7 x 0.4.
 

@@ -12,6 +12,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 
 ## Behaviour, spawns, rarity
 - **Behaviour:** slow (movement speed 0.5), bold: it doesn't shy from players. Hovers 0.3 to 2 blocks over rock and sometimes rests on it. Health 4.
+- **Behaviour fix (2026-11-19, with the model redo):** a lone lionfish hardly moved (about 0.002 blocks a tick), so the quick test's swim check failed. The cause: it swam at 0.6 x its speed 0.5 = 0.3, and the fish movement's push grows with the square of the speed, so 0.3 is almost nothing. It now swims at its full speed 0.5 (still slower than vanilla's fish, 0.7) and picks a new spot about every 2 seconds instead of 4. In three quick runs it swam 4.25, 2.03 and 3.92 blocks; the check was not changed.
 - **Stings:** yes, its spines. Touching it or hitting it in melee: 1 heart and Poison for 6 seconds, at most once every 2 seconds. Mobs that touch it too, other fish not. Arrows don't count. Creative, spectator, peaceful and Jellyfish Ward: never stung.
 - **Spawns:** only over rock. `bahar_sea`, `dwejra_bahar_sea`, weight 1, alone. Vanilla: warm ocean only, weight 1.
 - **Rarity:** rare: an invader that has only recently arrived (first seen 2016, a reward offered in 2019, and a first confirmed catch reported in January 2026). The content list's "cull the invader" idea isn't built.
@@ -29,6 +30,18 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - Round 1 FAIL: the body bands vanished under water, no countershading, the tail looked loose, the fans read as checkered wings from above, the dark snout made a frowning face, the tentacles didn't show, the spines' dark bands were as dark as the eye. **Round 2 PASS.**
 - Polish not done (left for the owner): the fans from above are thin (the critic suggested widening them toward the tip), the fan rays from the side are a little ladder-like, the tentacles are small, and the tail could fill its corners.
 - New review shots `fish-lionfish-lineup` and `-lineup-above` (lionfish, cod, skorfna, cerna and a small tonn in one tank over stone) were added to the fish test.
+
+**3D model redo** (owner 2026-11-19: "its too fat and the colours are very flat", [[2026-11-19 Redo verdicts - lizz bucket, lionfish, lingwata Q, gallinella, John Dory]]): passed in round 2 of 3.
+- **Slimmer:** the body is now 2 px thick (was 3) and 4 px deep (was 5), as compressed as the real fish. The length (15 px), the spines, the fans and the tentacles are kept. The fans are 3 px deep (was 4) and spread a little more, so the pale belly shows under them.
+- **Colours with depth** (a new palette, D; the accepted icon keeps its own):
+  - a dark brown top edge along the whole back, then the bands darkening toward the back and fading to a near-white belly row;
+  - two band colours that stay apart under water: near-black brown (#321610 to #4a2014) and a lighter rust (#943a1e to #c4582e), alternating; cream warmed to peach (#f2c8b0) so it stays warm under the blue water;
+  - every texel varies by up to 5 % so a band reads as skin, not a print;
+  - the fins and spines lit at the top and shaded toward their far edge, the fans' face toward the body a step darker than the outer face, and the spines' and tail's right side a little darker than the left;
+  - a pale ring round the eye on every side; in the eye's row the dark bands near it turn rust, so nothing near-black sits beside the eye.
+- **Band patterns** tried on the same model: A (brown, then rust in the middle), B (rust, brown, rust), C (mixed). **C chosen** (the critic: the most separation between fan, body and spines).
+- Redo round 1 FAIL: slimmer was right, but under water the colours collapsed to two tones (grey-lavender and plum), the fan hid the belly, the eye was close to the dark bands. **Redo round 2 PASS**. After the pass, its first polish point was applied: a near-black square behind the gill at eye height could pass for a second eye, so it is rust.
+- Polish not done: continuous bands across the top of the back (from above it looks a little like the cerna's mottling), taller pale tentacles, one more rust row in the tail.
 
 **Item icon** (`art/src/fish_lionfish_icon.py`): passed in round 2 of 8.
 - Head lower left, tail upper right, like vanilla's fish. Colours: the model's palette lifted x1.2 for out of the water.

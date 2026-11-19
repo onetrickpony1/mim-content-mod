@@ -201,6 +201,8 @@ def stripe(pal, yi, zi, variant):
         return jitter(pal["p0"], 41, yi, zi)    # the belly row: near white, no bands (countershading)
     if band is None:
         return jitter(pal["p%d" % tone], 41, yi, zi)
+    if band == "b" and yi == EYE[0] and zi <= -2:
+        band = "r"   # in the eye's row near the eye a dark band turns rust, so no near-black square reads as a 2nd eye
     return jitter(pal[("d%d" if band == "b" else "h%d") % tone], 43, yi, zi)
 
 

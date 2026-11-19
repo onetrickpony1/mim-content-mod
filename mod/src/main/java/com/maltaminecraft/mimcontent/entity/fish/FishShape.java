@@ -112,7 +112,7 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         // 18 px long, 14 wide (the pectoral "wings"), 5.5 tall
         shape("gallinella", 6.000F, 0.15625F, new float[][] {{-6.000F, 7.026F, 18.000F, 23.000F}, {0.000F, 7.026F, 18.000F, 24.000F}, {6.000F, 1.000F, 19.000F, 24.000F}}),
         // 15 px long, 11 wide (the fan fins), 10 tall (the dorsal spines)
-        shape("lionfish", 5.000F, 0.125F, new float[][] {{-4.500F, 4.463F, 10.490F, 23.000F}, {0.500F, 4.463F, 10.926F, 23.000F}, {5.500F, 4.463F, 15.500F, 22.684F}}));
+        shape("lionfish", 5.000F, 0.125F, new float[][] {{-4.500F, 4.401F, 10.490F, 23.000F}, {0.500F, 4.401F, 10.926F, 23.000F}, {5.500F, 4.401F, 15.500F, 22.500F}}));
 
     private static Map.Entry<String, FishShape> shape(String id, float slice, float landLift, float[][] rows) {
         return new AbstractMap.SimpleEntry<>(id, new FishShape(slice, rows, landLift, null, false, 0.0F, 1.0F));

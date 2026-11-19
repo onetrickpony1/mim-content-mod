@@ -143,9 +143,11 @@ public final class MimFishes {
     public static final Fish GALLINELLA = bottom("gallinella", 0.6F, 0.35F, 5.0, 2, 0.7, new Habit(Floor.SOFT, 0.05, 0.5, 0.6, 40, 300, 60, 200, true, false, null),
         () -> MimContent.item("gallinella", Item::new, new Item.Properties()));
     // The lionfish (Pterois miles, invasive since 2016): slow (0.5), bold (doesn't shy), over rock; its spines sting
-    // what touches or hits it (1 heart and Poison for 6 seconds). Rare. It hovers: short, slow drifts every 2 seconds
-    // or so (swimEvery 40, as the gallinella); with 80 a lone one, not fleeing anyone, sat still most of the time.
-    public static final Fish LIONFISH = bottom("lionfish", 0.5F, 0.55F, 4.0, 1, 0.5, new Habit(Floor.ROCK, 0.3, 2.0, 0.6, 40, 400, 100, 300, false, false,
+    // what touches or hits it (1 heart and Poison for 6 seconds). Rare. It hovers: slow drifts every 2 seconds or so
+    // (swimEvery 40, as the gallinella), at its full slow speed (swim speed 1.0 x 0.5). The fish move control's push
+    // grows with the square of the speed, so the earlier 0.6 x 0.5 = 0.3 barely moved it (about 0.002 blocks a tick):
+    // a lone lionfish, fleeing no one, sat still.
+    public static final Fish LIONFISH = bottom("lionfish", 0.5F, 0.55F, 4.0, 1, 0.5, new Habit(Floor.ROCK, 0.3, 2.0, 1.0, 40, 400, 100, 300, false, false,
         new Sting(2.0F, 6, 40)), () -> MimContent.item("lionfish", Item::new, new Item.Properties()));
 
     // The Malta world's sea biomes (from the world's datapack, maltamc namespace).
