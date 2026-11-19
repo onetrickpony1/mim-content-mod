@@ -49,7 +49,16 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
   2. "Slot: a bucket of fish, i.e. a fish-in-a-water-bucket item like the vanilla "Bucket of Cod", holding a long, slim, sandy-cream fish with a darker tan-brown back that sticks diagonally up and to the left out of the bucket."
   3. "Slot: a bucket of fish (a water bucket with a fish in it). The fish is long and thin, pale tan to cream with yellow fins, and lies diagonally with its head or tail sticking up out of the top left of the bucket."
 - All three saw a bucket with a slim sandy fish; none could name it.
-- The spawn egg is still a placeholder (not part of tonight's job).
+
+**Egg** (`art/src/fish_sawt_egg.py`, 2026-11-19): passed in round 3 of 3. **Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+- Started because the owner approved the bucket ([[2026-11-18 Approving a step starts the next; skorfna bucket]]). A sandy-gold egg in vanilla's outline and vanilla's own pool, in the icon's and model's colours only, lit from the top left, with the cream belly on the lower front. Its features are the short jet-black venomous fin, the fine oblique lines, and the yellow tail with its black edge as the right-hand side fin. No eye, no face.
+- Candidates: A (a black fin standing on the egg's top, with lines), B (A without lines), C (the fin further forward). Then D and E from the critics' fixes. **E chosen.**
+- Round 1 FAIL, pick A: "it reads as an onion or garlic bulb with its stalk, or a fuse on a bomb". D laid the fin flat on the shoulder. Round 2 FAIL on D: "A compact black blob on that shoulder, with sand all around it, then reads as an eye or a cap". E makes the fin a long slanted run hugging the upper-front outline, with two small spines poking out. Round 3 PASS on E: "E's black is a slanted streak along the upper-left outline." Its optional polish, not done: at most one spine pixel outside the outline, the top spine dark brown rather than black.
+- **Blind reads** (three fresh readers, neutral file names, the egg in slot 4 among vanilla eggs), first lines word for word:
+  - D: "**bar4:** A pale tan or sand-coloured egg with dark blotches and what looks like an open mouth or head shape at the upper left. I read it as a sandy, camouflaged bottom fish, maybe a weever or a stargazer, or possibly a frog or toad." / "**bar4:** A spawn egg that is sandy tan with dark brown blotches and a dark eye-like mark near the top left." / "**bar4.png:** A sandy tan, lumpy spawn egg with dark brown blotches near the top."
+  - E (the pick): "bar2.png, slot 4: My first impression is a spawn egg for a sandy, tan creature with darker brown diagonal stripes and a small black tip at the top." / "bar2.png, slot 4: my first impression is a spawn egg for a sand-coloured fish (beige or tan) with a dark tip or fin on top and dark streaks across the body." / "bar2.png: It's a tan or sandy spawn egg with dark brown diagonal streaks and speckles, and a small dark spike at the top left."
+- All three read E as a spawn egg, and none saw an eye. Two read a sandy fish (one named a weever); one said it could also be "a loaf of bread", another "a speckled bread roll or a lizard". It is the least clear egg of this batch.
+- Sheet: `art/candidates/fish_sawt_egg.png`.
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.

@@ -49,6 +49,30 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - All three saw a bucket with a plain grey-olive fish; none could name the species.
 - The spawn egg is still a placeholder (not part of tonight's job).
 
+## Egg
+
+**Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+**Spawn egg** (`art/src/fish_hmar_egg.py`, shared parts in `art/src/fish_egg_common.py`), 2026-11-19: **failed all 3 critic rounds**; the best try, C4 (round 3's fixes, not judged again), is installed and waits for the owner. Started because the bucket was accepted ([[2026-11-19 Night fish icons and buckets - most pass; John Dory, gallinella, lingwata bucket redo]], [[2026-11-18 Approving a step starts the next; skorfna bucket]]).
+- **Design:** vanilla's fish-egg outline and vanilla's own pool, in the accepted icon's colours only. Features: the trigger spine, and two soft darker saddles (never level, so no pair of eyes) on the olive-grey flank over a pale belly. Lit at the top left; the side flaps are the soft fins. No eye, no face.
+- **Candidates:** A, two soft blotches; B, the same blotches bigger and darker; C, A with a darker back cap. Before the critic, the maker's own look at 1x dropped long saddle bands that ran up to the top (a striped garlic bulb).
+- **Critic round 1: FAIL, pick C.** "No candidate reads as a triggerfish at 1x. Blind readers saw camouflage mottling, and the "trigger" shows only as a 1 px dark stalk on the egg's pointed tip. The sail behind it is pale `f`, about the same as the slot grey, so it disappears at 1x and 2x. The top reads as an onion or garlic point, not a fin. Next to the skorfna egg it is the same kind of thing (a mottled bottom-dweller egg with a spike on top), just in grey." Fixes applied (C2): a 2 px dark base to the spine (7,2) o and a step down to the back (8,2) U; the blotches' dark cores softened (6,6) (9,9) q; three pale specks on the flank made s (4,8) (3,9) (7,10).
+- **Critic round 2: FAIL.** "It is still an onion with a point on top. At 1x and 2x, in both hotbars, C2's outline runs straight up from the egg into the spine. ... Making (7,2) o and (8,2) U just thickened the cone." "The changes don't show at 1x." "What already works: the mottling is calmer, it is clearly not the skorfna (different colour, no comb), there is no face or level dark pair, it is lit from the top left and the pool is correct." Fixes applied (C3): vanilla's rounded top back, the trigger moved onto the front shoulder (5,2) (5,3) o, the crown lit (6,3) (6,4) L.
+- **Critic round 3: FAIL.** "At 1x and 2x the spine at (5,2) and (5,3) is invisible as a trigger. It sits straight above the left outline at (5,4) and (4,5), so it reads as that outline carrying on upward. The egg then looks like a lopsided cone with its tip off to the left, which is still the onion/garlic read with the point moved, not a spine." "At 1x, C3 is almost the same as A, B, C and C2." Fixes applied (C4, installed): the spine a 2 px thorn raked back over the crown (5,3) (6,2) o with a dark root (5,4) o; a wider pale belly (6,10) (6,11) W. Its optional fix, darker K cores in both saddles, was not done.
+- **Blind reads, round 1** (three fresh readers, A, B and C in slots 2, 5 and 8 among vanilla eggs; none could tell them apart):
+  1. "A spawn egg in grey-olive, mottled with darker green-grey blotches like camouflage. My first impression is a fish that hides on rocks, such as a scorpionfish or a young grouper; it could also be an octopus or cuttlefish. Nothing about it points clearly to a species."
+  2. "A spawn egg in mottled grey-olive with darker blotches, like camouflage. It suggests a rock-dwelling or bottom fish such as a dusky grouper or a scorpionfish. It could also be read as a cuttlefish or octopus, and nothing on it clearly says "fish"."
+  3. "First impression: a dull olive/grey-green spawn egg with darker mottled blotches. It reads as a camouflaged bottom fish, my guess being a grouper or a scorpionfish. It could also be a cuttlefish or octopus, since there is no clear fish feature."
+- **Blind reads, C2** (alone among eight vanilla water-mob eggs):
+  1. "A dull grey-olive spawn egg with darker blotches. It reads as a camouflaged bottom fish, maybe a grouper or a scorpionfish. It could also be a mola mola, but I'm not confident."
+  2. "A spawn egg in dull olive-khaki with darker grey-green speckles. It reads as a camouflaged, sandy-bottom creature, my first guess a flatfish such as a sole or flounder, or possibly a toad."
+  3. "A spawn egg, dull grey-olive with darker blotches. My first impression is a camouflaged bottom fish, maybe a scorpionfish or grouper. It could also be a cuttlefish or octopus."
+- **Blind reads, C3** (alone among eight vanilla water-mob eggs):
+  1. "A spawn egg in pale grey-khaki with darker olive speckles and a slightly pointed, lumpy top. It reads as a camouflaged bottom creature. My first guess is a scorpionfish (rockfish), and my second is a mottled cuttlefish or octopus."
+  2. "A spawn egg, pale olive-grey with darker mottling and no clear features ... My first impression is a stone or rock colour. I can't pin down the creature; my best guess is a bottom fish that hides against rock, such as a scorpionfish"
+  3. "At first glance it's a spawn egg ..., mottled olive-grey and khaki with a rough, rocky look. It most likely stands for a camouflaged rock-dwelling fish, perhaps a scorpionfish or a grouper ... at normal size it could pass for a plain stone or a mossy rock."
+- **No reader named a triggerfish**, as with the icon and bucket. C4 had no blind read. For the owner to judge at 1x; a different idea may be needed (the trigger is too small to carry the egg at 16 x 16).
+- **Compare sheet:** `art/candidates/fish_hmar_egg.png` (not in git).
+
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
 

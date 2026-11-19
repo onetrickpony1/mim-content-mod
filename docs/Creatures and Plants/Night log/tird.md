@@ -52,10 +52,19 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
   2. "**Third icon (first line):** a bucket with water and a brightly coloured fish in it."
   3. "Icon 3: a bucket of water holding a small, very colourful fish."
 - All three saw a fish bucket; all three named a wrasse (two said "ornate or rainbow wrasse").
-- The spawn egg is still a placeholder (not part of tonight's job).
 
 **Tests:** the one-fish run passes (swim, hit boxes, shots). The whole fish test (`SMOKE_ONLY=fish`) was run once: the tird's checks passed, and it failed only on the sawt's and the pixxi San Pietru's hit box rows (other makers' fish, still being drawn).
 
+**Egg** (`art/src/fish_tird_egg.py`, 2026-11-19): passed in round 2 of 3. **Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+- Started because the owner approved the bucket ([[2026-11-18 Approving a step starts the next; skorfna bucket]]). An egg in vanilla's outline and vanilla's own pool, in the icon's and model's colours only: the turquoise head at the upper left, the pale cyan bar and the red-orange band running diagonally down the egg's side, the green body behind it with the cream belly at the bottom, teal side fins. No eye, no face.
+- Candidates: A (the diagonal band), B (a turquoise cap with the band arching under it), C (B, a row lower). Then A2 from the critic's fixes (the band shaded along its length). **A2 chosen.**
+- Round 1 PASS with fixes, pick A: "This is the only candidate that doesn't read as a Pokéball"; B: "That is exactly the Pokéball read the owner warned about." Round 2 PASS on A2: "It reads as a tird at 1x and in the hotbar." Its optional polish, not done: the band's lowest pixel a mid orange, its top end tucked into dark green.
+- **Blind reads** of A2 (three fresh readers, neutral file names, the egg in slot 4 among vanilla eggs), first lines word for word:
+  1. "**bar3:** A light green egg with a diagonal blue and orange-red stripe running across it. This one looks like a rainbow wrasse (ornate wrasse), from the bright colourful stripe."
+  2. "**bar3:** A spawn egg that is green with a bold red-orange diagonal stripe edged in light blue. It reads as a colourful wrasse, such as an ornate or rainbow wrasse, or maybe a parrotfish."
+  3. "**bar3.png:** A green spawn egg with a bold diagonal stripe of red-orange next to blue. It reads as a brightly coloured fish, most like a rainbow wrasse."
+- All three read a spawn egg and named a wrasse; two said "ornate".
+- Sheet: `art/candidates/fish_tird_egg.png`.
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.

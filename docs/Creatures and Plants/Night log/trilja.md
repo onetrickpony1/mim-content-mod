@@ -49,6 +49,24 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
 - All three guessed red mullet and all told it from the marzpan's bucket (a deeper red with blue marks). Two said it could be taken for a salmon bucket at this size.
 - The spawn egg is still a placeholder (not part of tonight's job).
 
+## Egg
+
+**Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+**Spawn egg** (`art/src/fish_trilja_egg.py`, shared parts in `art/src/fish_egg_common.py`), 2026-11-19: **passed in round 1 of 3**; A2 installed, waiting for the owner. Started because the bucket was accepted ([[2026-11-19 Night fish icons and buckets - most pass; John Dory, gallinella, lingwata bucket redo]], [[2026-11-18 Approving a step starts the next; skorfna bucket]]).
+- **Design:** vanilla's fish-egg outline and vanilla's own pool, in the accepted icon's colours plus the model's deepest red (#a8424a) for the outline in the shade. Only two features: the gold line along the flank and the striped first dorsal fin. The red back is lit at the top left, the rose flank runs into a pale pink belly, and the side flaps are the pale pink fins. No eye, no face, no barbels (on the model and icon they always read as a beard, tusks or legs).
+- **Candidates:** A, the gold line on a diagonal from the lower front up to the back, as on the icon; B, the line as a ring round the egg (a U), with a fainter second line; C, A with a second, paler line under it. Before the critic, the maker's own look at 1x moved the fin: a small fin standing on the egg's tip read as a stem (an onion), so it now lies low over the top and slopes back onto the shoulder, its dark band being the egg's top edge.
+- **Critic round 1: PASS, pick A**, with fixes, all applied (A2): "(12,10) -> m, (12,11) -> m: the lower-right flank is still the light rose o right up to the D rim. The measured light balance is TL-BR -0.02, so the lit top-left is no brighter than the lower right"; "(11,12) -> m"; "(7,2) -> K: the pale cream F on row 2 sits nearly centred on the egg's tip. At 1x it reads as a pale nub on a pink dome, which is a mild anatomical-reading risk"; "(4,8) -> h: this widens the lit shoulder by one pixel". On B: "B's U-shaped line, with Y under it, is a band across the middle. The owner rejected that once already because it read as a Pokéball." On C: "C's second, paler line Y blends into the pale belly q at 1x."
+- **Blind reads, round 1** (three fresh readers, A, B and C in slots 2, 5 and 8 among vanilla eggs; none could tell them apart), word for word:
+  1. "A spawn egg in pink or salmon with a yellow-orange diagonal stripe across it and a paler pink belly. My first impression is a red mullet (Mullus surmuletus, a pink fish with yellow side stripes); a red sea bream is my second guess."
+  2. "My first impression is a fish spawn egg, salmon-pink with a wavy yellow-orange band along the side and a paler belly. It reads most like a red mullet (Mullus, Maltese trilja), since that is the pink fish with a yellow side stripe. It could also pass for a pink sea bream."
+  3. "First impression: a pink/rose spawn egg with a yellow-orange diagonal stripe along the side and a paler belly. It reads as a sea fish, most likely a red mullet (striped red mullet, Mullus surmuletus), because of the pink body and yellow lateral stripe."
+- **Blind reads, A2** (three fresh readers, the egg alone among eight vanilla water-mob eggs):
+  1. "A pink spawn egg with a paler pink diagonal band. My first thought was a pink or red fish, probably a red mullet or a pink sea bream, but nothing on it points clearly to one species."
+  2. "A spawn egg in pink and salmon with a pale cream diagonal band across the lower half. It reads as a pinkish-red fish. My first guess is red mullet or a pink sea bream, but nothing on it points to one species."
+  3. "A spawn egg, pink-salmon with a paler diagonal band across the lower half. It looks like a pink or red fish, maybe a red mullet or a pink sea bream (pandora)."
+- All six readers named red mullet first. Alone, the gold line read paler (cream) than beside its two variants.
+- **Compare sheet:** `art/candidates/fish_trilja_egg.png` (not in git).
+
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
 

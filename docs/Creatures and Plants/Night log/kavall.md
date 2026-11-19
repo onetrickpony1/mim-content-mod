@@ -46,7 +46,17 @@ Made overnight by a maker, judged by a fresh critic each round from pictures onl
   2. "Slot 3: a bucket holding a slim, silvery grey-green fish (it looks like a mackerel or sardine), lying diagonally with its head down in blue water."
   3. "Slot 3: a water bucket holding a slim silver-grey fish with a pale green-blue tint."
 - Two readers said the species is hard to tell at the smallest size; all three saw a silvery mackerel-like fish.
-- The spawn egg is still a placeholder (not part of tonight's job).
+
+**Egg** (`art/src/fish_kavall_egg.py`, 2026-11-19): passed in round 3 of 3. **Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+- Started because the owner approved the bucket ([[2026-11-18 Approving a step starts the next; skorfna bucket]]). A plain egg in vanilla's outline and vanilla's own pool, in the icon's colours only: the teal back with its dark tiger bars, the silver belly as a patch on the lower front (not a band, which reads as a Pokéball), and olive-yellow side fins. No eye, no face.
+- Candidates: A (three thin bars), B (A with the forked olive-yellow tail over the top right), C (wavier bars). Then B2 and B3 from the critics' fixes. **B3 chosen.**
+- Round 1 FAIL, pick B: "The bars read as a checker or net pattern, not wavy tiger bars ... almost the same as the incova egg". Round 2 FAIL on B2: "The bars don't read as bars ... At 1x and in the GUI-2 hotbar it turns into teal noise". Round 3 PASS on B3: "the 2-px diagonal bars read as stripes at 1x and in both hotbars". Its optional polish, not done: the outer tail tip a mid olive, the brightest silver one step down.
+- A bluer back to set it further apart from the incova egg was asked for in round 1 but not done: it needs a colour the accepted art doesn't have.
+- **Blind reads** (three fresh readers, neutral file names, the egg in slot 4 among vanilla eggs), first lines word for word:
+  - B2: "A teal-green and white egg with a small fin or tail sticking out at the top right. I'd guess a green-backed fish, maybe a wrasse or a bream." / "A spawn egg: teal-green on top, white underneath, with a thin yellow spike or stalk sticking up from the top right. It reads as a fish, perhaps a mackerel- or dolphinfish-type fish (green back, pale belly)." / "A spawn egg in teal-green with a pale white lower half and a thin yellowish stalk curling from the top."
+  - B3 (the pick): "My first impression is a spawn egg for a fish. It is a chunky teal or blue-green fish with a pale underside, sitting on the same blue base as the other eggs." / "bar1.png, slot 4: my first impression is a spawn egg for a teal-green fish with a pale white belly." / "bar1.png: It looks like a spawn egg for a fish. The fish is blue-green on top with a pale white belly, sitting on the blue base like the other slots, and reminds me of a mackerel."
+- All three read B3 as a spawn egg for a fish; all three named a mackerel(-type) fish, though none was sure. Two read the tail as a "stalk", "spike" or "lure".
+- Sheet: `art/candidates/fish_kavall_egg.png`.
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.

@@ -18,7 +18,7 @@ Choices made overnight for [[2026-11-18 Night job - the rest of the fish, Claude
 - **Drops:** itself (1 raw fish, `mimcontent:marzpan`). Bucket, spawn egg. It is shark bait.
 
 ## Art (night job, made in order: model, icon, bucket)
-Photos used (reference only, free licences, list in `art/references/fish_marzpan_refonly/list.tsv`): two divers' photos taken off Gozo, a fish market (for the true colours out of water), and divers' photos of red females and a grey male. The spawn egg is still the placeholder (not asked for tonight).
+Photos used (reference only, free licences, list in `art/references/fish_marzpan_refonly/list.tsv`): two divers' photos taken off Gozo, a fish market (for the true colours out of water), and divers' photos of red females and a grey male.
 - **Which colour:** the red female, which reads best. The grey male could come later as a second version, like the two skorfna.
 
 **3D model: passed in 5 critic rounds**
@@ -57,6 +57,17 @@ Photos used (reference only, free licences, list in `art/references/fish_marzpan
   - "A bucket of water holding a red-orange fish with some blue on it, maybe a wrasse or a red mullet. It looks like slot 4."
   - "A bucket of water holding a red fish with a pale grey-lilac head, a black eye and a yellow fin (it looks like a red mullet or a gurnard); it is the same item as hotbar slot 4."
 - Left as suggestions from round 2 (not done): a darker fin edge behind the head, a rounder top to the snout, a darker mouth, and a shaded lower edge to the cheek.
+
+**Egg** (`art/src/fish_marzpan_egg.py`, 2026-11-19): passed in round 2 of 3. **Owner 2026-11-19: passes** ([[2026-11-19 Spawn eggs - all eight pass]]).
+- Started because the owner approved the bucket ([[2026-11-18 Approving a step starts the next; skorfna bucket]]). A plain scarlet egg in vanilla's outline and vanilla's own pool, in the icon's colours only, lit from the top left. Its features are the grey-lilac cheek patch on the lower front and the yellow stripe under it. No eye, no face, no beak.
+- Candidates: A (cheek and stripe only), B (A with the yellow saddle slanting over the upper back), C (A with darker scale marks). Then A2 from the critic's fixes (the back darker toward the upper right, the cheek lighter). **A2 chosen.**
+- Round 1 PASS with fixes, pick A: "At 1x it reads as 'red egg, pale mark at bottom-left'. That is enough, but only just." B: "the yellow streak reads as a flame or highlight rather than a tail saddle"; C: "the scales are pale specks scattered over the body". Round 2 PASS on A2: "It is the best of the four". Its optional polish, not done: the darkest back red along the right shoulder.
+- **Blind reads** of A2 (three fresh readers, neutral file names, the egg in slot 4 among vanilla eggs), first lines word for word:
+  1. "**bar2:** A bright coral-red egg with a small grey-white patch at the lower left. I read it as a red fish: a red mullet, a scorpionfish, or a red bream."
+  2. "**bar2:** A spawn egg that is mostly bright red or coral, with a grey patch low on the left and a little yellow at the bottom. It reads as a red fish, most likely a red mullet. A scorpionfish is a second guess."
+  3. "**bar2.png:** A rounded coral-red spawn egg with a small grey-white patch low on the left and a bit of yellow at the base. It reads as a red fish, something like a red mullet or a scorpionfish."
+- All three read a spawn egg for a red fish; none named a parrotfish (two said red mullet first).
+- Sheet: `art/candidates/fish_marzpan_egg.png`.
 
 ## Not decided (for the owner)
 - Nothing here is owner-accepted yet. Change anything you like.
