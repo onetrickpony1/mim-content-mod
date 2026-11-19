@@ -93,22 +93,23 @@ public record FishShape(float sliceLength, float[][] slices, float landLift, Wav
         shape("lizz", 6.000F, 0.1F, new float[][] {{-9.000F, 1.000F, 20.000F, 22.000F}, {-3.000F, 1.622F, 17.000F, 23.000F}, {3.000F, 1.000F, 17.000F, 23.000F}, {9.000F, 0.500F, 18.000F, 23.000F}}),
         // 15 px long, 5.8 wide (the pectoral fins), 9 tall (the dorsal fin to the anal fin)
         shape("marzpan", 5F, 0.125F, new float[][] {{-4.5F, 2.887F, 14F, 22F}, {0.5F, 2.887F, 14F, 23F}, {5.5F, 1F, 15F, 23F}}),
-        // 13 px long, 2 wide, 5 tall (art/src/fish_tird_model.py)
-        shape("tird", 4.333F, 0.1F, new float[][] {{-3.833F, 1.622F, 19.000F, 23.000F}, {0.500F, 1.622F, 19.000F, 23.000F}, {4.833F, 0.500F, 18.500F, 23.500F}}),
+        // 12 px long, 2 wide, 5 tall (art/src/fish_tird_model.py)
+        shape("tird", 6.000F, 0.1F, new float[][] {{-3.000F, 1.622F, 19.000F, 23.000F}, {3.000F, 1.000F, 18.500F, 23.500F}}),
         // 13 px long, 2 wide, 6 tall (the barbels hang under the chin)
-        shape("trilja", 4.333F, 0.1F, new float[][] {{-3.833F, 1F, 18F, 24F}, {0.5F, 1F, 18F, 23F}, {4.833F, 1F, 19.5F, 23.5F}}),
-        // 9 px long, 2 wide, 4.5 tall
-        shape("sawt", 4.5F, 0.1F, new float[][] {{-1.75F, 1F, 19.5F, 24F}, {2.75F, 1F, 21F, 24F}}),
-        // 17 px long, 2 wide, 15 tall (the dorsal filaments)
-        shape("pixxi_san_pietru", 5.667F, 0.1F, new float[][] {{-6.167F, 1F, 8F, 23F}, {-0.5F, 1F, 8F, 23F}, {5.167F, 1F, 8F, 23F}}),
+        shape("trilja", 5.000F, 0.1F, new float[][] {{-5.500F, 1.000F, 17.000F, 24.933F}, {-0.500F, 1.000F, 17.000F, 23.000F}, {4.500F, 0.500F, 18.000F, 24.000F}}),
+        // 14 px long, 6.5 wide (the pectoral fans), 5 tall with the black dorsal; 1 px of it in the sand (art/src/fish_sawt_model.py)
+        shape("sawt", 4.667F, 0.1F, new float[][] {{-3.667F, 2.497F, 20.000F, 25.000F}, {1.000F, 1.000F, 20.000F, 25.000F}, {5.667F, 1.000F, 21.500F, 25.500F}}),
+        // 21 px long, 2 wide, 22 tall (the dorsal filaments to the pelvic fins; art/src/fish_pixxi_san_pietru_model.py)
+        shape("pixxi_san_pietru", 5.500F, 0.1F, new float[][] {{-8.250F, 1.000F, 13.000F, 24.000F}, {-2.750F, 1.000F, 2.926F, 24.000F}, {2.750F, 1.000F, 2.926F, 24.000F}, {8.250F, 0.500F, 6.756F, 24.000F}}),
         // 22 px long, 16 wide (the head and pectoral fins), 7 tall with the lure; flat: it lies flat on land
-        flatShape("petrica", 5.5F, 0.0F, new float[][] {{-8.25F, 5F, 17F, 24F}, {-2.75F, 8F, 20F, 24F}, {2.75F, 1.5F, 20.5F, 23.5F}, {8.25F, 1.5F, 20F, 24F}}),
-        // 18 px long, 8 wide, 1.5 thick; flat: it lies flat on land too
-        flatShape("lingwata", 6F, 0.0F, new float[][] {{-6F, 4F, 22.5F, 24F}, {0F, 4F, 22.5F, 24F}, {6F, 4F, 22.5F, 24F}}),
+        flatShape("petrica", 5.819F, 0.0F, new float[][] {{-13.184F, 9.000F, 17.135F, 24.000F}, {-7.365F, 9.000F, 19.000F, 24.000F}, {-1.547F, 10.038F, 19.000F, 24.000F}, {4.272F, 10.038F, 21.000F, 24.000F}, {10.091F, 1.500F, 20.000F, 24.000F}}),
+        // 23 px long with the tail, 10 wide, 2 thick (3 at the raised pectoral fin); flat: it lies flat on land too (art/src/fish_lingwata_model.py)
+        flatShape("lingwata", 5.750F, 0.0F, new float[][] {{-9.125F, 5.000F, 22.000F, 24.000F}, {-3.375F, 5.000F, 21.164F, 24.000F}, {2.375F, 5.000F, 21.164F, 24.000F}, {8.125F, 3.000F, 22.000F, 24.000F}}),
         // 16 px long, 3 wide, 13 tall
-        shape("hmar", 5.333F, 0.125F, new float[][] {{-5.333F, 1.5F, 11F, 24F}, {0F, 1.5F, 11F, 24F}, {5.333F, 1.5F, 12F, 24F}}),
+        // 19 px long with the tail, 3 wide, 13 tall from the trigger to the anal fin (art/src/fish_hmar_model.py)
+        shape("hmar", 5.333F, 0.125F, new float[][] {{-4.333F, 1.500F, 9.000F, 20.000F}, {1.000F, 1.500F, 9.000F, 22.000F}, {6.333F, 1.000F, 10.000F, 22.000F}}),
         // 18 px long, 14 wide (the pectoral "wings"), 5.5 tall
-        shape("gallinella", 6F, 0.15625F, new float[][] {{-6F, 7F, 18F, 23F}, {0F, 7F, 18F, 23F}, {6F, 1.5F, 19.5F, 23.5F}}),
+        shape("gallinella", 6.000F, 0.15625F, new float[][] {{-6.000F, 7.026F, 18.000F, 23.000F}, {0.000F, 7.026F, 18.000F, 24.000F}, {6.000F, 1.000F, 19.000F, 24.000F}}),
         // 15 px long, 11 wide (the fan fins), 10 tall (the dorsal spines)
         shape("lionfish", 5F, 0.125F, new float[][] {{-4.5F, 5.5F, 13F, 23F}, {0.5F, 5.5F, 13F, 23F}, {5.5F, 1.5F, 13F, 23F}}));
 

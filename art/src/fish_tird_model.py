@@ -14,8 +14,8 @@ The female (green with red-orange bars and a dark spot on the back) is candidate
 spot sits close to the eye's look at this size (owner rule: eyes must look different from every other mark).
 Every colour is a step lighter than the photos, because the game greys and darkens everything under water.
 
-Size: 13 px long (9 of body from the snout tip, 4 of tail), 3 px deep, 2 px wide: about 0.75 blocks, smaller and
-slimmer than vanilla cod. One texture pixel per model pixel, like vanilla's fish.
+Size: 12 px long (9 of body from the snout tip, 3 of tail), 3 px deep, 2 px wide: about 0.75 blocks, smaller and
+slimmer than vanilla cod. Model critic rounds: 4 (PASS in round 4; round 3 failed). One texture pixel per model pixel, like vanilla's fish.
 
 Model contract (docs/Tools and Process/Art pipeline.md, "Fish models"): head toward -z, y 24 at the ground, a root
 child "body", "top_fin" (the long dorsal fin) and a "tail_fin" that sways like vanilla cod's.
@@ -71,12 +71,16 @@ PALETTES = {
     # the pectorals pale green (P).
     # Model critic round 2 (PASS, with fixes): the eye a row lower, inside the head, the only near-black mark; the tail
     # tips a mid blue-grey (d); the red lines a more saturated red-orange (r); the bar near cyan-white (B) and the band
-    # warmer (R), so the collar survives the water's tint
+    # warmer (R), so the collar survives the water's tint.
+    # Model critic round 3 (FAIL): the tail joined on solid (its base a full green column on a 2 px wide stalk, the
+    # tips mid blue, d); the dorsal fin a light teal (F), not a dark slab; the greens brighter and warmer (m, g, u);
+    # the single red-line pixels dropped (they turned to maroon squares under water) and the orange band widened to
+    # two pixels instead
     "A": {
         "H": "#4aa6c0", "h": "#3b8aa4", "S": "#5ab0c6", "c": "#7cc6cf", "E": "#0b0d10", "L": "#cc84aa",
         "B": "#b0fcf0", "b": "#c4f8ee", "R": "#ff6a2a", "o": "#f4a874",
-        "m": "#56a046", "k": "#c48a5c", "g": "#96d850", "r": "#f06a3c", "w": "#e4f0c4", "X": "#56a046",
-        "F": "#56a696", "A": "#76c8c4", "u": "#8ccc50", "T": "#62c4cc", "d": "#4c7c9c", "P": "#9cc890",
+        "m": "#64b048", "k": "#c48a5c", "g": "#a8e050", "r": "#f06a3c", "w": "#e4f0c4", "X": "#64b048",
+        "F": "#7cc4a8", "A": "#80d0c4", "u": "#9cd84e", "T": "#6cccd4", "d": "#5a90c0", "P": "#9cc890",
     },
     "B": {
         "H": "#3f8ed0", "h": "#3274ac", "S": "#4f9ed4", "c": "#76b8dc", "E": "#0b0d10", "L": "#c876a8",
@@ -111,12 +115,12 @@ CUBES = [
     ("head", "body", (0, 0), (-1.0, 20.0, -5.0), (2, 3, 2)),
     ("trunk", "body", (0, 6), (-1.0, 20.0, -3.0), (2, 2, 5)),
     ("belly", "body", (8, 0), (-1.0, 22.0, -3.0), (2, 1, 3)),
-    ("stalk", "body", (22, 3), (-0.5, 20.0, 2.0), (1, 2, 1)),
+    ("stalk", "body", (22, 3), (-1.0, 20.0, 2.0), (2, 2, 1)),
     # the long low dorsal fin (its own part, as the contract names it) and the anal fin under the rear
     ("dorsal", "top_fin", (0, 15), (0.0, 19.0, -3.0), (0, 1, 5)),
     ("anal", "body", (0, 17), (0.0, 22.0, 0.0), (0, 1, 2)),
     # the lunate tail
-    ("caudal", "tail_fin", (16, 15), (0.0, 18.5, 3.0), (0, 5, 4)),
+    ("caudal", "tail_fin", (16, 15), (0.0, 18.5, 3.0), (0, 5, 3)),
     # the pectoral fins
     ("pec_r", "right_fin", (0, 20), (-2.0, 21.5, -2.0), (1, 0, 1)),
     ("pec_l", "left_fin", (2, 20), (1.0, 21.5, -2.0), (1, 0, 1)),
@@ -124,18 +128,18 @@ CUBES = [
 
 # The side of the fish, rows y 20..22, columns z -6..2. '.' where no section reaches.
 # Row 20 (the back): the darker head top (round 2: the eye moved down out of it), the turquoise bar, the red-orange band,
-#         then the green back with one dulled red line.
-# Row 21: the snout, the eye with head colour all round it, the head, the bar and the band, then the flank green with a red line
-#         (round 1, critic: one pixel, stepping up to the back's tan pixel behind it, a broken line, not a band).
+#         then the plain green back (round 3: the red line pixels dropped).
+# Row 21: the snout, the eye with head colour all round it, the head, the bar and the band, then the plain flank green
+#         (round 1 had one red line pixel, round 3 dropped it: it turned maroon under water).
 # Row 22 (the belly, under the head and the front half only): the pale cheek under the eye, the pink-violet head line
 #         a pixel behind it (never in the eye's row), the bar's pale end and a clean cream
 #         belly (round 1, critic: the pink and salmon there looked dirty).
 SIDE_Z0 = -6
 SIDES = {
     "A": {
-        20: ".hhBRmmkm",
-        21: "SEHBRgrgg",
-        22: ".cLbww...",
+        20: ".hhBRRmmm",
+        21: "SEHBRRggg",
+        22: ".cLboo...",
     },
     # the female: no shoulder band, red-orange bars down the green body, one dark spot on the back well behind the head
     "C": {
@@ -146,7 +150,7 @@ SIDES = {
 }
 SIDES["B"] = SIDES["A"]
 # The back seen from above: two rows (x -1..0 and 0..1), columns z -6..2.
-TOPS = {"A": ["ShhBRmmkm", "ShhBRmmkm"], "B": ["ShhBRmmkm", "ShhBRmmkm"], "C": ["ShhmkmXkm", "ShhmkmXkm"]}
+TOPS = {"A": ["ShhBRRmmm", "ShhBRRmmm"], "B": ["ShhBRRmmm", "ShhBRRmmm"], "C": ["ShhmkmXkm", "ShhmkmXkm"]}
 # The belly seen from below.
 BOTTOM = {"A": "Sccbwwwww", "B": "Sccbwwwww", "C": "ScLwowoww"}
 
@@ -160,12 +164,14 @@ ANAL = "AA"
 # (round 1, critic: the tips too long and stiff, like a bracket): 5 rows, the tips a pixel shorter and swept a pixel
 # further back, the middle green like the body
 CAUDAL_Z0, CAUDAL_Y0 = 3, 18.5
+# (round 3, critic: the tips floated loose under water) a solid green base column the full height of the fin, the
+# crescent's turquoise arms and mid-blue tips swept back from it
 CAUDAL = [
-    "..dd",
-    ".uT.",
-    "uu..",
-    ".uT.",
-    "..dd",
+    "uTd",
+    "uT.",
+    "u..",
+    "uT.",
+    "uTd",
 ]
 
 
@@ -258,7 +264,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 /**
  * The tird (ornate wrasse, the male): small and slim, a turquoise-blue head with pink-violet lines, a bright turquoise
  * bar and a red-orange band behind the head, a green body with thin red lines and a pale belly, a long low dorsal fin
- * and a lunate tail with dark-tipped points that sways as it swims. 13 px long, 3 px deep, 2 px wide, head toward
+ * and a lunate tail with dark-tipped points that sways as it swims. 12 px long, 3 px deep, 2 px wide, head toward
  * -z, the ground at y 24.
  * Made by art/src/fish_tird_model.py (don't edit by hand). Texture: textures/entity/fish/tird.png (32 x 32).
  */

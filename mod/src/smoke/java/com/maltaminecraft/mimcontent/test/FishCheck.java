@@ -341,6 +341,13 @@ public class FishCheck implements FabricClientGameTest {
                     case "marzpan" -> marzpanSizeShot(context, server, world, x + 30, y, z);
                     case "kavall" -> kavallSizeShot(context, server, world, x + 30, y, z);
                     case "tird" -> tirdSizeShot(context, server, world, x + 30, y, z);
+                    case "trilja" -> triljaSizeShot(context, server, world, x + 30, y, z);
+                    case "pixxi_san_pietru" -> pixxiSanPietruSizeShot(context, server, world, x + 30, y, z);
+                    case "sawt" -> sawtSandShots(context, server, world, x + 30, y, z);
+                    case "petrica" -> petricaSizeShot(context, server, world, x + 30, y, z);
+                    case "lingwata" -> lingwataSizeShot(context, server, world, x + 30, y, z);
+                    case "gallinella" -> gallinellaSizeShot(context, server, world, x + 30, y, z);
+                    case "hmar" -> hmarSizeShot(context, server, world, x + 30, y, z);
                     default -> {
                     }
                 }
@@ -996,6 +1003,96 @@ public class FishCheck implements FabricClientGameTest {
         server.runCommand("gamemode creative @a");
     }
 
+    /**
+     * The petrica's size review: in one tank, left to right as the camera sees them, a petrica resting on the floor, a
+     * vanilla cod, the cerna and a small (2 block) tonn; seen from the side (fish-petrica-lineup) and from above
+     * (fish-petrica-lineup-above), as a player swimming over it sees it; then close-ups of the petrica alone
+     * (fish-petrica-close-three-quarter, -close-top, -close-front).
+     */
+    private static void petricaSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:petrica %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 2.2, y + 0.02, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 0.2, y + 1.3, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 2.2, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 5.0, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.4, y + 1.3, fz - 3.6, x - 1.4, y + 0.8, fz + 0.5, "fish-petrica-lineup");
+        look(context, server, x - 0.4, y + 2.9, fz - 1.6, x - 0.4, y + 0.1, fz + 0.4, "fish-petrica-lineup-above");
+        // close-ups of the resting petrica, under water as a diver sees it: three-quarter, from above, and the mouth head on
+        look(context, server, x + 1.0, y + 1.2, fz - 0.9, x + 2.2, y + 0.15, fz + 0.5, "fish-petrica-close-three-quarter");
+        look(context, server, x + 2.3, y + 2.4, fz - 0.2, x + 2.3, y + 0.1, fz + 0.5, "fish-petrica-close-top");
+        look(context, server, x + 0.6, y + 0.5, fz + 0.5, x + 2.2, y + 0.15, fz + 0.5, "fish-petrica-close-front");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /**
+     * The lingwata's size review: in one tank, left to right as the camera sees them, a lingwata resting on the sand,
+     * a boll resting beside it (the other flat fish on the floor), a vanilla cod, the cerna and a small (2 block) tonn;
+     * from the side (fish-lingwata-lineup) and from above (fish-lingwata-lineup-above), then close-ups of the lingwata
+     * alone (fish-lingwata-close-three-quarter, -close-top).
+     */
+    private static void lingwataSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 16, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 16, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:sand");
+        fill(server, x - 12, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 12, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 11, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:lingwata %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 3.2, y + 0.02, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:boll %.1f %.2f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 0.9, y + 0.02, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 4.4, y + 1.3, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 6.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 9.4, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 3.0, y + 2.6, fz - 5.4, x - 3.0, y + 0.5, fz + 0.5, "fish-lingwata-lineup");
+        look(context, server, x - 3.0, y + 3.6, fz - 1.9, x - 3.0, y + 0.1, fz + 0.4, "fish-lingwata-lineup-above");
+        // close-ups of the resting lingwata, under water as a diver sees it: three-quarter and from above; the cameras
+        // stand back from it, so the barrier look() puts under the camera is behind the view, not over the fish
+        look(context, server, x + 1.2, y + 0.2, fz - 0.7, x + 3.2, y + 0.1, fz + 0.5, "fish-lingwata-close-three-quarter");
+        look(context, server, x + 1.4, y + 1.2, fz + 0.5, x + 3.2, y + 0.1, fz + 0.5, "fish-lingwata-close-top");
+        server.runCommand("gamemode creative @a");
+    }
+
     /** The marzpan's size review: in one tank, left to right as the camera sees them, a marzpan, a vanilla cod, the cerna and a small (2 block) tonn. */
     private static void marzpanSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
         server.runCommand("gamemode creative @a");
@@ -1062,6 +1159,198 @@ public class FishCheck implements FabricClientGameTest {
         context.waitTicks(40);
         server.runCommand("gamemode spectator @a");
         look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-tird-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /**
+     * The gallinella's size review: in one tank, left to right as the camera sees them, a gallinella near the sand, a
+     * vanilla cod, the cerna and a small (2 block) tonn; seen from the side (fish-gallinella-lineup) and from above
+     * (fish-gallinella-lineup-above), where its spread wings show.
+     */
+    private static void gallinellaSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y, fz + 1, "minecraft:sand");
+        fill(server, x - 9, y + 1, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:gallinella %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 2.3, y + 1.1, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.3, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.3, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.0, y + 1.6, z + 2.4, x - 1.0, y + 1.4, fz + 0.5, "fish-gallinella-lineup");
+        look(context, server, x - 1.0, y + 5.2, fz - 0.6, x - 1.0, y + 1.1, fz + 0.5, "fish-gallinella-lineup-above");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** The trilja's size review: in one tank, left to right as the camera sees them, a trilja, a vanilla cod, the cerna and a small (2 block) tonn. */
+    private static void triljaSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:trilja %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 2.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-trilja-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /**
+     * The sawt's review shots on the sand, where it lies nearly all the time: a tank with a sand floor one block up, the
+     * sawt lying on it (it sits 1 px into the sand), seen low from the side, three-quarter from above and from straight
+     * above; then the lineup with a vanilla cod, the cerna and a small (2 block) tonn swimming over it.
+     */
+    private static void sawtSandShots(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 4, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 4, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y, fz + 1, "minecraft:sand");
+        fill(server, x - 9, y + 1, fz - 1, x + 5, y + 4, fz + 1, "minecraft:water");
+        double sx = x + 1.5;
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:sawt %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            sx, y + 1.0, fz + 0.5));
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, sx, y - 0.3, fz - 1.0, sx, y + 1.1, fz + 0.5, "fish-sawt-on-sand-side");
+        look(context, server, sx - 1.0, y + 0.6, fz - 0.8, sx, y + 1.1, fz + 0.5, "fish-sawt-on-sand");
+        // from straight above, in the water: a spectator needs no barrier under it (look() would put one in the sand)
+        server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f 0.0 80.0", sx, y + 1.0, fz + 0.1));
+        context.waitTicks(15);
+        context.takeScreenshot("fish-sawt-on-sand-top");
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.0, y + 2.2, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 2.0, y + 2.0, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 5.0, y + 2.0, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.5, y + 0.6, z + 0.5, x - 1.5, y + 1.6, fz + 0.5, "fish-sawt-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** The pixxi San Pietru's size review: in one tank, left to right as the camera sees them, a pixxi San Pietru, a vanilla cod, the cerna and a small (2 block) tonn. */
+    private static void pixxiSanPietruSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:pixxi_san_pietru %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 2.0, y + 1.2, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.3, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.6, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.2, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-pixxi_san_pietru-lineup");
+        server.runCommand("gamemode creative @a");
+    }
+
+    /** The hmar's size review: in one tank, left to right as the camera sees them, a hmar, a vanilla cod, the cerna and a small (2 block) tonn. */
+    private static void hmarSizeShot(ClientGameTestContext context, TestServerContext server, TestSingleplayerContext world, int x, int y, int z) {
+        server.runCommand("gamemode creative @a");
+        server.runCommand(String.format(Locale.ROOT, "tp @a %d %d %d", x, y + 3, z - 4));
+        world.getConnection().waitForChunksRender();
+        int fz = z + 6;
+        fill(server, x - 14, y, z - 10, x + 12, y + 10, z + 10, "minecraft:air");
+        fill(server, x - 14, y - 1, z - 10, x + 12, y - 1, z + 10, "minecraft:smooth_sandstone");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz + 2, "minecraft:glass");
+        fill(server, x - 10, y, fz - 2, x + 6, y + 3, fz - 2, "minecraft:barrier");
+        fill(server, x - 9, y, fz - 1, x + 5, y + 3, fz + 1, "minecraft:water");
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:hmar %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 1.5, y + 1.3, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon minecraft:cod %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x + 0.1, y + 1.5, fz + 0.5));
+        server.runCommand(String.format(Locale.ROOT, "summon mimcontent:cerna %.1f %.1f %.1f {NoAI:1b,PersistenceRequired:1b,Rotation:[90f,0f]}",
+            x - 1.8, y + 1.2, fz + 0.5));
+        server.runOnServer(s -> {
+            TonnFish fish = (TonnFish) MimFishes.TONN.type().create(s.overworld(), EntitySpawnReason.COMMAND);
+            fish.snapTo(x - 4.4, y + 1.2, fz + 0.5, 90.0F, 0.0F);
+            fish.setYHeadRot(90.0F);
+            fish.setYBodyRot(90.0F);
+            fish.setNoAi(true);
+            fish.setPersistenceRequired();
+            fish.setLength(2.0F);
+            s.overworld().addFreshEntity(fish);
+        });
+        world.getConnection().waitForChunksRender();
+        context.waitTicks(40);
+        server.runCommand("gamemode spectator @a");
+        look(context, server, x - 1.2, y + 0.3, z + 1.0, x - 1.2, y + 1.6, fz + 0.5, "fish-hmar-lineup");
         server.runCommand("gamemode creative @a");
     }
 
@@ -1195,6 +1484,13 @@ public class FishCheck implements FabricClientGameTest {
         marzpanSizeShot(context, server, world, x + 90, y, z + 285);
         kavallSizeShot(context, server, world, x + 90, y, z + 320);
         tirdSizeShot(context, server, world, x + 130, y, z + 250);
+        triljaSizeShot(context, server, world, x + 170, y, z + 320);
+        pixxiSanPietruSizeShot(context, server, world, x + 210, y, z + 250);
+        sawtSandShots(context, server, world, x + 250, y, z + 250);
+        petricaSizeShot(context, server, world, x + 330, y, z + 250);
+        lingwataSizeShot(context, server, world, x + 410, y, z + 330);
+        gallinellaSizeShot(context, server, world, x + 490, y, z + 250);
+        hmarSizeShot(context, server, world, x + 530, y, z + 410);
 
         // the hotbar: the caught fish beside vanilla's, then the buckets, then the spawn eggs
         String[][] bars = {

@@ -100,10 +100,10 @@ final class FishHitboxCheck {
             arrow(context, server, x, y, z);
             server.runCommand("kill @e[type=!minecraft:player]");
             // the boll's thickest point is 3 px (the raised eyes on the dome; art/src/fish_boll_model.py); the night job's
-            // flat placeholders: the lingwata 1.5 px, the petriċa 7 px with its lure (art/src/fish_placeholders.py)
+            // the night job's flat fish: the lingwata 3 px with its raised pectoral fin, the petriċa 7 px with its lure
             flatOnLand(context, server, x, y, z, "boll", 3.0);
             server.runCommand("kill @e[type=!minecraft:player]");
-            flatOnLand(context, server, x, y, z, "lingwata", 1.5);
+            flatOnLand(context, server, x, y, z, "lingwata", 3.0);  // 3 px at the raised pectoral fin (art/src/fish_lingwata_model.py)
             server.runCommand("kill @e[type=!minecraft:player]");
             flatOnLand(context, server, x, y, z, "petrica", 7.0);
             server.runCommand("kill @e[type=!minecraft:player]");

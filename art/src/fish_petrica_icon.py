@@ -1,0 +1,230 @@
+"""Item icon for the petrica (anglerfish, Lophius piscatorius and L. budegassa): the caught fish, seen from above.
+
+Night job piece 2 of 3 (docs/Decisions/2026-11-18 Night job - the rest of the fish, Claude decides.md). It follows the
+critic-passed 3D model (art/src/fish_petrica_model.py, palette A): the same keys, lifted only x1.05 for out of water (the model
+already sits a third lighter than the photos), hue kept. Photos (reference only): art/references/fish_petrica_refonly/ (list.tsv); the landed fish from above (norway)
+is the pose: an anglerfish is known by its outline from above, as it lies on a market slab.
+
+What makes it a petrica at 16 x 16:
+- a huge, wide, flat head (about 9 px across) with a straight front: the lower lip a pale line right across it and the
+  gape a dark line just inside, both dead straight (a 45 degree staircase), never curved;
+- the body tapering fast behind the head to a small rounded tail, and fan pectoral fins out to the sides;
+- small eyes on top of the head, wide apart, near-black with a pale glint and an olive pixel behind; nothing else is that dark;
+- the fishing rod: a faint light ridge between the eyes, and the darker skin flaps of the second dorsal spine at the
+  upper right, breaking the outline;
+- mottled brown camouflage in 2 px blotches, a darker fringe of skin flaps along the head's edges.
+
+Pose and light follow vanilla's fish items (never copied): head lower left, tail upper right, light from the top left.
+
+Candidates: A (the design above), B (no pale lip), C (no rod).
+CHOSEN is written to the mod.
+
+Run:  art/.venv/bin/python art/src/fish_petrica_icon.py
+Writes mod/.../textures/item/petrica.png (byte-identical on rerun), the candidates and the review sheet in
+art/candidates/petrica_icon/ and art/candidates/fish_petrica_icon.png, and the offline hotbar previews.
+"""
+import colorsys
+import os
+import subprocess
+import sys
+
+from PIL import Image, ImageDraw
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ART = os.path.normpath(os.path.join(HERE, ".."))
+ROOT = os.path.normpath(os.path.join(ART, ".."))
+sys.path.insert(0, os.path.join(ART, "tools"))
+sys.path.insert(0, HERE)
+from font import label_font  # noqa: E402
+import fish_petrica_model as model  # noqa: E402
+
+TEXTURES = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "mimcontent", "textures")
+OUT_ICON = os.path.join(TEXTURES, "item", "petrica.png")
+CAND = os.path.join(ART, "candidates", "petrica_icon")
+OUT_SHEET = os.path.join(ART, "candidates", "fish_petrica_icon.png")
+VANILLA = os.path.join(os.environ.get("MIM_VANILLA_TEXTURES", os.path.join(ART, ".vanilla")), "item")
+CHOSEN = "A"
+
+
+def hx(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def lift(c, k=1.05):
+    """Out of water: brightness lifted, hue and saturation kept."""
+    h, s, v = colorsys.rgb_to_hsv(*(x / 255.0 for x in c))
+    return tuple(int(round(x * 255)) for x in colorsys.hsv_to_rgb(h, s, min(1.0, v * k)))
+
+
+MODEL = {k: hx(v) for k, v in model.PALETTES["A"].items()}
+PAL = {k: lift(v) for k, v in MODEL.items()}
+for k in ("E", "M"):
+    PAL[k] = MODEL[k]                       # the eye and the gape stay dark
+PAL["e"] = (0x8a, 0x86, 0x4a)               # round 2: an olive pixel behind each eye, so eyes differ from the gape
+PAL["o"] = MODEL["B"]                       # the outline: the dark blotch brown, as vanilla outlines its fish
+PAL["R"], PAL["Q"] = (0xae, 0x84, 0x58), MODEL["2"]   # the rod a faint light ridge (round 6 polish: lighter read
+                                                       # as a nose between the eyes)
+PAL["L"] = (0xd9, 0xbc, 0x9c)               # round 6 polish: a warmer, pinker lip (brighter read as teeth)
+PAL["h"] = (0xd8, 0xc8, 0xa0)               # round 4: the glint in each eye
+
+# The icon, pixel by pixel (keys as in the model's palette; '.' clear). It was first laid out from the fish's own
+# frame (u along the fish from the mouth, v across) and then set by hand. The front of the head is one straight
+# 45 degree staircase: the pale lower lip (L) outside, the dark gape (M) just inside, the same in every row.
+GRIDS = {
+    # round 6 (critic round 5): a short body and a small forked fan tail in the corner, so the wide head is about 60%
+    # of the fish (a long taper to a point read as a horn); the gape one straight dark line along the whole front edge
+    # with the pale lip just inside it; two eyes 2 px behind the mouth, each with a pale glint toward the tail, nothing
+    # else as dark; 2 px fin lobes with dark edges on both flanks; the rod a short light line between the eyes.
+    # Critic PASS; its polish then applied: the head's top-left corner rounded, the fin lobes 1 px bigger
+    "A": [
+        ".............DD.",
+        "............DffD",
+        "...........offDD",
+        "..........o34o..",
+        ".........o334o..",
+        ".....DDDo3344o..",
+        "..ooooDo3344o...",
+        ".o22h2B22334o...",
+        "o22E2333344o....",
+        "ML2233R3B34o....",
+        ".ML33R33344oDD..",
+        "..ML3B33h44oDD..",
+        "...ML33E444o....",
+        "....ML3444o.....",
+        ".....ML44o......",
+        "......Moo.......",
+    ],
+}
+# B: A without the pale lip (only the dark gape)
+GRIDS["B"] = [r.replace("L", "2") for r in GRIDS["A"]]
+# C: A without the rod
+GRIDS["C"] = [r.replace("R", "3") for r in GRIDS["A"]]
+EYES = [(x, y) for y, r in enumerate(GRIDS["A"]) for x, k in enumerate(r) if k == "E"]
+
+
+def grid(variant):
+    g = [list(r) for r in GRIDS[variant]]
+    assert len(g) == 16 and all(len(r) == 16 for r in g), variant
+    return g
+
+
+def render(g):
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y, row in enumerate(g):
+        for x, k in enumerate(row):
+            if k != ".":
+                im.putpixel((x, y), PAL[k] + (255,))
+    return im
+
+
+def check(g, variant):
+    """No stray pixels, and nothing near-black but the eyes."""
+    for y in range(16):
+        for x in range(16):
+            if g[y][x] == ".":
+                continue
+            if not any(0 <= x + dx < 16 and 0 <= y + dy < 16 and g[y + dy][x + dx] != "."
+                       for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                print(f"warning {variant}: stray pixel at {x},{y}")
+    for ex, ey in EYES:
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                assert g[ey + dy][ex + dx] not in "BM" or (dx, dy) == (0, 0), (variant, "dark beside the eye")
+
+
+def measure(paths):
+    py = os.path.join(ART, ".venv", "bin", "python")
+    res = subprocess.run([py, os.path.join(ART, "tools", "measure.py")] + paths, capture_output=True, text=True)
+    lines = []
+    for line in res.stdout.splitlines():
+        if line.startswith("{"):
+            d = eval(line, {"np": __import__("numpy")})  # measure.py prints dicts with numpy floats
+            lines.append(f"{os.path.basename(d['file']):<22} cover {d['coverage']:.2f}  colours {d['colours']:>2}  "
+                         f"dark {d['lmin']:.2f}  light {d['lmax']:.2f}  edge {d['edge_l']:.2f}  "
+                         f"inside {d['interior_l']:.2f}  TL-BR {d['tl_minus_br']:+.2f}")
+    return lines
+
+
+def hotbar(out, items, scale):
+    py = os.path.join(ART, ".venv", "bin", "python")
+    subprocess.run([py, os.path.join(ART, "tools", "hotbar_preview.py"), out] + items + ["--scale", str(scale)],
+                   check=True, capture_output=True)
+    return Image.open(out).convert("RGB")
+
+
+def sheet(icons):
+    font, small = label_font(16), label_font(13)
+    W = 1800
+    bg, ink = (52, 52, 56), (235, 235, 235)
+    parts = []
+    band = Image.new("RGB", (W, 200), bg)
+    d = ImageDraw.Draw(band)
+    x = 10
+    for v, im in icons.items():
+        for s in (8, 2, 1):
+            t = Image.new("RGBA", (16 * s + 8, 16 * s + 8), (139, 139, 139, 255))
+            t.alpha_composite(im.resize((16 * s, 16 * s), Image.NEAREST), (4, 4))
+            band.paste(t.convert("RGB"), (x, 24))
+            d.text((x, 4), f"{v} {s}x" + (" (chosen)" if v == CHOSEN and s == 8 else ""), fill=ink, font=small)
+            x += max(16 * s + 20, 60)
+        x += 30
+    parts.append(("Candidates A, B, C at 8x, 2x, 1x", band))
+    names = [("cod", os.path.join(VANILLA, "cod.png")), ("salmon", os.path.join(VANILLA, "salmon.png"))]
+    names += [(n, os.path.join(TEXTURES, "item", n + ".png")) for n in ("boll", "skorfna", "cerna")]
+    band = Image.new("RGB", (W, 170), bg)
+    d = ImageDraw.Draw(band)
+    for i, (n, p) in enumerate([("PETRICA", None)] + names):
+        im = icons[CHOSEN] if p is None else Image.open(p).convert("RGBA")
+        t = Image.new("RGBA", (136, 136), (139, 139, 139, 255))
+        t.alpha_composite(im.resize((128, 128), Image.NEAREST), (4, 4))
+        band.paste(t.convert("RGB"), (10 + i * 150, 24))
+        d.text((10 + i * 150, 4), n, fill=ink, font=small)
+    parts.append(("The chosen icon at 8x beside vanilla cod and salmon and the boll, skorfna and cerna", band))
+    hb = [hotbar(os.path.join(CAND, "hotbar.png"), ["mc:cod", "mod:petrica", "mc:salmon", "mod:boll", "mod:skorfna",
+                                                      "mod:cerna", "mc:pufferfish", "mc:tropical_fish", "mod:lampuka"], 2),
+          hotbar(os.path.join(CAND, "hotbar_x4.png"), ["mc:cod", "mod:petrica", "mc:salmon", "mod:boll"], 4)]
+    band = Image.new("RGB", (W, sum(i.height + 10 for i in hb) + 10), bg)
+    y = 4
+    for im in hb:
+        band.paste(im, (10, y))
+        y += im.height + 10
+    parts.append(("Hotbar preview, unselected (art/tools/hotbar_preview.py): cod, PETRICA, salmon, boll, skorfna, cerna, "
+                  "pufferfish, tropical fish, lampuka at scale 2; cod, PETRICA, salmon, boll at 4", band))
+    lines = measure([os.path.join(VANILLA, "cod.png"), os.path.join(VANILLA, "salmon.png")]
+                    + [os.path.join(CAND, f"icon_{v}.png") for v in icons])
+    lines.append("STYLE.md food ranges: cover 0.29-0.77, colours 6-20, dark 0.0-0.35, light 0.32-0.99, TL-BR +0.01-+0.17")
+    band = Image.new("RGB", (W, 20 * len(lines) + 8), bg)
+    d = ImageDraw.Draw(band)
+    for i, line in enumerate(lines):
+        d.text((10, 4 + 20 * i), line, fill=ink, font=label_font(14))
+    parts.append(("art/tools/measure.py", band))
+    H = sum(b.height + 30 for _, b in parts) + 40
+    out = Image.new("RGB", (W, H), bg)
+    d = ImageDraw.Draw(out)
+    d.text((10, 8), "Petrica (anglerfish) item icon, textures/item/petrica.png", fill=ink, font=label_font(20))
+    y = 40
+    for title, b in parts:
+        d.text((10, y), title, fill=(250, 210, 120), font=font)
+        out.paste(b, (0, y + 26))
+        y += b.height + 30
+    out.save(OUT_SHEET)
+
+
+def main():
+    os.makedirs(CAND, exist_ok=True)
+    icons = {}
+    for v in ("A", "B", "C"):
+        g = grid(v)
+        check(g, v)
+        icons[v] = render(g)
+        icons[v].save(os.path.join(CAND, f"icon_{v}.png"))
+        if v == CHOSEN:
+            print("\n".join("".join(r) for r in g))
+    icons[CHOSEN].save(OUT_ICON)
+    sheet(icons)
+    print("wrote", os.path.relpath(OUT_ICON, ROOT), "and", os.path.relpath(OUT_SHEET, ROOT))
+
+
+if __name__ == "__main__":
+    main()

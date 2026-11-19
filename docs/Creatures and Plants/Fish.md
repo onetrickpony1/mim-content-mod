@@ -42,9 +42,9 @@ The tier A fish from [[Content mod list]] section 6, built on the owner's go-ahe
 | `marzpan` | Marzpan (night job) | small groups, 0.5 to 3 blocks over rock; shy | 0.5 x 0.4 | 3 boxes, 0.88 long, 0.19 wide, 0.44 tall | 4 | 1-3 | `marzpan` |
 | `tird` | Tird (night job) | small groups, 0.4 to 2.5 blocks over any floor; shy | 0.35 x 0.3 | 2 boxes, 0.69 long, 0.13 wide, 0.25 tall | 3 | 1-3 | `tird` |
 | `trilja` | Trilja (night job) | small groups, 0.2 to 1 block over sand; shy | 0.45 x 0.3 | 3 boxes, 0.81 long, 0.13 wide, 0.38 tall | 3 | 2-4 | `trilja` |
-| `sawt` | Sawt (night job) | alone; lies on shallow sand nearly all the time; stings (below) | 0.35 x 0.2 | 2 boxes, 0.56 long, 0.13 wide, 0.28 tall | 3 | 1 | `sawt` |
-| `pixxi_san_pietru` | Pixxi San Pietru (night job) | alone, slow (speed 0.45), mid-depth | 0.6 x 0.8 | 3 boxes, 1.06 long, 0.13 wide, 0.94 tall | 6 | 1 | `pixxi_san_pietru` |
-| `petrica` | Petriċa (night job) | alone; sits still on deep soft floors; flat on land too | 0.9 x 0.35 | 4 boxes, 1.38 long, 1.0 wide, 0.44 tall with the lure | 10 | 1 | `petrica` |
+| `sawt` | Sawt (night job) | alone; lies on shallow sand nearly all the time, 1 px sunk into it; stings (below) | 0.35 x 0.2 | 3 boxes, 0.88 long, 0.38 wide with the pectoral fins, 0.31 tall with the black dorsal | 3 | 1 | `sawt` |
+| `pixxi_san_pietru` | Pixxi San Pietru (night job) | alone, slow (speed 0.45), mid-depth | 0.6 x 0.8 | 4 boxes, 1.38 long, 0.13 wide, 1.32 tall with the spines | 6 | 1 | `pixxi_san_pietru` |
+| `petrica` | Petriċa (night job) | alone; sits still on deep soft floors; flat on land too | 0.9 x 0.35 | 5 boxes, 1.75 long, 1.25 wide with the fins, 0.43 tall with the lure | 10 | 1 | `petrica` |
 | `lingwata` | Lingwata (night job) | alone; low over sand, rests often (like the boll); shy; flat on land too | 0.6 x 0.2 | 3 boxes, 1.13 long, 0.5 wide, 0.09 thick | 4 | 1 | `lingwata` |
 | `hmar` | Ħmar (night job) | alone or in twos, 0.5 to 3 blocks over rock; shy | 0.55 x 0.7 | 3 boxes, 1.0 long, 0.19 wide, 0.81 tall | 6 | 1-2 | `hmar` |
 | `gallinella` | Gallinella (night job) | alone or in twos, within half a block of the sand; shy | 0.6 x 0.35 | 3 boxes, 1.13 long, 0.88 wide with the "wings", 0.34 tall | 5 | 1-2 | `gallinella` |
